@@ -1,0 +1,368 @@
+<style>
+    #nav {
+	font-family: tahoma, ms shell dlg;
+	font-size: 12px;
+	padding-right: 0px;
+	margin:	0;
+	line-height: 0;
+    }
+
+    #nav :link {
+	padding-right: 10px;
+	display: block;
+	padding-left: 0.5em;
+	font-weight: normal;
+	background:	url(/img/catebg.gif) repeat-x left top;
+	padding-bottom:	0px;
+	margin:	0px;
+	color: #000000;
+	line-height: 1;
+	padding-top: 0px;
+	text-decoration: none;
+    }
+    #nav :visited {
+	padding-right: 10px;
+	display: block;
+	padding-left: 0.5em;
+	font-weight: normal;
+	background:	url(/img/catebg.gif) repeat-x left top;
+	padding-bottom:	0px;
+	margin:	0px;
+	color: #000000;
+	line-height: 1;
+	padding-top: 0px;
+	text-decoration: none;
+    }
+    #nav :hover	{
+	color: #000000;
+	background-color: #efefef;
+    }
+
+    #nav ul	{
+	padding: 0px;
+	margin:	0px;
+	background-color: #ffffff;
+	border:	0px	none 0;
+    }
+    #nav ul	:link {
+	padding-right: 10px;
+	padding-left: 1.5em;
+	background-image: none;
+	padding-bottom:	4px;
+	padding-top: 4px;
+	border-left-width: 3px;
+	border-left-style: solid;
+	border-left-color: #ffffff;
+
+    }
+    #nav ul	:visited {
+	padding-right: 10px;
+	padding-left: 1.5em;
+	background-image: none;
+	padding-bottom:	4px;
+	padding-top: 4px;
+	border-left-width: 3px;
+	border-left-style: solid;
+	border-left-color: #ffffff;
+    }
+    #nav ul	:hover {
+	border-top-width: 1px;
+	border-left-width: 0px;
+	background-image: none;
+	border-bottom-width: 1px;
+	border-right-width: 0px;
+	border-left-width: 3px;
+	border-left-style: solid;
+	border-left-color: #b4bed4;
+	border-right-width: 3px;
+	border-right-style: solid;
+	border-right-color: #b4bed4;
+    }
+
+    #nav li	{
+	padding: 0px;
+	background-image: none;
+	padding-bottom:	1px;
+	margin:	0px;
+	line-height: 1px;
+	list-style-type: none;
+    }
+
+    body {
+	margin-left: 5px;
+    }
+
+    .group {background:	url(/img/catebg.gif) repeat-x left top; height: 20px; line-height: 20px; padding-left: 15px}
+</style>
+
+<div style="width:140px; text-align:left;">
+    <ul id=nav>
+	<!--TODO GROUP信息不会自动隐藏-->
+	
+	<?php if($myuser->checkGroupPermission(REPORTER)):?>
+	<li><div class="group">报表查看</div>
+	    <ul>
+		<?php if($myuser->checkPermission(REPORTER, REPORTER_ORDER) || $myuser->checkPermission(REPORTER, REPORTER_ORDER_STORE)):?>
+		<li><?=$html->link('普通商城订单日报', '/OrderReporter?data[OrderReport][store_id]=*', 'target=main')?></li>
+		<?php endif?>
+		</ul>
+	    <ul>
+		<?php if($myuser->checkPermission(REPORTER, REPORTER_STORE_REQUIRE) || $myuser->checkPermission(REPORTER, REPORTER_STORE_REQUIRE_STORE)):?>
+		<li><?=$html->link('预定单需求查看', '/OrderRequire', 'target=main')?></li>
+		<?php endif?>
+		</ul>
+	</li>
+	<?php endif?>
+
+	<?php 
+	if($myuser->checkGroupPermission(ORDER)):?>
+	<li><div class="group">订单管理</div>
+	    <ul>
+		<?php if($myuser->checkPermission(ORDER, ORDER_SITE_VIEW) || $myuser->checkPermission(ORDER, ORDER_SITE_VIEW_STORE)):?>
+		<li><?=$html->link('普通商城订单', '/Order?data[OrderInfo][ex_delete_order]=1', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(ORDER, ORDER_SITE_EDIT)):?>
+		<li><?=$html->link('+ADD店员下单', '/Order/batch_edit', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(ORDER, ORDER_ACCUMULATE_VIEW) || $myuser->checkPermission(ORDER, ORDER_ACCUMULATE_VIEW_STORE)):?>
+		<li><?=$html->link('积分商城订单', '/OrderAccumulate', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(ORDER, ORDER_ACCUMULATE_EDIT)):?>
+		<li><?=$html->link('+ADD店员下单', '/OrderAccumulate/edit', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(ORDER, ORDER_HOT_VIEW) || $myuser->checkPermission(ORDER, ORDER_HOT_VIEW_STORE)):?>
+		<li><?=$html->link('抢购商城订单', '/OrderHot', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(ORDER, ORDER_HOT_EDIT)):?>
+		<li><?=$html->link('+ADD店员下单', '/OrderHot/edit', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(ORDER, ORDER_SP_VIEW) || $myuser->checkPermission(ORDER, ORDER_SP_VIEW_STORE)):?>
+		<li><?=$html->link('店员自处理订单', '/OrderSp', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(ORDER, ORDER_SP_EDIT)):?>
+		<li><?=$html->link('+ADD店员下单', '/OrderSp/edit', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(ORDER, ORDER_EXECUTE_VIEW) || $myuser->checkPermission(ORDER, ORDER_EXECUTE_VIEW_STORE)):?>
+		<li><?=$html->link('执行订单', '/OrderExecute?data[OrderExecute][do_not_display_complete_status]=1', 'target=main')?></li>
+		<?php endif?>
+	    </ul>
+	</li>
+	<?php endif?>
+
+	<?php if($myuser->checkGroupPermission(COMMODITY)):?>
+	<li><div class="group">商品管理</div>
+	    <ul>
+		<?php if($myuser->checkPermission(COMMODITY, COMMODITY_COMMON_VIEW)):?>
+		<li><?=$html->link('基础商品列表', '/Commodity', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(COMMODITY, COMMODITY_COMMON_EDIT)):?>
+		<li><?=$html->link('+ADD基础商品', '/Commodity/edit', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(COMMODITY, COMMODITY_COMMON_SHOP_VIEW)):?>
+		<li><?=$html->link('普通商城商品', '/ShopCommodityCommon', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(COMMODITY, COMMODITY_COMMON_SHOP_EDIT)):?>
+		<li><?=$html->link('+ADD商城商品', '/ShopCommodityCommon/edit', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(COMMODITY, COMMODITY_ACCUMULATE_SHOP_VIEW)):?>
+		<li><?=$html->link('积分商城商品', '/ShopCommodityAccumulate', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(COMMODITY, COMMODITY_ACCUMULATE_SHOP_EDIT)):?>
+		<li><?=$html->link('+ADD商城商品', '/ShopCommodityAccumulate/edit', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(COMMODITY, COMMODITY_HOT_SHOP_VIEW)):?>
+		<li><?=$html->link('抢购商城商品', '/ShopCommodityHot', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(COMMODITY, COMMODITY_HOT_SHOP_EDIT)):?>
+		<li><?=$html->link('+ADD商城商品', '/ShopCommodityHot/edit', 'target=main')?></li>
+		<?php endif?>
+	    </ul>
+	</li>
+	<?php endif?>
+
+	<?php if($myuser->checkGroupPermission(PURCHASE)):?>
+	<li><div class="group">采购管理</div>
+	    <ul>
+		<?php if($myuser->checkPermission(PURCHASE, CLASS_VIEW)):?>
+		<li><?=$html->link('品类管理', '/CommodityClass', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(PURCHASE, CLASS_EDIT)):?>
+		<li><?=$html->link('+ADD品类', '/CommodityClass/edit', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(PURCHASE, CLASS_SUPPLIER)):?>
+		<li><?=$html->link('品类供应商管理', '/SupplierClass', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(PURCHASE, CLASS_SUPPLIER)):?>
+		<li><?=$html->link('+ADD品类供应商', '/SupplierClass/edit', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(PURCHASE, PURCHASE_LACK_VIEW)):?>
+		<li><?=$html->link('品类缺货情况', '/CommodityClassRequire', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(PURCHASE, PURCHASE_VIEW)):?>
+		<li><?=$html->link('采购单列表', '/Purchase', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(PURCHASE, PURCHASE_EDIT)):?>
+		<li><?=$html->link('+ADD采购单', '/Purchase/edit', 'target=main')?></li>
+		<?php endif?>
+	    </ul>
+	</li>
+	<?php endif?>
+
+
+	<?php if($myuser->checkGroupPermission(FINANCE)):?>
+	<li><div class="group">财务管理</div>
+	    <ul>
+		<?php if($myuser->checkPermission(FINANCE, FINANCE_PURCHASE_REVIEW)):?>
+		<li><?=$html->link('采购单审核', '/Finance/review', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(FINANCE, FINANCE_PURCHASE_REVIEW)):?>
+		<li><?=$html->link('财务单列表', '/Finance', 'target=main')?></li>
+		<?php endif?>
+	    </ul>
+	</li>
+	<?php endif?>
+
+	<?php if($myuser->checkGroupPermission(STOCK)):?>
+	<li><div class="group">仓储管理</div>
+	    <ul>
+		<?php if($myuser->checkPermission(STOCK, STOCK_VIEW)):?>
+		<li><?=$html->link('库存管理', '/Stock', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(STOCK, STOCK_IN_VIEW)):?>
+		<li><?=$html->link('入仓记录列表', '/StockIn', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(STOCK, STOCK_IN_EDIT)):?>
+		<li><?=$html->link('+ADD入仓记录', '/StockIn/purchaseList', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(STOCK, STOCK_PICKUP_VIEW)):?>
+		<li><?=$html->link('分拣单列表', '/StockPickup', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(STOCK, STOCK_PICKUP_EDIT)):?>
+		<li><?=$html->link('+Create分拣单', '/StockPickup/Create', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(STOCK, STOCK_SHIPPING_VIEW)):?>
+		<li><?=$html->link('运输单列表', '/StockShipping', 'target=main')?></li>
+		<?php endif?>
+	    </ul>
+	</li>
+	<?php endif?>
+
+	<?php if($myuser->checkGroupPermission(DISPATCH)):?>
+	<li><div class="group">配送管理</div>
+	    <ul>
+		<?php if($myuser->checkPermission(DISPATCH, DISPATCH_LIST_VIEW) || $myuser->checkPermission(DISPATCH, DISPATCH_LIST_VIEW_STORE)):?>
+		<li><?=$html->link('配送任务列表', '/OrderExecute/dispatchList?data[OrderExecute][ex_dispatched]=1', 'target=main')?></li>
+		<?php endif?>
+	    </ul>
+	</li>
+	<?php endif?>
+
+	<?php if($myuser->checkGroupPermission(SUPPLIER)):?>
+	<li><div class="group">供应商管理</div>
+	    <ul>
+		<?php if($myuser->checkPermission(SUPPLIER, SUPPLIER_VIEW)):?>
+		<li><?=$html->link('供应商列表', '/Supplier', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(SUPPLIER, SUPPLIER_EDIT)):?>
+		<li><?=$html->link('+ADD供应商', '/Supplier/edit', 'target=main')?></li>
+		<?php endif?>
+	    </ul>
+	</li>
+	<?php endif?>
+
+	<?php if($myuser->checkGroupPermission(REFUND)):?>
+	<li><div class="group">退货管理</div>
+	    <ul>
+		<?php if($myuser->checkPermission(REFUND, REFUND_REVIEW) || $myuser->checkPermission(REFUND, REFUND_FINANCE_REVIEW)):?>
+		<li><?=$html->link('退货审核', '/Refund', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(REFUND, REFUND_ADD)):?>
+		<li><?=$html->link('+ADD退货申请', '/Refund/addlist', 'target=main')?></li>
+		<?php endif?>
+	    </ul>
+	</li>
+	<?php endif?>
+
+	<?php if($myuser->checkGroupPermission(USER)):?>
+	<li><div class="group">会员管理</div>
+	    <ul>
+		<?php if($myuser->checkPermission(USER, USER_VIEW)):?>
+		<li><?=$html->link('会员列表', '/User', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(USER, USER_STORE_INFO)):?>
+		<li><?=$html->link('门店信息', '/User/store', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(USER, USER_RESIDENT_AREA)):?>
+		<li><?=$html->link('地区码管理', '/UserResident/area', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(USER, USER_RESIDENT_COMMUNITY)):?>
+		<li><?=$html->link('小区管理', '/UserResident/community', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(USER, USER_RESIDENT_BUILDING)):?>
+		<li><?=$html->link('住宅楼管理', '/UserResident/building', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(USER, USER_RESIDENT_INFO)):?>
+		<li><?=$html->link('会员住址信息', '/UserResident/resident', 'target=main')?></li>
+		<?php endif?>
+
+	    </ul>
+	</li>
+	<?php endif?>
+
+	<?php if($myuser->checkGroupPermission(ROLE)):?>
+	<li class="title"><div class="group">管理人员</div>
+	    <ul>
+		<?php if($myuser->checkPermission(ROLE, ROLE_VIEW)):?>
+		<li><?=$html->link('角色查看', '/Role/index', 'target=main')?></li>
+		<?php endif?>
+
+		<?php if($myuser->checkPermission(ROLE, ROLE_ADD)):?>
+		<li><?=$html->link('角色添加', '/Role/edit', 'target=main')?></li>
+		<?php endif;?>
+
+		<?php if($myuser->checkPermission(ADMIN, ADMIN_VIEW)):?>
+		<li><?=$html->link('管理员查看', '/Admin/index', 'target=main')?></li>
+		<?php endif;?>
+
+		<?php if($myuser->checkPermission(ADMIN, ADMIN_ADD)):?>
+		<li><?=$html->link('管理员添加', '/Admin/edit', 'target=main')?></li>
+		<?php endif;?>
+	    </ul>
+	</li>
+	<?php endif;?>
+    </ul>
+</div>

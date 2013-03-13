@@ -1,0 +1,189 @@
+<style>
+    td{text-align: left}
+</style>
+<script>
+    function process_data(theform) {
+        return true;
+    }
+</script>
+<?=$html->formTag('/'.$cn.'/edit/'.$id, 'post', array('id'=>'editForm', 'name'=>'editForm' , 'onSubmit'=>'return process_data(this);'))?>
+
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+    <tr class="tableHeader">
+	<td colspan="4">编辑/添加 - 订单，带 <font color="#FF0000">*</font> 为必填</td>
+    </tr>
+    <!--
+    <tr class="bg_0">
+	<td nowrap>主订单号</td>
+	<td>
+	    <?=$html->input($mn.'/batch_order_sign', array('value'=>(@$_GET['batch_order_sign']?$_GET['batch_order_sign']:null), 'size'=>'35'))?>
+	    (留空系统会自动生成新主订单号)
+	</td>
+    </tr>
+    -->
+    <?php if(!$id):?>
+    <tr class="bg_0">
+	<td nowrap>商品 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/commodity_price', '该商品价格存在问题，请先处理');?>
+	    <?=$html->selectTag($mn.'/commodity_id', $all_commodity_options)?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>用户No(与电话必填一项) <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/store_id', '找不到该用户所属门店');?>
+	    <?=$html->tagErrorMsg($mn . '/userid_empty', '用户ID与电话必填一项');?>
+	    <?=$html->tagErrorMsg($mn . '/userid', '找不到指定用户');?>
+	    <?=$html->input($mn.'/userid')?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>用户电话(与用户No必填一项) <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/usertel', '找不到指定用户');?>
+	    <?=$html->input($mn.'/usertel')?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>预订数量 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/order_num', '预订数量必须大于0');?>
+	    <?=$html->input($mn.'/order_num')?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>应付金额</td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/should_payed', '系统计算应付价格出错！');?>
+
+	    <?php if($myuser->checkPermission(ORDER, ORDER_SITE_EDIT_SUPPER)):?>
+		<?=$html->input($mn.'/should_payed')?>
+	    <?php else:?>
+		<?=$html->hidden($mn.'/should_payed')?>
+		<span class="OrderInfoShouldPayed"><?=@$this->data[$mn]['should_payed']?></span>
+	    <?php endif;?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>订单状态 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->selectTag($mn.'/status', option_diff($ORDER_STATUS, '*,1,4'))?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>现金支付方式</td>
+	<td>
+	    <?=$html->selectTag($mn.'/cash_type', option_diff($CASH_TYPE))?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>POS机流水号 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/pos_no', '流水号必填！');?>
+	    <?=$html->input($mn.'/pos_no')?> (现金支付为“pos”必填)
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>实付金额 <font color="#FF0000">*</font></td>
+	<td><?=$html->tagErrorMsg($mn . '/payed', '实付金额不能小于应付金额');?>
+	    <?=$html->input($mn.'/payed')?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>配送周期</td>
+	<td><?=$html->selectTag($mn.'/dispatch_type', option_diff($DISPATCH_TYPE))?></td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>配送方式</td>
+	<td><?=$html->tagErrorMsg($mn . '/deliver_type', '该用户是非小区用户，不能配送!');?><?=$html->selectTag($mn.'/deliver_type', option_diff($DELIVER_TYPE))?></td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>每周期配送数量 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/dispatch_num', '数量必须大于0且不能大于购买数量');?>
+	    <?=$html->input($mn.'/dispatch_num')?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>首次配送时间</td>
+	<td><?=$html->tagErrorMsg($mn . '/first_dispatch_type', '已过该商品收单期，不允许选择本周为首次配送期');?><?=$html->selectTag($mn.'/first_dispatch_type', array_diff($FIRST_DISPATCH_TYPE, array('*'=>'不限')))?></td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>订单备注</td>
+	<td>
+	    <?=$html->textarea($mn.'/notes', array('rows'=>'6', 'cols'=>70))?>
+	</td>
+    </tr>
+    <?php endif;?>
+    <?php if($id):?>
+    <tr class="bg_0">
+	<td nowrap>用户定制配送时间</td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/customed_next_dispatch_time', '下次配送时间无效(请选择比今天晚的星期天)');?>
+	    <?=$html->tagErrorMsg($mn . '/customed_next_dispatch_time_pass', '已过本次收单期，请选择下一个周末！');?>
+	    <?=$html->input($mn.'/customed_next_dispatch_time')?></td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>用户定制配送数量</td>
+	<td><?=$html->tagErrorMsg($mn . '/customed_next_dispatch_num', '此数量无效');?><?=$html->input($mn.'/customed_next_dispatch_num')?></td>
+    </tr>
+    <?php endif?>
+    <tr class="tableHeader">
+	<td></td>
+	<td colspan="3">
+	    <?=$html->tagErrorMsg($mn . '/shop_id', '系统找不到商城ID，请重新选择商品后提交！');?>
+	    <?=$html->tagErrorMsg($mn . '/order_id', '该订单不存在！');?>
+
+	    <?php if(!$id):?>
+	    <!--<?=$html->hidden($mn.'/status', array('value'=>3))?>-->
+	    <?=$html->hidden($mn.'/pay_type', array('value'=>1))?>
+	    <?=$html->hidden($mn.'/order_source', array('value'=>2))?>
+	    <?=$html->hidden($mn.'/last_action_source', array('value'=>0))?>
+	    <?php else:?>
+		<!--无论是否添加成功都会创造order_id，因此不能信赖model的主键-->
+		<?=$html->hidden($mn.'/order_id', array('value'=>$id))?>
+	    <?php endif;?>
+
+	    <input type="button" name="back" value=" 返回 " onclick="window.history.back()" style="cursor:hand" />
+	    <input type="reset" name="reset" value=" 重置 " style="cursor:hand">
+	    <input type="submit" name="submit" value=" 提交并返回列表页 " style="cursor:hand" />
+	    <!--<input type="submit" name="submit_batch" value=" 提交并继续创建子订单 " style="cursor:hand" />-->
+    </tr>
+</table>
+</form>
+
+<script>
+
+    $('#OrderInfoCommodityId').change(function(){
+	displayShouldPayed();
+    })
+
+    $('#OrderInfoOrderNum').keyup(function(){
+	displayShouldPayed();
+    })
+
+    $('input').each(function(){
+	$(this).attr('autocomplete', 'off');
+    })
+
+    $('#OrderInfoCustomedNextDispatchTime').datepicker({dateFormat:'yy-mm-dd'});
+
+    function displayShouldPayed(){
+
+	commodity_id = $('#OrderInfoCommodityId').val();
+	order_num = $('#OrderInfoOrderNum').val();
+
+	if(commodity_id && order_num){
+	    $.ajax({
+		url: "/Order/ajaxCountShouldPayed/"+commodity_id+"/"+order_num+"?debug=false",
+		type: "get",
+		dataType: "json"
+	    }).done(function(e) {
+
+		$('#OrderInfoShouldPayed').val(e.message);
+		$('.OrderInfoShouldPayed').html(e.message);
+	    });
+	}
+    }
+</script>

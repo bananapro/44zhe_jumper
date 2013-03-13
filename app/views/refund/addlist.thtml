@@ -1,0 +1,112 @@
+<form name="searchform" method="get" action="/<?=$cn?>/addlist">
+    <table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+	<tr class="tableHeader">
+	    <td colspan="13">查找待退款订单</td>
+	</tr>
+	<tr class="bg_0">
+	    <td width="6%">用户编号</td>
+	    <td width="20%">
+		<?=$html->input($mn.'/userid', array('size'=>30))?>
+	    </td>
+	     <td width="6%">订单号</td>
+	    <td width="20%">
+		<?=$html->input($mn.'/order_id', array('size'=>30))?>
+	    </td>
+	    <td></td>
+	    <td align="center" width="20%"><input type="button" value="清除条件" onclick="window.location.href='/Refund/addlist'"/> &nbsp; <?=$html->submit('提交')?></td>
+	</tr>
+    </table>
+</form>
+<? if(count($results)):?>
+<?=$this->renderElement('pagination',$paging); ?>
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+	<?php
+	$pagination->setPaging($paging);
+	$th = array(
+	array($pagination ->sortBy('order_id', '订单号#') => array('nowrap'=>'nowrap', 'width'=>'15%')),
+	array('状态' => array('nowrap'=>'nowrap', 'width'=>'5%')),
+	array('用户编号' => array('nowrap'=>'nowrap', 'width'=>'12%')),
+	array('实付' => array('nowrap'=>'nowrap', 'width'=>'7%')),
+	array('商品ID' => array('nowrap'=>'nowrap', 'width'=>'7%')),
+	'退款信息',
+	array('退款金额' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	array('创建时间' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	array('退货操作' => array('width'=>'7%','nowrap'=>'nowrap')),
+	);
+
+	$enable_add = $myuser->checkPermission(REFUND, REFUND_ADD);
+
+	echo $html->tableHeaders($th, array('class' => 'tableHeader'));
+	foreach ($results as $o){
+
+	if($o['pay_type'] == 1 && $o['status']>2){
+	    $cash_type = $CASH_TYPE[$o['cash_type']];
+	    if($o['cash_type'] == 1){
+		$cash_type = "<a href='javascript:void(0)' onclick='alert(\"POS流水号: {$o['pos_no']}\")'>{$cash_type}</a>";
+	    }
+	}else{
+	    $cash_type = '';
+	}
+
+	//修改
+	$edit = '';
+	if($enable_add && ($o['status']==2 || $o['status']==3)){
+	    $edit = '<input type="submit" value="提交申请" style="cursor: pointer" />';
+	}
+
+	if($o['refund']>0){
+	    $has_refund = 'true';
+	    $content = '<div style="white-space:nowrap; text-align:left">退款原因：<br /><textarea id="reason_'.$o['order_id'].'" name="reason" rows="4" cols="70"></textarea><br />退款帐号名：<br /><input id="account_name_'.$o['order_id'].'" name="account_name" type="text" size="67"/><br />退款开户行：<br /><input id="account_bank_'.$o['order_id'].'" name="account_bank" type="text" size="67"/><br />退款帐号：<br /><input id="account_no_'.$o['order_id'].'" name="account_no" type="text" size="67"/></div>';
+	}else{
+	    $has_refund = 'false';
+	    $content = '<div style="white-space:nowrap; text-align:left">退款原因：<br /><textarea id="reason_'.$o['order_id'].'" name="reason" rows="4" cols="70"></textarea></div>';
+	}
+
+	$tr = array(
+	    '<div style="white-space:nowrap; text-align:center"><a href="javascript:void(0)" onclick="alert(\'批量订单ID：'.$o['batch_order_sign'].'\')">'.$o['order_id'].'</a></div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$ORDER_STATUS[$o['status']].'</div>',
+	    '<div style="white-space:nowrap; text-align:center"><a href="javascript:void(0)" onclick="alert(\'用户电话：'.$o['user_tel'].'    用户名：'.@$o['username']. '\n\n地址：'.@$o['address'].'\')">'.$o['userid'].'</a></div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$o['payed'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center"><a href="javascript:void(0)" onclick="alert(\'商品名称：'.$o['commodity_name'].'      商品价格：'.$o['commodity_price'].'元\')">'.$o['commodity_id'].'</a></div>',
+	    $content,
+	    $o['refund'],
+	    '<div style="white-space:nowrap; text-align:center">'.$global->humanDate(strtotime($o['insert_time'])).'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.@$edit.'</div>'
+	);
+	echo '<form id="form_'.$o['order_id'].'" method="post" onsubmit="return checkinput(\''.$o['order_id'].'\', '.$has_refund.')" action="/'.$cn.'/add/'.$o['order_id'].'">'.$html->tableCells($tr, array('class'=>'bg_0'),array('class'=>'bg_1')).'</form>';
+	}
+
+	$pagination->setPaging($paging);
+	?>
+    </form></table>
+<?=$this->renderElement('pagination',$paging); ?>
+<? else: ?>
+<br />
+<strong> 找不到任何相匹配的订单或还未有任何订单！</strong><br /><br />
+<? endif?>
+<script>
+function checkinput(order_id, refund){
+
+    if(!$('#reason_'+order_id).val()){
+	alert('请填写退货原因！');
+	return false;
+    }
+
+    if(refund){
+	if(!$('#account_name_'+order_id).val()){
+	    alert('请填写退款帐户名！');
+	    return false;
+	}
+	if(!$('#account_bank_'+order_id).val()){
+	    alert('请填写退款开户行！');
+	    return false;
+	}
+	if(!$('#account_no_'+order_id).val()){
+	    alert('请填写退款帐号！');
+	    return false;
+	}
+    }
+
+    return true;
+}
+</script>

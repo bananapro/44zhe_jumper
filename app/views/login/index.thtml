@@ -1,0 +1,23 @@
+<SCRIPT LANGUAGE=JAVASCRIPT>
+
+    if (top.location !== self.location) {
+	top.location=self.location;
+    }
+</SCRIPT>
+
+<form action='/Login' id='login' method="post">
+    <h1><img src='/img/common/logo.png'/></h1>
+    <fieldset id="inputs">
+        <input id="name" name='data[Admin][name]' type="text" size="25"  placeholder="帐号" value="<?=isset($_COOKIE['admin_name'])?$_COOKIE['admin_name']:null?>" autofocus required autocomplete="off">
+        <input id="password" name='data[Admin][password]' type="password" size="25" placeholder="帐号密码" required>
+    </fieldset>
+    <fieldset id="actions">
+        <span><?php echo $html->tagErrorMsg('Admin/name', '用户名或密码错误', 0)?$html->tagErrorMsg('Admin/name', '用户名或密码错误', 0):''?></span>
+
+        <input id="submit" type="submit" id="submit" value="登陆系统">
+    </fieldset>
+</form>
+
+<script>
+    document.getElementById('AdminName').focus();
+</script>

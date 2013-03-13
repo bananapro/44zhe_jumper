@@ -1,0 +1,161 @@
+<style>
+    td{text-align: left}
+</style>
+<script>
+    function process_data(theform) {
+        return true;
+    }
+</script>
+<?=$html->formTag('/'.$cn.'/edit/'.$id, 'post', array('id'=>'editForm', 'name'=>'editForm' , 'onSubmit'=>'return process_data(this);'))?>
+
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+    <tr class="tableHeader">
+	<td colspan="4">编辑/添加 - 积分订单，带 <font color="#FF0000">*</font> 为必填</td>
+    </tr>
+    <!--
+    <tr class="bg_0">
+	<td nowrap>主订单号</td>
+	<td>
+	    <?=$html->input($mn.'/batch_order_sign', array('value'=>(@$_GET['batch_order_sign']?$_GET['batch_order_sign']:null), 'size'=>'35'))?>
+	    (留空系统会自动生成新主订单号)
+	</td>
+    </tr>
+    -->
+    <tr class="bg_0">
+	<td nowrap>商品 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/commodity_accumulate', '该商品积分存在问题，请先处理');?>
+	    <?=$html->selectTag($mn.'/commodity_id', $all_commodity_options)?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>用户No(与电话必填一项) <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/store_id', '找不到该用户所属门店');?>
+	    <?=$html->tagErrorMsg($mn . '/userid_empty', '用户No与电话必填一项');?>
+	    <?=$html->tagErrorMsg($mn . '/userid', '找不到指定用户');?>
+	    <?=$html->input($mn.'/userid')?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>用户电话(与用户No必填一项) <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/usertel', '找不到指定用户');?>
+	    <?=$html->input($mn.'/usertel')?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>预订数量 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/order_num', '预订数量必须大于0');?>
+	    <?=$html->input($mn.'/order_num')?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>用户积分</td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/user_accumulate', '用户积分不足');?>
+	    <?=$html->tagErrorMsg($mn . '/user_accumulate_reduce', '系统扣除用户积分失败');?>
+	    <?=$html->hidden($mn.'/user_accumulate')?>
+	    <span class="AccumulatesShopOrderUserAccumulate"><?=@$this->data[$mn]['user_accumulate']?></span>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>应付积分</td>
+	<td>
+	    <?=$html->hidden($mn.'/should_payed')?>
+	    <span class="OrderInfoShouldPayed"><?=@$this->data[$mn]['should_payed']?></span>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>实付积分 <font color="#FF0000">*</font></td>
+	<td><?=$html->tagErrorMsg($mn . '/payed', '实付积分不能小于应付积分');?>
+	    <?=$html->input($mn.'/payed')?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>订单备注</td>
+	<td>
+	    <?=$html->textarea($mn.'/notes', array('rows'=>'6', 'cols'=>70))?>
+	</td>
+    </tr>
+    <tr class="tableHeader">
+	<td></td>
+	<td colspan="3">
+	    <?=$html->tagErrorMsg($mn . '/shop_id', '系统找不到商城ID，请重新选择商品后提交！');?>
+	    <!--无论是否添加成功都会创造order_id，因此不能信赖model的主键-->
+	    <?=$html->hidden($mn.'/order_id', array('value'=>intval($id)))?>
+	    <?=$html->hidden($mn.'/shop_id')?>
+	    <!-- 当新增order时，默认的userid就是后台的ID -->
+	    <?php if(!$id):?>
+	    <?=$html->hidden($mn.'/status', array('value'=>3))?>
+	    <?=$html->hidden($mn.'/pay_type', array('value'=>2))?>
+	    <?=$html->hidden($mn.'/deliver_type', array('value'=>1))?>
+	    <?php endif;?>
+
+	    <input type="button" name="back" value=" 返回 " onclick="window.history.back()" style="cursor:hand" />
+	    <input type="reset" name="reset" value=" 重置 " style="cursor:hand">
+	    <input type="submit" name="submit" value=" 提交并返回列表页 " style="cursor:hand" />
+	    <!--<input type="submit" name="submit_batch" value=" 提交并继续创建子订单 " style="cursor:hand" />-->
+    </tr>
+</table>
+</form>
+
+<script>
+
+    $('#AccumulatesShopOrderCommodityId').change(function(){
+	displayShouldPayed();
+    })
+
+    $('#AccumulatesShopOrderOrderNum').keyup(function(){
+	displayShouldPayed();
+    })
+
+    $('#AccumulatesShopOrderUserid').keyup(function(){
+	displayUserAccumulate($('#AccumulatesShopOrderUserid').val());
+	$('#AccumulatesShopOrderUsertel').val('');
+    })
+
+    $('#AccumulatesShopOrderUsertel').keyup(function(){
+	displayUserAccumulate($('#AccumulatesShopOrderUsertel').val());
+	$('#AccumulatesShopOrderUserid').val('');
+    })
+
+    $('input').each(function(){
+	$(this).attr('autocomplete', 'off');
+    })
+
+    function displayShouldPayed(){
+
+	commodity_id = $('#AccumulatesShopOrderCommodityId').val();
+	order_num = $('#AccumulatesShopOrderOrderNum').val();
+
+	if(commodity_id && order_num){
+	    $.ajax({
+		url: "/OrderAccumulate/ajaxCountShouldPayed/"+commodity_id+"/"+order_num+"?debug=false",
+		type: "get",
+		dataType: "json"
+	    }).done(function(e) {
+
+		$('#OrderInfoShouldPayed').val(e.message);
+		$('.$.ajaxOrderInfoShouldPayed').html(e.message);
+	    });
+	}
+    }
+
+    function displayUserAccumulate(key){
+
+	if(key){
+	    $.ajax({
+		url: "/OrderAccumulate/ajaxUserAccumulate/"+key+"?debug=false",
+		type: "get",
+		dataType: "json"
+	    }).done(function(e) {
+
+		$('#AccumulatesShopOrderUserAccumulate').val(e.message);
+		$('.AccumulatesShopOrderUserAccumulate').html(e.message);
+	    });
+	}
+
+    }
+</script>

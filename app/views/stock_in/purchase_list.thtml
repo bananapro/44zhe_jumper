@@ -1,0 +1,49 @@
+<? if(count($results)):?>
+<?=$this->renderElement('pagination',$paging); ?>
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder"><form method="POST" onsubmit="return false;">
+	<?php
+	$pagination->setPaging($paging);
+	$th = array(
+	    array($pagination ->sortBy('id', '采购单ID#') => array('nowrap'=>'nowrap', 'width'=>'7%')),
+	    array('状态' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	    array('采购详情' => array('nowrap'=>'nowrap', 'width'=>'30%')),
+	    '备注',
+	    array('采购员' => array('nowrap'=>'nowrap', 'width'=>'7%')),
+	    array('插入时间' => array('nowrap'=>'nowrap', 'width'=>'11%')),
+	    array('最后更新' => array('nowrap'=>'nowrap', 'width'=>'11%')),
+	    array('操作' => array('width'=>'5%','nowrap'=>'nowrap'))
+	);
+
+	$enable_edit = $myuser->checkPermission(STOCK, STOCK_IN_EDIT);
+
+	echo $html->tableHeaders($th, array('class' => 'tableHeader'));
+	foreach ($results as $o){
+
+	$edit = '';
+	if($enable_edit)
+	    $edit = $html->link($html->image('little/auto_draw.gif'), '/'.$cn.'/edit?purchase_sheet_id='.$o[$mn]['id'], array('title'=>'增加入仓记录'));
+
+	$tr = array(
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['id'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$PURCHASE_STATUS[$o[$mn]['status']].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.implode('<br />', $o[$mn]['detail']).'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['notes'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['owner'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$global->humanDate(strtotime($o[$mn]['insert_time'])).'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$global->humanDate(strtotime($o[$mn]['ts'])).'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$edit.'</div>'
+	);
+	    echo $html->tableCells($tr, array('class'=>'bg_0'),array('class'=>'bg_1'));
+	}
+
+	$pagination->setPaging($paging);
+	?>
+    </form></table>
+<?=$this->renderElement('pagination',$paging); ?>
+<? else: ?>
+<br />
+<strong> 找不到任何相匹配的数据！</strong><br /><br />
+<? endif?>
+<script>
+    JT_init();
+</script>

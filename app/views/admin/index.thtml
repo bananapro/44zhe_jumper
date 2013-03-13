@@ -1,0 +1,107 @@
+
+<script type="text/javascript">
+    <!--
+    function process_data()
+    {
+        //var name = document.getElementById('AdminName') ;
+        //var truename = document.getElementById('AdminTruename') ;
+        //if (!name.value && !truename.value)
+        //{
+	//alert('请输入搜索关键字！');
+	//return false;
+        //}
+    }
+    //-->
+</script>
+
+<!-- 搜索 start -->
+<form name="searchform" method="get" action="/<?=$cn?>/index" onsubmit="return process_data();">
+    <table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder tdleft">
+	<tr class="tableHeader">
+	    <td colspan="7">查找管理员</td>
+	</tr>
+	<tr class="bg_0">
+	    <td width="10%" nowrap="nowrap">
+		管理员真实姓名                        </td>
+	    <td width="15%" nowrap="nowrap">
+		<?php echo $html->input($mn.'/name', array('size'=>20)); ?>                        </td>
+	    <td width="10%" nowrap="nowrap">
+		管理员登陆名称                        </td>
+	    <td width="15%" nowrap="nowrap">
+		<?php echo $html->input($mn.'/truename', array('size'=>20)); ?>                        </td>
+	    <td width="10%" nowrap="nowrap">
+		管理员角色                        </td>
+	    <td width="15%" nowrap="nowrap">
+		<?php
+		$full_roles['*'] = '不限';
+		foreach ($roles as $key => $value)
+		$full_roles[$key] = $value;
+		echo $html->selectTag($mn.'/role_id', $full_roles);
+		?>                        </td>
+	    <td align="center" nowrap="nowrap">
+		<?=$html->submit('查找用户', array('style'=>'cursor:hand')); ?></td>
+	</tr>
+    </table>
+</form>
+<!-- 搜索 end -->
+
+<!-- 列表 start -->
+<?php if (count($results)): ?>
+<?php echo $this->renderElement('pagination', $paging); ?>
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+    <?php
+    //pr($results);
+    $pagination->setPaging($paging);
+    $th = array(
+    array($pagination ->sortBy('id', 'id#') => array('width'=>'5%')),
+    array($pagination ->sortBy('truename', '真实姓名') => array('width'=>'8%')),
+    array($pagination ->sortBy('name', '用户名') => array('width'=>'8%')),
+    array('电话' => array('width'=>'8%')),
+    array('角色' => array('width'=>'8%')),
+    array('门店设置' => array('width'=>'18%')),
+    $pagination ->sortBy('comment', '备注'),
+    array($pagination ->sortBy('createdate', '添加时间') => array('width'=>'15%')),
+    array('操作' => array('width'=>'8%'))
+    );
+    echo $html->tableHeaders($th, array('class' => 'tableHeader'));
+    foreach ($results as $member)
+    {
+    $tr = array(
+    '<b>' . $member[$mn]['id'] . '</b>',
+    ''.$member[$mn]['truename'],
+    ''.$member[$mn]['name'],
+    ''.$member[$mn]['tel'],
+    '<a href="/Admin/index?data[Admin][role_id]=' . $member[$mn]['role_id'] . '">' . $roles[$member[$mn]['role_id']] . '</a>',
+    $html->selectTag('Admin/store_id'.$member[$mn]['id'], $all_stores, $member[$mn]['store_id']) . '<input type="button" onclick="setStore('.$member[$mn]['id'].')" value="设置">',
+    empty($member[$mn]['comment'])?'&nbsp;':$member[$mn]['comment'],
+    $global->humanDate($member[$mn]['createdate']),
+    $html->link($html->image('edit.gif'), '/' . $cn . '/edit/' . $member[$mn]['id'], array('title'=>'编辑')) . ' ' .
+    $html->link($html->image('delete.gif'), '/' . $cn . '/delete/' . $member[$mn]['id'], array('title'=>'删除'), '你确定要删除吗？')
+    );
+    echo $html->tableCells($tr, array('class'=>'bg_0'), array('class'=>'bg_1'));
+    }
+    $pagination->setPaging($paging);
+    ?>
+</table>
+<?php echo $this->renderElement('pagination', $paging); ?>
+<?php else: ?>
+<br /><strong>找不到任何相匹配的管理员或还未添加任何管理员！</strong>
+<?php endif; ?>
+<!-- 列表 end -->
+<script>
+
+    function setStore(admin_id){
+	$.ajax({
+	    url: "/Admin/ajaxSetStore/"+admin_id+"/"+$('#AdminStoreId'+admin_id).val()+"?debug=false",
+	    type: "get",
+	    dataType: "json"
+	}).done(function(e) {
+
+	    if(e.status ==1){
+		alert(e.message);
+	    }else{
+		alert(e.message);
+	    }
+	});
+    }
+</script>

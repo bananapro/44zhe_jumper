@@ -1,0 +1,86 @@
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+    <tr class="tableHeader tdleft">
+	<td colspan="5">基本信息</td>
+    </tr>
+    <tr class="bg_0">
+	<td colspan="2">
+	    <div style="text-align:center; margin-top:5px; height:40px;">
+		<h3><strong><?=$myuser->getName()?></strong> , 欢迎进入管理后台！</h3>
+	    </div>
+	</td>
+    </tr>
+
+    <tr class="bg_1">
+	<td width="15%" align="center">
+	    <b>订单总览</b>
+	</td>
+	<td>
+	    &nbsp;&nbsp;&nbsp;&nbsp;
+	</td>
+    </tr>
+
+    <tr class="bg_1">
+	<td align="center">
+	    <b>采购总览</b>
+	</td>
+	<td>
+	    &nbsp;
+	</td>
+    </tr>
+    <tr class="bg_1">
+	<td align="center">
+	    <b>财务总览</b>
+	</td>
+	<td>
+	    &nbsp;
+	</td>
+    </tr>
+    <tr class="bg_1">
+	<td align="center">
+	    <b>入仓总览</b>
+	</td>
+	<td>
+	    &nbsp;
+	</td>
+    </tr>
+    <tr class="bg_1">
+	<td align="center">
+	    <b>库存总览</b>
+	</td>
+	<td>
+	    &nbsp;
+	</td>
+    </tr>
+    <tr class="bg_1">
+	<td align="center">
+	    <b>分拣总览</b>
+	</td>
+	<td>
+	    &nbsp;
+	</td>
+    </tr>
+    <tr class="bg_1">
+	<td align="center">
+	    <b>运输总览</b>
+	</td>
+	<td>
+	    &nbsp;
+	</td>
+    </tr>
+    <tr class="bg_1">
+	<td align="center">
+	    <b>派送总览</b>
+	</td>
+	<td>
+	    &nbsp;
+	</td>
+    </tr>
+    <tr class="bg_1">
+	<td align="center">
+	    <b>会员总览</b>
+	</td>
+	<td>
+	    &nbsp;
+	</td>
+    </tr>
+</table>

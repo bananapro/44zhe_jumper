@@ -1,0 +1,69 @@
+<? if(count($results)):?>
+<?=$this->renderElement('pagination',$paging); ?>
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder"><form method="POST" onsubmit="return false;">
+	<?php
+	$pagination->setPaging($paging);
+	$th = array(
+	    array($pagination ->sortBy('id', '采购单') => array('nowrap'=>'nowrap', 'width'=>'5%')),
+	    array('状态' => array('nowrap'=>'nowrap', 'width'=>'6%')),
+	    array('采购详情' => array('nowrap'=>'nowrap', 'width'=>'25%')),
+	    array('总计金额' => array('nowrap'=>'nowrap', 'width'=>'6%')),
+	    '备注',
+	     array('驳回原因' => array('nowrap'=>'nowrap', 'width'=>'5%')),
+	    array('采购员' => array('nowrap'=>'nowrap', 'width'=>'5%')),
+	    array('支付详情' => array('nowrap'=>'nowrap', 'width'=>'5%')),
+	    array('插入时间' => array('nowrap'=>'nowrap', 'width'=>'9%')),
+	    //array('最后更新' => array('nowrap'=>'nowrap', 'width'=>'9%')),
+	    array('操作' => array('width'=>'5%','nowrap'=>'nowrap'))
+	);
+
+	$enable_edit = $myuser->checkPermission(PURCHASE, PURCHASE_EDIT);
+	$enable_review = $myuser->checkPermission(PURCHASE, PURCHASE_REVIEW);
+
+	echo $html->tableHeaders($th, array('class' => 'tableHeader'));
+	foreach ($results as $o){
+
+	$edit = '';
+	//店员可以废除自己的订单
+
+	if($enable_edit && $o[$mn]['owner']==$myuser->getID() && $o[$mn]['status']==0)
+	    $edit[] = $html->link($html->image('close.gif'), '/'.$cn.'/status/'.$o[$mn]['id'].'/10', array('title'=>'废除'));
+
+	if($enable_review && $o[$mn]['status']==0){
+	    $edit[] = $html->link($html->image('forbid.gif'), '/'.$cn.'/status/'.$o[$mn]['id'].'/11', array('title'=>'不通过'));
+	    if($o[$mn]['status'] == 0)$edit[] = $html->link($html->image('ok.gif'), '/'.$cn.'/status/'.$o[$mn]['id'].'/1', array('title'=>'通过'));
+	}
+
+	if($edit)$edit = implode(' ', $edit);
+	if($o[$mn]['status'] == 2)
+	    $display_jtip = '<a id="jtip_'.$o[$mn]['id'].'" href="/Finance/ajaxFinanceSheet/'.$o[$mn]['id'].'?width=600&debug=false" class="jTip" name="财务单状态明细">明细</a>';
+	else
+	    $display_jtip = '';
+
+	$tr = array(
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['id'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$PURCHASE_STATUS[$o[$mn]['status']].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['detail'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center"><b>'.$o[$mn]['total_price'].'</b></div>',
+	    '<div style="text-align:center; word-break:break-all">'.$o[$mn]['notes'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['reason'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['owner_name'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$display_jtip.'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$global->humanDate(strtotime($o[$mn]['insert_time'])).'</div>',
+	    //'<div style="white-space:nowrap; text-align:center">'.$global->humanDate(strtotime($o[$mn]['ts'])).'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$edit.'</div>'
+	);
+	    echo $html->tableCells($tr, array('class'=>'bg_0'),array('class'=>'bg_1'));
+	}
+
+	$pagination->setPaging($paging);
+	?>
+    </form></table>
+<?=$this->renderElement('pagination',$paging); ?>
+<? else: ?>
+<br />
+<strong> 找不到任何相匹配的待入仓采购单！</strong><br /><br />
+<? endif?>
+<script>
+    JT_init();
+</script>

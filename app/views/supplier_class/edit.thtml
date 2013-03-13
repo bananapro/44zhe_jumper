@@ -1,0 +1,69 @@
+<style>
+    td{text-align: left}
+</style>
+<script>
+    function process_data(theform) {
+        return true;
+    }
+</script>
+<?=$html->formTag('/'.$cn.'/edit/'.$id, 'post', array('id'=>'editForm', 'name'=>'editForm' , 'onSubmit'=>'return process_data(this);'))?>
+
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+    <tr class="tableHeader">
+	<td colspan="4">编辑/添加 - 品类供应商，带 <font color="#FF0000">*</font> 为必填</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>品类选择</td>
+	<td>
+	    <?php if(!$id):?>
+	    <?=$html->tagErrorMsg($mn . '/existed', '该品类和供应商的对应关系已经存在！');?>
+	    <?=$html->selectTag($mn.'/class_id', $class_options)?>
+	    <?php else:?>
+	    <?=$this->data[$mn]['class_name']?>
+	    <?php endif;?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>供应商选择</td>
+	<td>
+	    <?php if(!$id):?>
+	    <?=$html->selectTag($mn.'/supplier_id', $supplier_options)?>
+	    <?php else:?>
+	    <?=$this->data[$mn]['supplier_name']?>
+	    <?php endif;?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>价格梯度</td>
+	<td>
+	    <?=$html->input($mn.'/price_list')?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>最大供应量</td>
+	<td>
+	    <?=$html->input($mn.'/max_supply')?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>供应期</td>
+	<td>
+	    <?=$html->input($mn.'/supply_start')?> 至 <?=$html->input($mn.'/supply_end')?>
+	</td>
+    </tr>
+
+    <tr class="tableHeader">
+	<td></td>
+	<td colspan="3">
+	    <?=$html->hidden($mn.'/id')?>
+	    <input type="button" name="back" value=" 返回 " onclick="window.history.back()" style="cursor:hand" />
+	    <input type="reset" name="reset" value=" 重置 " style="cursor:hand">
+	    <input type="submit" name="submit" value=" 提交并返回列表页 " style="cursor:hand" />
+    </tr>
+</table>
+</form>
+<script>
+
+    $('#Supplier2classSupplyStart').datepicker({dateFormat:'yy-mm-dd'});
+    $('#Supplier2classSupplyEnd').datepicker({dateFormat:'yy-mm-dd'});
+</script>

@@ -1,0 +1,37 @@
+<style>
+    td{text-align: left}
+</style>
+<script>
+    function process_data(theform) {
+        return true;
+    }
+</script>
+<?=$html->formTag('/'.$cn.'/edit/'.$id, 'post', array('id'=>'editForm', 'name'=>'editForm' , 'onSubmit'=>'return process_data(this);'))?>
+
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+    <tr class="tableHeader">
+	<td colspan="4">编辑/添加 - 普通商城商品，带 <font color="#FF0000">*</font> 为必填</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>基础商品 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/commodity_basic_id', '该商品已在普通商城上架');?>
+	    <?=$html->selectTag($mn.'/commodity_basic_id', $all_commodity)?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>上下架</td>
+	<td>
+	    <?=$html->selectTag($mn.'/commodity_flag', array_diff($COMMODITY_FLAG, array('*'=>'不限')))?>
+	</td>
+    </tr>
+    <tr class="tableHeader">
+	<td></td>
+	<td colspan="3">
+	    <?=$html->hidden($mn.'/ccs_commodity_id')?>
+	    <input type="button" name="back" value=" 返回 " onclick="window.history.back()" style="cursor:hand" />
+	    <input type="reset" name="reset" value=" 重置 " style="cursor:hand">
+	    <input type="submit" name="submit" value=" 提交 " style="cursor:hand" />
+    </tr>
+</table>
+</form>

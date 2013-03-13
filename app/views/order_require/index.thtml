@@ -1,0 +1,63 @@
+<form name="searchform" method="get" action="/OrderRequire/">
+    <table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+	<tr class="tableHeader">
+	    <td colspan="13">门店预定单需求统计</td>
+	</tr>
+	<tr class="bg_0">
+	    <td width="8%">门店</td>
+	    <td width="28%">
+		<?=$html->selectTag('OrderRequire/store_id', $store_options)?>
+	    </td>
+	    <td>执行日期</td>
+		<td>
+		<?=$html->input("OrderRequire/execute_date", array('readonly'=>'readonly', 'style'=>'cursor:pointer','onclick'=>"MyCalendar.SetDate(this)", 'onchange'=>"change_date()"))?>
+		</td>
+	    <td>
+		<?=$html->submit('查看')?></td>
+		</td>
+	</tr>
+    </table>
+</form>
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+<tr>
+	<th rowspan="2" class="tableHeader">商品名称</th>
+	<th rowspan="2" class="tableHeader">商品单位</th>
+	<th rowspan="2" class="tableHeader">订单总需求</th>
+	<th rowspan="2" class="tableHeader">网银未付</th>
+	<th rowspan="2" class="tableHeader">门店补仓</th>
+	<th colspan="5" class="tableHeader">用户实际需求</th>
+</tr>
+<tr>
+	<th class="tableHeader">需求总量</th>
+	<th class="tableHeader">中心仓</th>
+	<th class="tableHeader">分拣完成</th>
+	<th class="tableHeader">门店现存</th>
+	<th class="tableHeader">配送完成</th>
+</tr>
+
+<?php
+	foreach ($results as $idx => $reporter)
+	{
+		$tr = array(
+			'<div style="white-space:nowrap; text-align:center">'.$reporter['commodity_name']."(".$idx.")".'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.$reporter['unit'].'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.$reporter['total'].'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.$reporter['unpayed'].'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.$reporter['stock'].'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.($reporter['total'] - (isset($reporter['unpayed'])?$reporter['unpayed']:0) - (isset($reporter['stock'])?$reporter['stock']:0)).'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.$reporter['unprocess'].'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.$reporter['pickuped'].'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.$reporter['shipped'].'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.$reporter['complete'].'</div>'
+		);
+
+		echo $html->tableCells($tr, array('class'=>'bg_0'),array('class'=>'bg_1'));
+	}
+?>
+</table>
+<script>
+function change_date()
+{
+	return true;
+}
+</script>

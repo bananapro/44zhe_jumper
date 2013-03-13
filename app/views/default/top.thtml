@@ -1,0 +1,5 @@
+<!--TODO 个人信息待完成-->
+<div id="top">
+	<div id="top1" class="left">优值供后台管理平台</div>
+	<div id="top3" class="right"><a href="">个人信息待完成</a> &nbsp; <a href="/Login/logout" target="main">退出登陆</a></div>
+</div>

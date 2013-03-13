@@ -1,0 +1,24 @@
+<style>
+    td{text-align: left; font-size: 16px}
+    div{text-align: left}
+    body{margin: 2px; background: white;}
+
+</style>
+<input type="button" onclick="window.print()" style="font-size:18px" value="打印本页" /><br /><br />
+
+<table width="800px" border="0" cellspacing="1" cellpadding="3" style="border:1px solid #000">
+    <?php
+
+	$content = array();
+	$content_arr = unserialize($result['content']);
+	echo "<tr><td style='height:50px'>&nbsp;<b>目标门店： <b>{$result['store_name']}</b>&nbsp; - &nbsp;{$result['store_address']}</b></td></tr>";
+
+	$i = 1;
+	foreach($content_arr as $c){
+	    echo "<tr><td> &nbsp;&nbsp;<b>{$i}</b>、商品ID:<b>{$c['commodity_id']}</b> &nbsp; 商品：<b>{$c['commodity_name']}</b> &nbsp; 商品数量：<b>{$c['num']}</b> {$c['unit']}</td></tr>";
+	}
+
+	echo "<tr><td style='height:30px'><hr /></td></td>";
+	echo "<tr><td>&nbsp;<b>签名出处：</b></td></td>";
+    ?>
+</table>

@@ -1,0 +1,50 @@
+
+<script type="text/javascript">
+
+function process_data(){
+        var name = document.getElementById('RolesName') ;
+        if (name.value == ''){
+                alert('请填写角色名称！');
+                name.focus();
+                return false;
+        }
+}
+</script>
+
+<?php echo $html->formTag('/' . $cn . '/edit', 'post', array('id'=>'editForm', 'name'=>'editForm', 'onSubmit'=>'return process_data();')); ?>
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+        <tr class="tableHeader">
+                <td colspan="2">添加/修改角色，带 <font color="#FF0000">*</font> 为必填</td>
+        </tr>
+        <tr class="bg_0">
+                <td width="15%" nowrap>角色名称<font color="#FF0000">*</font></td>
+                <td>
+                        <?php
+                        echo isset($same_name)?'<div class="error_message">↓↓角色名称已经存在↓↓</div>':'';
+                        echo $html->tagErrorMsg($mn . '/name', '角色名称不能为空');
+                        echo $html->input($mn . '/name', array('size'=>53));
+                        ?>
+                </td>
+        </tr>
+	<?php
+		foreach ($P_GROUP as $group_id => $group_name){
+
+			$tr = array(
+				$group_name,
+				$html->selectTag('permission/'.$group_id, $PERMISSIONS[$group_id], isset($this->data['permission'][$group_id])?$this->data['permission'][$group_id]:null, array('multiple'=>true, 'name'=>'data[permission]['.$group_id.']', 'style'=>'width:300px', 'size'=>count($PERMISSIONS[$group_id])))
+			);
+			echo $html->tableCells($tr, array('class'=>'bg_0'), array('class'=>'bg_1'));
+		}
+	?>
+        <tr align="center" class="tableHeader">
+                <td colspan="2">
+					<input type="button" name="back" value=" 返回 " style="cursor:hand" onclick="window.location.href='/Role/index'">
+                    <input type="reset" value=" 重置 " style="cursor:hand">
+					<?php
+					echo $html->hidden($mn . '/id');
+					echo $html->submit(' 提交 ', array('style'=>'cursor:hand'));
+					?>
+                </td>
+        </tr>
+</table>
+</form>

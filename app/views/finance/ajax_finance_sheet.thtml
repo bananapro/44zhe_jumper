@@ -1,0 +1,38 @@
+<table width='<?=($_GET['width']-20)?>' class='activityDetailsTbl'>
+    <tr>
+	<th>状态</th>
+	<th>品类</th>
+	<th>金额</th>
+	<th>比例</th>
+	<th>帐期</th>
+	<th>供应商</th>
+	<th>最后更新</th>
+    </tr>
+    <?php foreach($results as $s):?>
+    <?php
+	//未支付且帐期为0，说明需要马上支付
+	if($s[$mn]['status'] == 0 && $s[$mn]['pay_day']==0){
+	    $s[$mn]['pay_day'] = '<font color="red">请尽快支付</font>';
+
+	//未支付且有帐期，但支付日期未开始
+	}elseif($s[$mn]['status'] == 0 && $s[$mn]['pay_day']>0 && strtotime($s[$mn]['begin_pay_day'])<=0){
+	    $s[$mn]['pay_day'] = '<b> -- -- </b>';
+	}else{
+	    $s[$mn]['pay_day'] = '<b>'.$global->humanDate(strtotime($s[$mn]['begin_pay_day'])+$s[$mn]['pay_day']*24*3600, 1).'</b>';
+	}
+
+	//已支付无需出现期限
+	if($s[$mn]['status'] == 1 || $s[$mn]['status'] == 2)
+	    $s[$mn]['pay_day'] = '<b> -- -- </b>';
+    ?>
+    <tr>
+	<td><?=$FINANCE_STATUS[$s[$mn]['status']]?></td>
+	<td><?=$s[$mn]['class_name']?></td>
+	<td><?=$s[$mn]['price']?></td>
+	<td><b><?=$s[$mn]['rate']?></b>%</td>
+	<td><?=$s[$mn]['pay_day']?></td>
+	<td><?=$s[$mn]['supplier_name']?></td>
+	<td><?=$global->humanDate(strtotime($s[$mn]['ts']), 1)?></td>
+    </tr>
+    <?php endforeach;?>
+</table>

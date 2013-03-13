@@ -1,0 +1,103 @@
+<style>
+    td{text-align: left}
+
+    /* css for timepicker */
+.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+.ui-timepicker-div dl { text-align: left; }
+.ui-timepicker-div dl dt { height: 25px; margin-bottom: -25px; }
+.ui-timepicker-div dl dd { margin: 0 10px 10px 65px; }
+.ui-timepicker-div td { font-size: 90%; }
+.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+
+.ui-timepicker-rtl{ direction: rtl; }
+.ui-timepicker-rtl dl { text-align: right; }
+.ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
+</style>
+<script>
+    function process_data(theform) {
+        return true;
+    }
+</script>
+<script type="text/javascript" src="/js/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="/js/jquery-ui-sliderAccess.js"></script>
+<?=$html->formTag('/'.$cn.'/edit/'.$id, 'post', array('id'=>'editForm', 'name'=>'editForm' , 'onSubmit'=>'return process_data(this);'))?>
+
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+    <tr class="tableHeader">
+	<td colspan="4">编辑/添加 - 抢购商城商品，带 <font color="#FF0000">*</font> 为必填</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>基础商品 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/commodity_basic_id', '该商品已在抢购商城上架');?>
+	    <?=$html->selectTag($mn.'/commodity_basic_id', $all_commodity)?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>抢购价格 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/commodity_price', '抢购价格必须大于等于最低处理价');?>
+	    <?=$html->input($mn.'/commodity_price')?> (元)
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>抢购有效数量 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/valid_num', '抢购有效数量必须大于0');?>
+	    <?=$html->input($mn.'/valid_num')?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>用户抢购限制</td>
+	<td>
+	    <?=$html->input($mn.'/valid_per_user')?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>抢购时间</td>
+	<td>
+	    <?=$html->input($mn.'/begin_time')?> 至 <?=$html->input($mn.'/end_time')?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>上下架</td>
+	<td>
+	    <?=$html->selectTag($mn.'/commodity_flag', array_diff($COMMODITY_FLAG, array('*'=>'不限')))?>
+	</td>
+    </tr>
+    <?php if(!$id):?>
+    <tr class="bg_0">
+	<td nowrap>门店范围</td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/store_id_selected', '请选择门店');?>
+	    <?php if($all_store):?>
+		<?=$html->selectTag($mn.'/store_id_selected', $all_store, null, array('multiple'=>true, 'style'=>'width:150px'))?>
+		<input type="button" id="select_all" value="全选门店"/>
+	    <?php else:?>
+		您无所属门店，发抢购商品资格！
+	    <?php endif;?>
+	</td>
+    </tr>
+    <?php endif?>
+    <tr class="tableHeader">
+	<td></td>
+	<td colspan="3">
+	    <?=$html->hidden($mn.'/hps_commodity_id')?>
+	    <input type="button" name="back" value=" 返回 " onclick="window.history.back()" style="cursor:hand" />
+	    <input type="reset" name="reset" value=" 重置 " style="cursor:hand">
+	    <input type="submit" name="submit" value=" 提交 " style="cursor:hand" />
+    </tr>
+</table>
+</form>
+<script>
+    $('#HotPurchaseShopBeginTime').datetimepicker({dateFormat:'yy-mm-dd', timeFormat:'HH:mm'});
+    $('#HotPurchaseShopEndTime').datetimepicker({dateFormat:'yy-mm-dd', timeFormat:'HH:mm'});
+
+
+    $('#select_all').click(function(){
+	$("#HotPurchaseShopStoreIdSelected option").each(function() {
+	    $(this).attr("selected", 'selected');
+	});
+    })
+
+</script>

@@ -1,0 +1,65 @@
+<form name="searchform" method="get" action="/CommodityClassRequire/">
+    <table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+	<tr class="tableHeader">
+	    <td colspan="13">品类缺货统计</td>
+	</tr>
+	<tr class="bg_0">
+	    <td width="8%">门店</td>
+	    <td width="28%">
+		<?=$html->selectTag('CommodityClassRequire/store_id', $store_options)?>
+	    </td>
+	    <td>执行日期</td>
+		<td>
+		<?=$html->input("CommodityClassRequire/execute_date", array('readonly'=>'readonly', 'style'=>'cursor:pointer','onclick'=>"MyCalendar.SetDate(this)", 'onchange'=>"change_date()"))?>
+		</td>
+	    <td>
+		<?=$html->submit('查看')?></td>
+		</td>
+	</tr>
+    </table>
+</form>
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+<tr>
+	<th class="tableHeader">品类名称</th>
+	<th class="tableHeader">品类单位</th>
+	<th class="tableHeader">总需求</th>
+	<th class="tableHeader">门店补仓</th>
+	<th class="tableHeader">用户实际需求</th>
+	<th class="tableHeader">仓储</th>
+	<th class="tableHeader">包装完成出仓(用户需求)</th>
+	<th class="tableHeader">正在采购</th>
+	<th class="tableHeader">缺货(用户需求)</th>
+	<th class="tableHeader">缺货(总需求)</th>
+</tr>
+
+<?php
+	foreach ($results as $idx => $reporter)
+	{
+		$lack = ((isset($reporter['user_unprocessed'])?$reporter['user_unprocessed']:0) - (isset($reporter['center_stock'])?$reporter['center_stock']:0) - (isset($reporter['purchasing'])?$reporter['purchasing']:0));
+		$all_lack = (isset($reporter['store_unprocessed'])?$reporter['store_unprocessed']:0) + $lack;
+		if($lack < 0) $lack = 0;
+		if($all_lack < 0) $all_lack = 0;
+
+		$tr = array(
+			'<div style="white-space:nowrap; text-align:center">'.$reporter['name']."(".$idx.")".'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.$reporter['unit'].'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.$reporter['total'].'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.$reporter['stock'].'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.($reporter['total'] - (isset($reporter['stock'])?$reporter['stock']:0)).'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.$reporter['center_stock'].'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.($reporter['total'] - (isset($reporter['user_unprocessed'])?$reporter['user_unprocessed']:0) - (isset($reporter['stock'])?$reporter['stock']:0)).'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.$reporter['purchasing'].'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.$lack.'</div>',
+			'<div style="white-space:nowrap; text-align:center">'.$all_lack.'</div>'
+		);
+
+		echo $html->tableCells($tr, array('class'=>'bg_0'),array('class'=>'bg_1'));
+	}
+?>
+</table>
+<script>
+function change_date()
+{
+	return true;
+}
+</script>

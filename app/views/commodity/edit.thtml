@@ -1,0 +1,203 @@
+<?=$html->css('uploadify');?>
+<?=$javascript->link('jquery.uploadify.min')?>
+<style>
+    td{text-align: left}
+</style>
+<script>
+    function process_data(theform) {
+        return true;
+    }
+</script>
+<?=$html->formTag('/'.$cn.'/edit/'.$id, 'post', array('id'=>'editForm', 'name'=>'editForm' , 'onSubmit'=>'return process_data(this);'))?>
+
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+    <tr class="tableHeader">
+	<td colspan="2">编辑/添加 - 基础商品，带 <font color="#FF0000">*</font> 为必填</td>
+    </tr>
+
+    <tr class="bg_0">
+	<td nowrap>商品ID <font color="#FF0000">*</font></td>
+	<td>
+	    <?php if(!$id):?>
+	    <?=$html->tagErrorMsg($mn . '/commodity_id', '商品ID不能为空');?>
+	    <?=$html->tagErrorMsg($mn . '/commodity_id_existed', '商品ID已经存在！');?>
+	    <?=$html->input($mn.'/commodity_id')?>
+	    <?php else:?>
+		<?=$this->data[$mn]['commodity_id']?>
+		<?=$html->hidden($mn.'/commodity_id')?>
+	    <?php endif;?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>商品名称 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/commodity_name', '商品名称不能为空');?>
+	    <?=$html->input($mn.'/commodity_name', array('size'=>80))?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>品类ID <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->selectTag($mn.'/commodity_class_id', $all_class)?>
+	</td>
+    </tr>
+    <!--
+    <tr class="bg_0">
+	<td nowrap>商品类型</td>
+	<td>
+	    <?=$html->input($mn.'/commodity_type')?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>商品配送范围</td>
+	<td>
+	    <?=$html->input($mn.'/commodity_area')?>
+	</td>
+    </tr>
+    -->
+    <tr class="bg_0">
+	<td nowrap>商品图片</td>
+	<td>
+	    <?=$html->input($mn.'/commodity_pic_url', array('size'=>70))?> <input id='file_upload' type='file' name='files'/>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>商品简介</td>
+	<td>
+	    <?=$html->textarea($mn.'/commodity_brief_desc', array('rows'=>'5', 'cols'=>50))?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>商品详情</td>
+	<td>
+	    <?=$html->textarea($mn.'/commodity_desc', array('rows'=>'10', 'cols'=>100))?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>供应期</td>
+	<td>
+	    <?=$html->input($mn.'/dispatch_begin_time')?> 至 <?=$html->input($mn.'/dispatch_end_time')?> (留空为不限)
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>收单期(周一至周日表示1-7)</td>
+	<td>
+	    <?=$html->selectTag($mn.'/dispatch_weekday_limit', $WEEK)?> (收单期后下的订单不可选择本周送货)
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>包装规格</td>
+	<td>
+	    <?=$html->tagErrorMsg($mn2 . '/mpack', '包装规格信息不能为空');?>
+	    每<?=$html->selectTag($mn2.'/commodity_unit', $UNIT)?> <?=$html->input($mn2.'/commodity_pack_num', array('size'=>5))?> <span class="commodity_pack_unit"></span>  &nbsp; 规格显示<?=$html->input($mn2.'/commodity_pack_display_name', array('size'=>15))?> (例：6个/盒/3.3斤)
+	</td>
+    </tr>
+    <tr class="tableHeader">
+	<td></td>
+	<td><input type="submit" name="submit_single" value=" 提交商品信息 " style="cursor:hand" /></td>
+    </tr>
+    <tr class="tableHeader">
+	<td colspan="2">以下内容积分商城专属商品可不填</td>
+    </tr>
+    <?php $mn2='CommodityPriceInfo'?>
+
+    <tr class="bg_0">
+	<td nowrap>比价显示信息</td>
+	<td>
+	    <?=$html->tagErrorMsg($mn2 . '/mprice', '商品市场价信息以及比价区间不能为空');?>
+	    商品市场价 <?=$html->input($mn2.'/commodity_market_price', array('size'=>5))?> 元/每<?=$html->selectTag($mn2.'/commodity_display_unit', $UNIT)?> 
+	    &nbsp;&nbsp;比价显示的价格梯度: <?=$html->input($mn2.'/commodity_display_price_section', array('size'=>40))?> 例：(1-2:10)|(3-:15)
+	    <input id="commodity_pack_unit" name="data[<?=$mn2?>][commodity_pack_unit]" type="hidden" value="" />
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>包装后</td>
+	<td>
+	    <?=$html->tagErrorMsg($mn2 . '/mafterpack', '包装后的各信息不能为空');?>
+	    <?=$html->input($mn2.'/commodity_unit_price', array('size'=>5))?> 元/每<span class="commodity_unit"></span>
+	</td>
+    </tr>
+
+    <tr class="bg_0">
+	<td nowrap>价格区间</td>
+	<td>
+	    <?=$html->tagErrorMsg($mn2 . '/msection', '价格区间不能为空');?>
+	    <?=$html->tagErrorMsg($mn2 . '/msection_error', '价格区间不正确');?>
+	    1、尝鲜价：<?=$html->input($mn2.'/section1_0', array('size'=>5))?> 至 <?=$html->input($mn2.'/section1_1', array('size'=>5))?> ： 每<span class="commodity_unit"></span><?=$html->input($mn2.'/section1_price', array('size'=>5))?> 元<br />
+	    2、直供价：<?=$html->input($mn2.'/section2_0', array('size'=>5))?> 至 <?=$html->input($mn2.'/section2_1', array('size'=>5))?> ： 每<span class="commodity_unit"></span><?=$html->input($mn2.'/section2_price', array('size'=>5))?> 元
+	</td>
+    </tr>
+
+    <tr class="bg_0">
+	<td nowrap>商品返积分规则</td>
+	<td>
+	    <?=$html->input($mn2.'/commodity_accumulates_section', array('size'=>40))?> 例：(1-2:10)|(3-5:15)|(6-:25)
+	</td>
+    </tr>
+
+    <tr class="bg_0">
+	<td nowrap>处理价</td>
+	<td>
+	    <?=$html->tagErrorMsg($mn2 . '/mlow', '处理价不能为空');?>
+	    <?=$html->input($mn2.'/commodity_unit_lowprice', array('size'=>5))?>元/每<span class="commodity_unit"></span>
+	</td>
+    </tr>
+
+    <tr class="tableHeader">
+	<td></td>
+	<td colspan="3">
+	    <input type="button" name="back" value=" 返回 " onclick="window.history.back()" style="cursor:hand" />
+	    <input type="reset" name="reset" value=" 重置 " style="cursor:hand">
+	    <input type="submit" name="submit_all" value=" 提交 " style="cursor:hand" />
+    </tr>
+</table>
+</form>
+<script>
+    $('#file_upload').uploadify({
+	'multi'	    : false,
+	'width'        : 70,
+	'height'        : 20,
+	'buttonText'	    : '上传图片',
+	'swf'		    :'/js/uploadify.swf',
+	'uploader'	    :'/Uploader/upload?debug=false',
+	'removeCompleted'   : true,
+	'removeTimeout'	    : 0,
+	'onUploadSuccess' : function(file,data,response) {
+	    if(data == 'empty'){
+		alert('上传队列为空');
+	    }else{
+		$("#CommodityBasicInfoCommodityPicUrl").val(data);
+	    }
+
+	},
+	'onUploadError' : function(file, errorCode, errorMsg, errorString) {
+	    alert('The file ' + file.name + ' could not be uploaded: ' + errorString);
+	}
+    });
+
+
+    $('#CommodityBasicInfoDispatchBeginTime').datepicker({dateFormat:'yy-mm-dd'});
+    $('#CommodityBasicInfoDispatchEndTime').datepicker({dateFormat:'yy-mm-dd'});
+
+    $('.commodity_pack_unit').html($('#CommodityPriceInfoCommodityPackUnit').val());
+
+
+    $('.commodity_unit').html($('#CommodityPriceInfoCommodityUnit').val());
+    $('#CommodityPriceInfoCommodityUnit').change(function(){
+	$('.commodity_unit').html($(this).val());
+    })
+
+    var cl = [];
+    <?php foreach($all_class_unit as $class_id => $class_unit):?>
+    cl[<?=$class_id?>] = '<?=$class_unit?>';
+    <?php endforeach?>
+
+
+    $('.commodity_pack_unit').html(cl[$('#CommodityBasicInfoCommodityClassId').val()]);
+    $('#commodity_pack_unit').val(cl[$('#CommodityBasicInfoCommodityClassId').val()]);
+    $('#CommodityBasicInfoCommodityClassId').change(function(){
+         unit = $('#CommodityBasicInfoCommodityClassId').val();
+	 $('.commodity_pack_unit').html(cl[unit]);
+	 $('#commodity_pack_unit').val(cl[unit]);
+    })
+</script>

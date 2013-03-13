@@ -1,0 +1,264 @@
+<form name="searchform" method="get" action="/<?=$cn?>">
+    <table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+	<tr class="tableHeader">
+	    <td colspan="13">查找执行订单</td>
+	</tr>
+	<tr class="bg_0">
+	    <td width="5%">用户ID</td>
+	    <td width="15%">
+		<?=$html->input($mn.'/userid', array('size'=>30))?>
+	    </td>
+	    <td width="5%">源订单号</td>
+	    <td width="15%">
+		<?=$html->input($mn.'/order_id', array('size'=>30))?>
+	    </td>
+	    <td width="5%">订单状态</td>
+	    <td width="10%">
+		<?=$html->selectTag($mn.'/status', $EXECUTE_STATUS)?>
+	    </td>
+	    <td width="13%">
+		<?=$html->checkbox($mn.'/do_not_display_complete_status')?> <label for="OrderExecuteDoNotDisplayCompleteStatus">不显示已完成订单</label>
+	    </td>
+	    <td></td>
+	    <td width="15%" align="center"><input type="button" value="清除条件" onclick="window.location.href='/<?=$mn?>'"/> &nbsp; <?=$html->submit('提交')?></td>
+	</tr>
+    </table>
+</form>
+<? if(count($results)):?>
+<?=$this->renderElement('pagination',$paging); ?>
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder"><form method="POST" onsubmit="return false;">
+	<?php
+	$pagination->setPaging($paging);
+	$th = array(
+	array('ID#' => array('nowrap'=>'nowrap', 'width'=>'4%')),
+//	array('来源' => array('nowrap'=>'nowrap', 'width'=>'5%')),
+	array('来源ID' => array('nowrap'=>'nowrap', 'width'=>'5%')),
+	array('用户ID' => array('nowrap'=>'nowrap', 'width'=>'10%')),
+	array('姓名' => array('nowrap'=>'nowrap', 'width'=>'5%')),
+	array('电话' => array('nowrap'=>'nowrap', 'width'=>'10%')),
+	array('提货' => array('nowrap'=>'nowrap', 'width'=>'5%')),
+	array('当前状态' => array('nowrap'=>'nowrap', 'width'=>'7%')),
+	array('商品ID' => array('nowrap'=>'nowrap', 'width'=>'6%')),
+	array('商品名' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	array('数量' => array('nowrap'=>'nowrap', 'width'=>'3%')),
+	array($pagination ->sortBy('execute_date', '执行期限#') => array('nowrap'=>'nowrap', 'width'=>'5%')),
+	//array('创建时间' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	array($pagination ->sortBy('ts', '最后更新#') => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	array('操作' => array('width'=>'7%','nowrap'=>'nowrap'))
+	);
+
+	$enable_edit = $myuser->checkPermission(ORDER, ORDER_EXECUTE_EDIT);
+
+	echo $html->tableHeaders($th, array('class' => 'tableHeader'));
+	foreach ($results as $o){
+
+	$edit = array();
+	if($enable_edit && $o[$mn]['status']==4)$edit[] = '<a href="javascript:void(0)" onclick="selfDeal('.$o[$mn]['id'].')">入门店仓</a>';
+	if($enable_edit && $o[$mn]['status']==4 && $o[$mn]['no_receiver'] == 0)$edit[] = '<a href="javascript:void(0)" onclick="selfReceive('.$o[$mn]['id'].')">自提</a>';
+//	if($enable_edit && $o[$mn]['status']==4)$edit[] = '<a href="javascript:void(0)" onclick="delay('.$o[$mn]['id'].')">延期</a>';
+	$edit = implode(' &nbsp;', $edit);
+
+	if($o[$mn]['no_receiver']==0)
+	{
+		$deliver_type = $DELIVER_TYPE[$o[$mn]['deliver_type']];
+	}
+	else {
+		$deliver_type = '无主';
+	}
+
+	$last_update_time = "<a href='javascript:void(0)' onclick=\"alert('操作员： {$o[$mn]['owner_name']}')\">{$global->humanDate(strtotime($o[$mn]['ts']))}</a>";
+
+	$tr = array(
+	'<div style="white-space:nowrap; text-align:center">'.$o[$mn]['id'].'</div>',
+//	'<div style="white-space:nowrap; text-align:center">'.$ORDER_FROM[$o[$mn]['order_from']].'</div>',
+	'<div style="white-space:nowrap; text-align:center">'.$o[$mn]['order_id'].'</div>',
+	'<div style="white-space:nowrap; text-align:center">'.$o[$mn]['userid'].'</div>',
+	'<div style="white-space:nowrap; text-align:center">'.$o[$mn]['receiver'].'</div>',
+	'<div style="white-space:nowrap; text-align:center">'.$o[$mn]['user_tel'].'</div>',
+	'<div style="white-space:nowrap; text-align:center">'.$deliver_type.'</div>',
+	'<div id="status_'.$o[$mn]['id'].'" style="white-space:nowrap; text-align:center">'.$EXECUTE_STATUS[$o[$mn]['status']].'</div>',
+	'<div style="white-space:nowrap; text-align:center">'.$o[$mn]['commodity_id'].'</div>',
+	'<div style="white-space:nowrap; text-align:center">'.$o[$mn]['commodity_name'].'</div>',
+	'<div style="white-space:nowrap; text-align:center">'.$o[$mn]['dispatch_num'].'</div>',
+	'<div style="white-space:nowrap; text-align:center">'.$o[$mn]['execute_date'].'</div>',
+	//'<div style="white-space:nowrap; text-align:center">'.$global->humanDate(strtotime($o[$mn]['insert_time'])).'</div>',
+	'<div style="white-space:nowrap; text-align:center">'.$last_update_time.'</div>',
+	'<div id="edit_'.$o[$mn]['id'].'" style="white-space:nowrap; text-align:center">'.$edit.'</div>'
+	);
+	echo $html->tableCells($tr, array('class'=>'bg_0'),array('class'=>'bg_1'));
+	}
+
+	$pagination->setPaging($paging);
+	?>
+    </form></table>
+<?=$this->renderElement('pagination',$paging); ?>
+<? else: ?>
+<br />
+<strong> 找不到任何相匹配的订单或还未有任何订单！</strong><br /><br />
+<? endif?>
+<!--div style="text-align: left"><input type="button" value="生成执行订单(上线后会转定时触发)" onclick="window.location.href='/OrderExecute/build'" style="cursor:pointer"/></div-->
+<div style="text-align: left"><input type="button" value="生成执行订单" onclick="window.location.href='/OrderExecute/new_build'" style="cursor:pointer"/></div>
+
+<div id="cash_div" style="text-align: left; display: none">
+    <form id="cash_form">
+	<input type="hidden" id="order_id" value="">
+	该订单需要支付<b><span id="price"></span></b>，支付方式：<br /><br />
+	<input id="radio_cash" type="radio" name="cash_type" value="0"/> <label for="radio_cash">现金支付</label> &nbsp; &nbsp;
+	<input id="radio_pos" type="radio" name="cash_type" value="1"/> <label for="radio_pos">POS机支付</label><br /><br />
+	POS流水号：<input id="pos_no" type="input" name="pos_no" value="" size="20"/><br /><br />
+	<input type="button" onclick="doReceive()" value='提交现金方式' style="cursor:pointer" />
+    </form>
+</div>
+
+<div id="deal_reason_div" style="display:none">
+    <input id="deal_id" type="hidden" value=""/>
+    <textarea id="deal_reason" name="refuse_reason" style="width:250px; height:100px; border: 1px solid #333333"></textarea>
+    <input type="button" value="提交原因" onclick="doSelfDeal()" style="cursor: pointer"/>
+</div>
+
+<div id="delay_div" style="display:none; text-align: left">
+    <input id="delay_id" type="hidden" value=""/>
+    (下次配送的周日) <input id="next_dispatch_time" name="next_dispatch_time" type="text" value="" style="width: 100px"/> &nbsp;
+    <input type="button" value="提交延期" onclick="doDelay()" style="cursor: pointer"/>
+</div>
+
+<script>
+
+    $('#next_dispatch_time').datepicker({dateFormat:'yy-mm-dd'});
+
+    function selfReceive(execute_order_id){
+	//判断原订单是否待支付(支付方式1&&状态2)，如果是弹出现金类型选择框，选择pos必须填入流水
+	$.ajax({
+	    url: "/<?=$mn?>/ajaxCheckShouldReceiveMoney/"+execute_order_id+"/?debug=false",
+	    type: "get",
+	    dataType: "json"
+	}).done(function(e) {
+	    //需要收到现金
+	    if(e.message > 0){
+		$('#price').html(e.message);
+		$('#radio_cash').attr('checked', 'checked');
+		$('#order_id').val(execute_order_id);
+		$('#cash_div').dialog(
+		{
+		    height: 180,
+		    width: 380,
+		    modal: true,
+		    resizable: false
+		});
+	    }else{//不需要收现金
+		$.ajax({
+		    url: "/<?=$mn?>/ajaxStatus/"+execute_order_id+"/7?debug=false",
+		    type: "get",
+		    dataType: "json"
+		}).done(function(e) {
+		    if(e.status==1){
+			$('#edit_'+execute_order_id).html('');
+			$('#status_'+execute_order_id).html('用户自提');
+		    }else{
+			alert(e.message);
+		    }
+		});
+	    }
+	});
+	
+	
+    }
+
+    function delay(execute_order_id){
+
+	$('#delay_id').val(execute_order_id);
+	$('#delay_div').dialog(
+	{
+	    height: 180,
+	    width: 380,
+	    modal: true,
+	    resizable: false
+	});
+    }
+
+    function doDelay(){
+
+	execute_order_id = $('#delay_id').val();
+	next_dispatch_time = $('#next_dispatch_time').val();
+	if(!next_dispatch_time){
+	    alert('请选择正确的周末');
+	    return;
+	}
+
+	$.ajax({
+	    url: "/<?=$mn?>/ajaxDelay/"+execute_order_id+"?debug=false",
+	    type: "get",
+	    dataType: "json",
+	    data: "next_dispatch_time="+next_dispatch_time
+
+	}).done(function(e) {
+	    if(e.status==1){
+		$('#edit_'+execute_order_id).html('');
+		$('#status_'+execute_order_id).html('已延期！');
+		$('#delay_div').dialog("close");
+	    }else{
+		alert(e.message);
+	    }
+	});
+    }
+
+    function doReceive(){
+
+	if($('#radio_pos').is(':checked') && !$('#pos_no').val()){
+	    alert('请填写POS机流水号!');
+	    return;
+	}
+
+	$.ajax({
+	    url: "/<?=$mn?>/ajaxStatus/"+$('#order_id').val()+"/7?debug=false",
+	    type: "get",
+	    dataType: "json",
+	    data: "cash_type="+$("input[name='cash_type']:checked").val()+"&pos_no="+$('#pos_no').val()
+
+	}).done(function(e) {
+	    if(e.status==1){
+		$('#edit_'+$('#order_id').val()).html('');
+		$('#status_'+$('#order_id').val()).html('用户自提');
+		$('#cash_div').dialog("close");
+	    }else{
+		alert(e.message);
+	    }
+	});
+    }
+
+    function selfDeal(execute_order_id){
+
+	$('#deal_id').val(execute_order_id);
+	$('#deal_reason').val('');
+	$('#deal_reason_div').dialog(
+	{
+	    height: 180,
+	    width: 280,
+	    modal: true,
+	    resizable: false
+	});
+    }
+
+    function doSelfDeal(){
+
+	if(!$('#deal_reason').val()){
+	    alert('请填写自处理方式！');
+	    return;
+	}
+	$('#deal_reason_div').dialog("close");
+	$.ajax({
+	    url: "/<?=$mn?>/ajaxStatus/"+$('#deal_id').val()+"/6?debug=false",
+	    type: "post",
+	    dataType: "json",
+	    data: "reason="+$('#deal_reason').val()
+
+	}).done(function(e) {
+	    if(e.status==1){
+		$('#edit_'+$('#deal_id').val()).html('');
+		$('#status_'+$('#deal_id').val()).html('门店自处理');
+	    }else{
+		alert(e.message);
+	    }
+	});
+    }
+</script>

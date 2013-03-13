@@ -1,0 +1,52 @@
+<? if(count($results)):?>
+<?=$this->renderElement('pagination',$paging); ?>
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder"><form method="POST" onsubmit="return false;">
+	<?php
+	$pagination->setPaging($paging);
+	$th = array(
+	    //array($pagination ->sortBy('ccs_commodity_id', 'ID#') => array('nowrap'=>'nowrap', 'width'=>'5%')),
+	    array('品类ID' => array('nowrap'=>'nowrap', 'width'=>'5%')),
+	    array('品类名称' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	    array('实际需求' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	    array('损耗比例' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	    array('当前库存' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	    array('缺货总量' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	    array('正在采购量' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	    array('仍有缺货量' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+//	    array('供应商' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	    array('最后更新' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	    //array('操作' => array('width'=>'7%','nowrap'=>'nowrap'))
+	);
+
+	$enable_edit = $myuser->checkPermission(ORDER, ORDER_SITE_EDIT);
+
+	echo $html->tableHeaders($th, array('class' => 'tableHeader'));
+	foreach ($results as $o){
+
+	$edit = '';
+	//if($enable_edit)$edit = $html->link($html->image('edit.gif'), '/'.$cn.'/edit/'.$o[$mn]['class_id'], array('title'=>'修改'));
+	$tr = array(
+	    //'<div style="white-space:nowrap; text-align:center">'.$o[$mn]['id'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['class_id'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['class_name'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['require'].'【'.$o[$mn]['unit'].'】'.'</div>',
+	    '<div style="white-space:nowrap; text-align:center"><b>'.$o[$mn]['loss_rate'].'</b>%</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.intval($o[$mn]['stock']).'【'.$o[$mn]['unit'].'】'.'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['lack'].'【'.$o[$mn]['unit'].'】'.'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['purchase_num'].'【'.$o[$mn]['unit'].'】'.'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.max(0, $o[$mn]['lack']-$o[$mn]['purchase_num']).'【'.$o[$mn]['unit'].'】'.'</div>',
+//	    '<div style="white-space:nowrap; text-align:center"><a href="javascript:void(0)" onclick="alert(\'稍后可以查看供应商详情\')">'.$o[$mn]['supplier_name'].'</a></div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$global->humanDate(strtotime($o[$mn]['ts'])).'</div>',
+	    //'<div style="white-space:nowrap; text-align:center">'.$edit.'</div>'
+	);
+	    echo $html->tableCells($tr, array('class'=>'bg_0'),array('class'=>'bg_1'));
+	}
+
+	$pagination->setPaging($paging);
+	?>
+    </form></table>
+<?=$this->renderElement('pagination',$paging); ?>
+<? else: ?>
+<br />
+<strong> 找不到任何相匹配的数据！</strong><br /><br />
+<? endif?>

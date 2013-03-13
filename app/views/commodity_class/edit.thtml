@@ -1,0 +1,84 @@
+<style>
+    td{text-align: left}
+</style>
+<script>
+    function process_data(theform) {
+        return true;
+    }
+</script>
+<?=$html->formTag('/'.$cn.'/edit/'.$id, 'post', array('id'=>'editForm', 'name'=>'editForm' , 'onSubmit'=>'return process_data(this);'))?>
+
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+    <tr class="tableHeader">
+	<td colspan="4">编辑/添加 - 品类，带 <font color="#FF0000">*</font> 为必填</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>品类ID <font color="#FF0000">*</font></td>
+	<td>
+	    <?php if(!$id):?>
+	    <?=$html->tagErrorMsg($mn . '/class_id', '品类ID不能为空');?>
+	    <?=$html->tagErrorMsg($mn . '/class_id_existed', '品类ID已经存在！');?>
+	    <?=$html->input($mn.'/class_id')?>
+	    <?php else:?>
+		<?=$this->data[$mn]['class_id']?>
+		<?=$html->hidden($mn.'/class_id')?>
+	    <?php endif;?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>品类名称 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/name', '品类名称不能为空');?>
+	    <?=$html->input($mn.'/name', array('size'=>40))?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>品类类型 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->selectTag($mn.'/type', array_diff($CLASS_TYPE, array('*'=>'不限')))?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>品类单位 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/unit_convert_factor', '修改品类单位后要填写前后单位的转换比例');?>
+	    <?=$html->selectTag($mn.'/unit', array_diff($CLASS_UNIT, array('*'=>'不限')))?>
+	    &nbsp;=&nbsp;<input id="unit_convert_factor" name="data[<?=$mn?>][unit_convert_factor]" value="" />
+	    <?=$html->input($mn.'/old_unit', array('size'=>1,'readonly'=>'readonly'))?>
+	</td>
+    </tr>
+    <!--
+    <tr class="bg_0">
+	<td nowrap>供应商 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/supplier', '请选择供应商');?>
+	    <?php foreach($all_suppliers as $supplier):?>
+	    <input type="checkbox" name="supplier[]" value="<?=$supplier['id']?>" <?php if(array_search($supplier['id'], $selected_supplier_ids)!==false)echo 'checked=checked'?>/> <?=$supplier['name']?> &nbsp;
+	    <?php endforeach;?>
+	</td>
+    </tr>
+    -->
+    <tr class="bg_0">
+	<td nowrap>损耗百分比 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/loss_rate', '请确保损耗比在0-100之间');?>
+	    <?=$html->input($mn.'/loss_rate')?> (0-100)
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>描述</td>
+	<td>
+	    <?=$html->textarea($mn.'/notes', array('rows'=>'6', 'cols'=>70))?>
+	</td>
+    </tr>
+
+    <tr class="tableHeader">
+	<td></td>
+	<td colspan="3">
+	    <!--?=$html->hidden($mn.'/class_id')?-->
+	    <input type="button" name="back" value=" 返回 " onclick="window.history.back()" style="cursor:hand" />
+	    <input type="reset" name="reset" value=" 重置 " style="cursor:hand">
+	    <input type="submit" name="submit" value=" 提交 " style="cursor:hand" />
+    </tr>
+</table>
+</form>

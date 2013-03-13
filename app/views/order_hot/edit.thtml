@@ -1,0 +1,140 @@
+<style>
+    td{text-align: left}
+</style>
+<script>
+    function process_data(theform) {
+        return true;
+    }
+</script>
+<?=$html->formTag('/'.$cn.'/edit/'.$id, 'post', array('id'=>'editForm', 'name'=>'editForm' , 'onSubmit'=>'return process_data(this);'))?>
+
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder">
+    <tr class="tableHeader">
+	<td colspan="4">编辑/添加 - 抢购订单，带 <font color="#FF0000">*</font> 为必填</td>
+    </tr>
+    <!--
+    <tr class="bg_0">
+	<td nowrap>主订单号</td>
+	<td>
+	    <?=$html->input($mn.'/batch_order_sign', array('value'=>(@$_GET['batch_order_sign']?$_GET['batch_order_sign']:null), 'size'=>'35'))?>
+	    (留空系统会自动生成新主订单号)
+	</td>
+    </tr>
+    -->
+    <tr class="bg_0">
+	<td nowrap>商品 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/hps_commodity_id', '不能提交没有商品的订单！');?>
+	    <?=$html->selectTag($mn.'/hps_commodity_id', $all_commodity_options)?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>用户No(与电话必填一项) <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/store_id', '找不到该用户所属门店');?>
+	    <?=$html->tagErrorMsg($mn . '/userid_empty', '用户No与电话必填一项');?>
+	    <?=$html->tagErrorMsg($mn . '/userid', '找不到指定用户');?>
+	    <?=$html->input($mn.'/userid')?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>用户电话(与用户No必填一项) <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/usertel', '找不到指定用户');?>
+	    <?=$html->input($mn.'/usertel')?>
+	</td>
+    </tr>
+    <tr class="bg_0">
+	<td nowrap>预订数量 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/order_num', '预订数量必须大于0');?>
+	    <?=$html->tagErrorMsg($mn . '/valid_per_user', '预订数量超过了单个用户的抢购限制');?>
+	    <?=$html->tagErrorMsg($mn . '/valid_num', '预订数量超过可抢购数量');?>
+	    <?=$html->tagErrorMsg($mn . '/valid_num_reduce', '抢购商城有效抢购数扣除失败！');?>
+	    <?=$html->input($mn.'/order_num')?>
+	</td>
+    </tr>
+
+    <tr class="bg_0">
+	<td nowrap>现金支付方式</td>
+	<td>
+	    <?=$html->selectTag($mn.'/cash_type', option_diff($CASH_TYPE))?>
+	</td>
+    </tr>
+
+    <tr class="bg_0">
+	<td nowrap>POS机流水号 <font color="#FF0000">*</font></td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/pos_no', '流水号必填！');?>
+	    <?=$html->input($mn.'/pos_no')?> (现金支付为“pos”必填)
+	</td>
+    </tr>
+
+    <tr class="bg_0">
+	<td nowrap>应付金额</td>
+	<td>
+	    <?=$html->tagErrorMsg($mn . '/commodity_price', '抢购商品抢购价格错误！');?>
+	    <?=$html->hidden($mn.'/should_payed')?>
+	    <span class="HotPurchaseOrderInfoShouldPayed"><?=@$this->data[$mn]['should_payed']?></span>
+	</td>
+    </tr>
+
+    <tr class="bg_0">
+	<td nowrap>实付金额 <font color="#FF0000">*</font></td>
+	<td><?=$html->tagErrorMsg($mn . '/payed', '实付金额不能小于应付金额');?>
+	    <?=$html->input($mn.'/payed')?>
+	</td>
+    </tr>
+
+    <tr class="tableHeader">
+	<td></td>
+	<td colspan="3">
+	    <!--无论是否添加成功都会创造order_id，因此不能信赖model的主键-->
+	    <?=$html->hidden($mn.'/order_id', array('value'=>intval($id)))?>
+	    <!-- 当新增order时，默认的userid就是后台的ID -->
+	    <?php if(!$id):?>
+	    <?=$html->hidden($mn.'/status', array('value'=>3))?>
+	    <?=$html->hidden($mn.'/pay_type', array('value'=>1))?>
+	    <?=$html->hidden($mn.'/deliver_type', array('value'=>1))?>
+	    <?php endif;?>
+
+	    <input type="button" name="back" value=" 返回 " onclick="window.history.back()" style="cursor:hand" />
+	    <input type="reset" name="reset" value=" 重置 " style="cursor:hand">
+	    <input type="submit" name="submit" value=" 提交并返回列表页 " style="cursor:hand" />
+	    <!--<input type="submit" name="submit_batch" value=" 提交并继续创建子订单 " style="cursor:hand" />-->
+    </tr>
+</table>
+</form>
+
+<script>
+
+    $('#HotPurchaseOrderInfoHpsCommodityId').change(function(){
+	displayShouldPayed();
+    })
+
+    $('#HotPurchaseOrderInfoOrderNum').keyup(function(){
+	displayShouldPayed();
+    })
+
+    $('input').each(function(){
+	$(this).attr('autocomplete', 'off');
+    })
+
+    function displayShouldPayed(){
+
+	commodity_id = $('#HotPurchaseOrderInfoHpsCommodityId').val();
+	order_num = $('#HotPurchaseOrderInfoOrderNum').val();
+
+	if(commodity_id && order_num){
+	    $.ajax({
+		url: "/OrderHot/ajaxCountShouldPayed/"+commodity_id+"/"+order_num+"?debug=false",
+		type: "get",
+		dataType: "json"
+	    }).done(function(e) {
+
+		$('#HotPurchaseOrderInfoShouldPayed').val(e.message);
+		$('.HotPurchaseOrderInfoShouldPayed').html(e.message);
+	    });
+	}
+    }
+</script>

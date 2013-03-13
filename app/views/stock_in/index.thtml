@@ -1,0 +1,48 @@
+<? if(count($results)):?>
+<?=$this->renderElement('pagination',$paging); ?>
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="tableOutborder"><form method="POST" onsubmit="return false;">
+	<?php
+	$pagination->setPaging($paging);
+	$th = array(
+	    array($pagination ->sortBy('id', 'ID#') => array('nowrap'=>'nowrap', 'width'=>'5%')),
+	    array('采购单ID' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	    array('品类ID' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	    array('品类名称' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	    array('品类数量' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	    '备注',
+	    array('入仓员' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	    array('插入时间' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	    array('最后更新' => array('nowrap'=>'nowrap', 'width'=>'8%')),
+	    array('操作' => array('width'=>'7%','nowrap'=>'nowrap'))
+	);
+
+	//$enable_edit = $myuser->checkPermission(ORDER, ORDER_SITE_EDIT);
+
+	echo $html->tableHeaders($th, array('class' => 'tableHeader'));
+	foreach ($results as $o){
+
+	$edit = '';
+	//if($enable_edit)$edit = $html->link($html->image('edit.gif'), '/'.$cn.'/edit/'.$o[$mn]['id'], array('title'=>'修改'));
+	$tr = array(
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['id'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['purchase_sheet_id'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['class_id'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['class_name'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['num'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['notes'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$o[$mn]['owner'].'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$global->humanDate(strtotime($o[$mn]['insert_time'])).'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$global->humanDate(strtotime($o[$mn]['ts'])).'</div>',
+	    '<div style="white-space:nowrap; text-align:center">'.$edit.'</div>'
+	);
+	    echo $html->tableCells($tr, array('class'=>'bg_0'),array('class'=>'bg_1'));
+	}
+
+	$pagination->setPaging($paging);
+	?>
+    </form></table>
+<?=$this->renderElement('pagination',$paging); ?>
+<? else: ?>
+<br />
+<strong> 找不到任何相匹配的数据！</strong><br /><br />
+<? endif?>

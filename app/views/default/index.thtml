@@ -1,9 +1,0 @@
-<frameset cols="150,*" frameborder="no" border="0" framespacing="0" rows="*">
-	<frame name="menu" noresize scrolling="auto" src="/default/menu">
-	<frameset rows="33,*" frameborder="no" border="0" framespacing="0" cols="*">
-		<frame name="top" noresize scrolling="no" src="/default/top">
-		<frame name="main" noresize scrolling="yes" src="<?php echo $r?$r:'/default/home'?>">
-	</frameset>
-</frameset>
-
-<noframes></noframes>

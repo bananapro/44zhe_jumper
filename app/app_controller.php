@@ -23,59 +23,9 @@ class AppController extends Controller {
 	function beforeRender() {
 		parent::beforeRender();
 
-		require MYCONFIGS . 'order_status.php';
-		require MYCONFIGS . 'pay_type.php';
-		require MYCONFIGS . 'dispatch_type.php';
-		require MYCONFIGS . 'order_source.php';
-		require MYCONFIGS . 'order_from.php';
-		require MYCONFIGS . 'execute_status.php';
-		require MYCONFIGS . 'yesno.php';
-		require MYCONFIGS . 'purchase_status.php';
-		require MYCONFIGS . 'finance_status.php';
-		require MYCONFIGS . 'pickup_status.php';
-		require MYCONFIGS . 'shipping_status.php';
-		require MYCONFIGS . 'tax_code.php';
-		require MYCONFIGS . 'gender.php';
-		require MYCONFIGS . 'first_dispatch_type.php';
-		require MYCONFIGS . 'commodity_flag.php';
-		require MYCONFIGS . 'class_type.php';
-		require MYCONFIGS . 'week.php';
-		require MYCONFIGS . 'unit.php';
-		require MYCONFIGS . 'class_unit.php';
-		require MYCONFIGS . 'deliver_type.php';
-		require MYCONFIGS . 'cash_type.php';
-		require MYCONFIGS . 'commodity_type.php';
-		require MYCONFIGS . 'deliver_status.php';
-		require MYCONFIGS . 'refund_status.php';
-		require MYCONFIGS . 'dispatch_plan_status.php';
+		$this->set('YESNO', C('yesno'));
 
-		$this->set('ORDER_STATUS', $ORDER_STATUS);
-		$this->set('DISPATCH_TYPE', $DISPATCH_TYPE);
-		$this->set('PAY_TYPE', $PAY_TYPE);
-		$this->set('ORDER_SOURCE', $ORDER_SOURCE);
-		$this->set('ORDER_FROM', $ORDER_FROM);
-		$this->set('EXECUTE_STATUS', $EXECUTE_STATUS);
-		$this->set('YESNO', $YESNO);
-		$this->set('PURCHASE_STATUS', $PURCHASE_STATUS);
-		$this->set('FINANCE_STATUS', $FINANCE_STATUS);
-		$this->set('PICKUP_STATUS', $PICKUP_STATUS);
-		$this->set('SHIPPING_STATUS', $SHIPPING_STATUS);
-		$this->set('TAX_CODE', $TAX_CODE);
-		$this->set('GENDER', $GENDER);
-		$this->set('FIRST_DISPATCH_TYPE', $FIRST_DISPATCH_TYPE);
-		$this->set('COMMODITY_FLAG', $COMMODITY_FLAG);
-		$this->set('CLASS_TYPE', $CLASS_TYPE);
-		$this->set('WEEK', $WEEK);
-		$this->set('UNIT', $UNIT);
-		$this->set('CLASS_UNIT', $CLASS_UNIT);
-		$this->set('DELIVER_TYPE', $DELIVER_TYPE);
-		$this->set('CASH_TYPE', $CASH_TYPE);
-		$this->set('COMMODITY_TYPE', $COMMODITY_TYPE);
-		$this->set('DELIVER_STATUS', $DELIVER_STATUS);
-		$this->set('REFUND_STATUS', $REFUND_STATUS);
-		$this->set('DISPATCH_PLAN_STATUS', $DISPATCH_PLAN_STATUS);
-
-		$this->set('title', '优值供后台管理');
+		$this->set('title', 'jumper');
 		$this->set('myuser', $this->Myuser);
 		$this->setAjax();
 	}
@@ -114,8 +64,8 @@ class AppController extends Controller {
 	function _success($message='') {
 
 		if($message==='')$message = '操作成功!';
-		if (!DEBUG||1) {
-			if($this->isAjax()||1)
+		if (!DEBUG) {
+			if($this->isAjax())
 				echo json_encode(array('message' => $message, 'status' => 1));
 			else
 				$this->flash ($message, '/Order', 3);

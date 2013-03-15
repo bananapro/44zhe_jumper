@@ -1,0 +1,26 @@
+<?php
+    if($pass):
+?>
+$.ajax({
+    dataType: "json",
+    url: <?=$api_url?>,
+    success: function(e){
+        
+        if(e.status == 1){
+            p_title = encodeURIComponent(e.data.title);
+            p_price = e.data.price;
+            ju = encodeURIComponent(e.data.url);
+            window.location.href = 'http://jumper.44zhe.com/api/jump/<?=$shopid?>/<?=$my_user?>/<?=$p_id?>/'+p_price+'/<?=$p_fanli?>?p_title='+$p_title+'&ju='+ju;
+        }else{
+            window.location.href = '<?=$default_url?>';
+        }
+        
+    },
+    error: function(){
+        window.location.href = '<?=$default_url?>';
+    }
+    
+});
+<?php else:?>
+window.location.href = '<?=$default_url?>';
+<?php endif;?>

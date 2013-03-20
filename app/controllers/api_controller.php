@@ -3,11 +3,20 @@
 class ApiController extends AppController {
 
     var $name = 'Api';
-    var $uses = array('UserFanli', 'UserCandidate');
+    var $uses = array('UserFanli', 'UserCandidate', 'JumpStat');
     var $loginValide = false;
+    var $layout = 'ajax';
 
     function demo() {
-        die();
+
+    }
+    
+    function demoReg(){
+        
+    }
+    
+    function demoJump(){
+        
     }
 
     /**
@@ -25,7 +34,7 @@ class ApiController extends AppController {
             $rand = rand(1000, 9999);
             $username = $user['username'];
             $email = $user['email'];
-            $passsword = $user['username'] . '0000a';
+            $password = $user['username'] . '0a';
 
             //先完成普通注册任务
             if (!overlimit_day('REG_COMMON_PRE_DAY_LIMIT')) {
@@ -34,23 +43,21 @@ class ApiController extends AppController {
                 $_SESSION['reg_email'] = $user['email'];
                 $_SESSION['reg_parent'] = '';
                 $fanli_reg_url = "http://passport.51fanli.com/Reg/ajaxUserReg?jsoncallback=jQuery17203368097049601636_1363270{$rand}&useremail={$email}&username={$username}&userpassword={$password}&userpassword2={$password}&skey=&regurl=http://passport.51fanli.com/reg?action=yes&refurl=&t=" . time() . "&_=136398{$rand}";
-                echo $fanli_reg_url;
-                die();
+                $this->_success($fanli_reg_url);
             } else {
                 //完成推荐注册任务
                 if (!overlimit_day('REG_RECOMM_PRE_DAY_LIMIT')) {
 
                     //recommenduid  recommendt
                     $parent_data = $this->UserFanli->getPoolRecommender();
-                    if ($parent) {
+                    if ($parent_data) {
                         clearTableName($parent_data);
                         $parent = $parent_data['username'];
                         $_SESSION['reg_username'] = $user['username'];
                         $_SESSION['reg_email'] = $user['email'];
                         $_SESSION['reg_parent'] = $parent;
                         $fanli_reg_url = "http://passport.51fanli.com/Reg/ajaxUserReg?jsoncallback=jQuery17203368097049601636_1363270{$rand}&useremail={$email}&username={$username}&userpassword={$password}&userpassword2={$password}&skey=&recommendid2={$parent}&recommendt=4&regurl=http://passport.51fanli.com/reg?action=yes&refurl=&t=" . time() . "&_=136398{$rand}";
-                        echo $fanli_reg_url;
-                        die();
+                        $this->_success($fanli_reg_url);
                     }
                 }
             }
@@ -60,7 +67,7 @@ class ApiController extends AppController {
             //注册任务全部完成
             $this->_error('reg task complete');
         } else {
-            $this->error('can not find user candidate');
+            $this->_error('can not find user candidate');
         }
     }
 
@@ -75,13 +82,14 @@ class ApiController extends AppController {
                 $this->UserFanli->create();
                 
                 //注册用户成功 status is 10000
-                if($staus=='10000'){
+                if($status=='10000'){
                     $user = array();
                     $user['ip'] = getip();
                     $user['area'] = getAreaByIp($user['ip']);
                     $user['username'] = $_SESSION['reg_username'];
                     $user['email'] = $_SESSION['reg_email'];
                     $user['parent'] = @$_SESSION['reg_parent'];
+                    if($user['parent'])$user['role'] = 3; //被推注册默认就有角色
                     $this->UserFanli->save($user);
                     
                     //注册任务计数器计数
@@ -101,15 +109,15 @@ class ApiController extends AppController {
     /**
      * 返回跳转JS，用于获得指定返利网商品加密链接
      */
-    function getJumpUrlJs($shopid, $my_user, $p_id, $p_fanli) {
+    function getJumpUrlJs($shop, $my_user, $p_id, $p_fanli) {
         $default_url = $_GET['u'];
 
-        if ($shopid && $default_url && $my_user && C('config', 'ENABLE_JUMP')) {
-            switch ($shopid) {
-                case C('shop', 'taobao'):
+        if ($shop && $default_url && $my_user && C('config', 'ENABLE_JUMP')) {
+            switch ($shop) {
+                case 'taobao':
 
                     $this->set('shop', 'taobao');
-                    $this->set('api_url', '');
+                    $this->set('api_url', 'http://fun.51fanli.com/api/search/getItemById?pid='.$p_id.'&is_mobile=2&shoptype=2');
                     break;
 
                 default:
@@ -124,7 +132,7 @@ class ApiController extends AppController {
         $this->set('p_id', $p_id);
         $this->set('p_fanli', $p_fanli);
         $this->set('my_user', $my_user);
-        $this->set('shopid', $shopid);
+        $this->set('shop', $shop);
         $this->set('default_url', $default_url);
     }
 
@@ -137,33 +145,55 @@ class ApiController extends AppController {
      * @param type $p_price
      * @param type $p_fanli
      */
-    function jump($shopid, $my_user, $p_id, $p_price, $p_fanli) {
+    function jump($shop, $my_user, $p_id, $p_price, $p_fanli) {
 
         $jump_url = $_GET['ju'];
         $p_title = $_GET['p_title'];
 
+        if(preg_match('/go=(.+?)&tc/i', $jump_url, $match)){
+            $jump_url = $match[1];
+        }else{
+            $this->redirect(DEFAULT_ERROR_URL);
+        }
+        
+        
         //如果原价超过30，返利>0则调用被推池
-        if ($p_price > 30 && $p_fanli < 0.5 && $p_fanli > 0) {
-            $user = $this->FanliUser->getPoolSpan();
+        if ($p_price > 30 && $p_fanli < 1 && $p_fanli > 0) {
+            $user = $this->UserFanli->getPoolSpan();
             if($user){
                 //如果是被推池跳转则临时去掉被推会员，3天后加回
-                $this->FanliUser->save(array('userid'=>$user['FanliUser']['userid'], 'status'=>3, 'pause_date'=>date('Y-m-d H:i:s')));
+                $this->UserFanli->save(array('userid'=>$user['userid'], 'status'=>3, 'pause_date'=>date('Y-m-d H:i:s')));
             }
         }
 
-        if (!$user) {
-            $user = $this->FanlUiser->getPoolBig();
+        if (!@$user) {
+            $user = $this->UserFanli->getPoolBig();
         }
 
         //没有跳转源
         if (!$user) {
-            $this->redirect($this->referer());die();
+            $this->redirect(DEFAULT_ERROR_URL);
         }
         
         //封装goshop跳转地址
         $outcode = getOutCode($user['userid']);
         $jump_url = str_replace('$outcode$', $outcode, urldecode($jump_url));
-        $this->redirect('http://fun.51fanli.com/goshopapi/goout?1362054834777&id=712&go='. urlencode($jump_url) . '&fp=loading');
+        $jump_url = urlencode($jump_url);
+        
+        //记录跳转日志
+        $stat = array();
+        $stat['p_id'] = $p_id;
+        $stat['p_title'] = $p_title;
+        $stat['p_price'] = $p_price;
+        $stat['p_fanli'] = $p_fanli;
+        $stat['shop'] = $shop;
+        $stat['jumper_uid'] = $user['userid'];
+        $stat['jumper_type'] = '51fanli';
+        $stat['my_user'] = $my_user;
+        $this->JumpStat->create();
+        $this->JumpStat->save($stat);
+        
+        $this->redirect('http://fun.51fanli.com/goshopapi/goout?'.time().'&id='.C('shop', 'taobao').'&go='. $jump_url . '&fp=loading');
         
     }
 

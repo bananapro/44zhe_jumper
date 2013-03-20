@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<?=$html->charset('utf-8')?>
+<meta http-equiv="pragma" content="no-cache">
+<?=$html->css('main');?>
+<?=$javascript->link('jquery-1.7.2.min')?>
+<?=$javascript->link('common')?>
+<title><?php echo $title_for_layout;?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>
+<body style="margin:0; padding:0">
+<div class="main" style="margin:0; padding:0">
+	<?php if (isset($_SESSION['Message']['flash']) && $_SESSION['Message']['flash'])
+			{
+				if(isset($_SESSION['Message']['flash_status']) && $_SESSION['Message']['flash_status']==1){
+					$out = '<div id="flashSuccessMessage" class="message">' . $_SESSION['Message']['flash'] . '</div>';
+					unset($_SESSION['Message']['flash_status']);
+				}else{
+					$out = '<div id="flashMessage" class="message">' . $_SESSION['Message']['flash'] . '</div>';
+				}
+
+				unset($_SESSION['Message']['flash']);
+				echo $out;
+			}
+
+			echo $content_for_layout;
+	?>
+</div>
+<?=$cakeDebug?>
+</body>
+</html>

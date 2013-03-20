@@ -5,7 +5,8 @@ class User extends AppModel {
     //role (1-大额 2-推手 3-被推)
     function getPoolBig(){
         
-        $user = $this->find(array('role'=>1, 'status'=>1), '', 'rand()');
+        $area = getAreaByIp(getip());
+        $user = $this->find(array('role'=>1, 'status'=>1, 'area'=>$area), '', 'rand()');
         clearTableName($user);
         return $user;
     }

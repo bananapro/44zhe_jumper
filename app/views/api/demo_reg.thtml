@@ -1,0 +1,13 @@
+<script src="<?=DOMAIN?>/js/jquery-1.7.2.min.js"></script>
+<script src="<?=DOMAIN?>/js/reg_proxy.js"></script>
+
+<script>
+
+    function mycallback(){
+        //加入原来的注册后成功跳转代码       
+        return;
+    }
+    
+    doRegProxy();
+
+</script>

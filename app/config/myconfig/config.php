@@ -8,10 +8,10 @@
         'ENABLE_JUMP' => true,
         
         
-        //每日普通注册数限制
-        'REG_COMMON_PRE_DAY_LIMIT' => 200,
+        //每日普通注册数限制(优先完成普通任务)
+        'REG_COMMON_PRE_DAY_LIMIT' => 0,
         //每日推荐注册数限制
-        'REG_RECOMM_PRE_DAY_LIMIT' => 0,
+        'REG_RECOMM_PRE_DAY_LIMIT' => 100,
         
         //每月1号大额池筛选固定人数
         'POOL_BIG_PRE_MONTH' => 50, //总固定人数控制100

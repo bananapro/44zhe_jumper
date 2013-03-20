@@ -1,0 +1,14 @@
+<?php if (isset($_SESSION['Message']['flash']) && $_SESSION['Message']['flash'])
+		{	
+			if(isset($_SESSION['Message']['flash_status']) && $_SESSION['Message']['flash_status']==1){
+				$out = '<div id="flashSuccessMessage" class="message">' . $_SESSION['Message']['flash'] . '</div>';
+				unset($_SESSION['Message']['flash_status']);
+			}else{
+				$out = '<div id="flashMessage" class="message">' . $_SESSION['Message']['flash'] . '</div>';			
+			}
+			
+			unset($_SESSION['Message']['flash']);			
+			echo $out;
+		}
+		echo $content_for_layout;
+?>

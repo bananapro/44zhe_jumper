@@ -1,0 +1,27 @@
+<?php
+    if($pass):
+?>
+$.ajax({
+    dataType: "jsonp",
+    url: "<?=$api_url?>",
+    jsonp:"jsoncallback",
+    success: function(e){
+        
+        if(e.status == 1){
+            p_title = encodeURIComponent(e.data.title);
+            p_price = e.data.price;
+            ju = encodeURIComponent(e.data.url);
+            window.location.href = '<?=$DOMAIN?>/api/jump/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/'+p_price+'/<?=$p_fanli?>?p_title='+p_title+'&ju='+ju;
+        }else{
+            window.location.href = '<?=$default_url?>';
+        }
+        
+    },
+    error: function(){
+        window.location.href = '<?=$default_url?>';
+    }
+    
+});
+<?php else:?>
+window.location.href = '<?=$default_url?>';
+<?php endif;?>

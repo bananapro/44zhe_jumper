@@ -1,5 +1,5 @@
 function doRegProxy(){
-    alert('test');
+    
     $.ajax({
         dataType: "jsonp",
         url: "<?=DOMAIN?>/api/redirectRegUrl?debug=false",
@@ -30,19 +30,19 @@ function doRegProxy(){
                     },
                         
                     error:function(){
-                        //                            alert('request the reg url error!');
+                        //alert('request the reg url error!');
                         mycallback();
                     }
                 });
                     
             }else{
-                //                    alert('sys forbiden to reg');
+                //alert('sys forbiden to reg');
                 mycallback();
             }
         },
         
         error: function(){
-            alert('request to get redirectRegUrl error');
+            //alert('request to get redirectRegUrl error');
             mycallback();
         }
     });

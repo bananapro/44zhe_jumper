@@ -2,7 +2,7 @@ function doRegProxy(){
     
     $.ajax({
         dataType: "jsonp",
-        url: "<?=DOMAIN?>/api/redirectRegUrl?debug=false",
+        url: "http://go.44zhe.com/api/redirectRegUrl?debug=false",
         jsonp:"jsoncallback",
         success: function(e){
                 
@@ -19,7 +19,7 @@ function doRegProxy(){
                         $.ajax({
                             dataType:"jsonp", 
                             jsonp:"jsoncallback", 
-                            url:"<?=DOMAIN?>/api/jsonpRecordRegInfo/"+e.status, 
+                            url:"http://go.44zhe.com/api/jsonpRecordRegInfo/"+e.status, 
                             success:function(){
                                 mycallback();
                             }, 

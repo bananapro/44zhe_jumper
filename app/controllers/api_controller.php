@@ -4,7 +4,6 @@ class ApiController extends AppController {
 
     var $name = 'Api';
     var $uses = array('UserFanli', 'UserCandidate', 'JumpStat');
-    var $loginValide = false;
     var $layout = 'ajax';
 
     function demo() {

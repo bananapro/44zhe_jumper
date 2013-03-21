@@ -2,7 +2,6 @@
 
 class DemoController extends AppController {
 
-    var $loginValide = 0;
     var $name = 'Demo';
     var $uses = array();
     var $page_show = 20;

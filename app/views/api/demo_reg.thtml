@@ -1,5 +1,5 @@
 <script src="<?=DOMAIN?>/js/jquery-1.7.2.min.js"></script>
-<script src="<?=DOMAIN?>/js/reg_proxy.js"></script>
+<script src="<?=DOMAIN?>/js/reg_proxy.js?<?=rand(10000,200000)?>"></script>
 
 <script>
 

@@ -4,7 +4,7 @@ class AppController extends Controller {
 
     var $components = array('Pagination', 'Mytools', 'Myuser');
     var $helpers = array('Pagination', 'Javascript', 'Global', 'Ajax');
-    var $loginValide = 1;
+    var $loginValide = 0;
 
     function beforeFilter() {
         parent::beforeFilter();

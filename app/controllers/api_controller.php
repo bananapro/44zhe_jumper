@@ -7,7 +7,7 @@ class ApiController extends AppController {
     var $layout = 'ajax';
 
     function demo() {
-
+        
     }
     
     function demoReg(){

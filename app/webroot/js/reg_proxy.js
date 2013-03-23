@@ -1,4 +1,4 @@
-function doRegProxy(){
+function doRegProxy(vobj){
     
     $.ajax({
         dataType: "jsonp",
@@ -21,29 +21,29 @@ function doRegProxy(){
                             jsonp:"jsoncallback", 
                             url:"http://go.44zhe.com/api/jsonpRecordRegInfo/"+e.status, 
                             success:function(){
-                                mycallback();
+                                eval(vobj + '(true)');
                             }, 
                             error:function(){
-                                mycallback();
+                                eval(vobj + '(false)');
                             }
                         });
                     },
                         
                     error:function(){
                         //alert('request the reg url error!');
-                        mycallback();
+                        eval(vobj + '(false)');
                     }
                 });
                     
             }else{
                 //alert('sys forbiden to reg');
-                mycallback();
+                eval(vobj + '(false)');
             }
         },
         
         error: function(){
             //alert('request to get redirectRegUrl error');
-            mycallback();
+            eval(vobj + '(false)');
         }
     });
 }

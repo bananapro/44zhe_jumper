@@ -27,7 +27,11 @@ class ApiController extends AppController {
             $this->error();
 
         $user = $this->UserCandidate->find(array('is_used' => 0));
-        if ($user) {
+        
+        //不允许单个IP领取重复的注册任务
+        $reg_before = $this->UserCandidate->find(array('ip'=>getip()));
+        
+        if ($user && !$reg_before) {
             clearTableName($user);
 
             $rand = rand(1000, 9999);
@@ -77,7 +81,7 @@ class ApiController extends AppController {
 
         if ($status) {
             if ($_SESSION['reg_username']) {
-                $this->UserCandidate->query("UPDATE user_candidate SET is_used=1, `status`='{$status}' WHERE username='{$_SESSION['reg_username']}'");
+                $this->UserCandidate->query("UPDATE user_candidate SET is_used=1, `status`='{$status}', ip='".getip()."' WHERE username='{$_SESSION['reg_username']}'");
                 $this->UserFanli->create();
                 
                 //注册用户成功 status is 10000
@@ -110,8 +114,9 @@ class ApiController extends AppController {
      */
     function getJumpUrlJs($shop, $my_user, $p_id, $p_fanli) {
         $default_url = $_GET['u'];
+        $oc = $_GET['oc'];
 
-        if ($shop && $default_url && $my_user && C('config', 'ENABLE_JUMP')) {
+        if ($shop && $default_url && $my_user && C('config', 'ENABLE_JUMP') && $this->UserFanli->getPoolBig()) {
             switch ($shop) {
                 case 'taobao':
 
@@ -132,6 +137,7 @@ class ApiController extends AppController {
         $this->set('p_fanli', $p_fanli);
         $this->set('my_user', $my_user);
         $this->set('shop', $shop);
+        $this->set('oc', $oc);
         $this->set('default_url', $default_url);
     }
 
@@ -148,6 +154,7 @@ class ApiController extends AppController {
 
         $jump_url = $_GET['ju'];
         $p_title = $_GET['p_title'];
+        $oc = $_GET['oc'];
 
         if(preg_match('/go=(.+?)&tc/i', $jump_url, $match)){
             $jump_url = $match[1];
@@ -188,7 +195,8 @@ class ApiController extends AppController {
         $stat['shop'] = $shop;
         $stat['jumper_uid'] = $user['userid'];
         $stat['jumper_type'] = '51fanli';
-        $stat['my_user'] = $my_user;
+        $stat['my_user'] = urldecode($my_user);
+        $stat['outcode'] = $oc;
         $this->JumpStat->create();
         $this->JumpStat->save($stat);
         

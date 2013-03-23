@@ -1,9 +1,11 @@
-window.onload = function(){
-    var ls = location.host;
-    if(ls.indexOf('51fanli.com')>0){
-        var b = document.getElementsByTagName('body');
-        for(i in b){
-            b[i].style.display = 'none';
-        }
-    }
+var myhost = location.host;
+var myhref = location.href;
+
+if(myhost == 'fun.51fanli.com' && myhref.indexOf('goshopapi')>0){
+    
+    var b = document.getElementsByTagName('div');
+    document.getElementsByTagName('div')[0].style.display='none';
+    
 }
+
+

@@ -11,6 +11,7 @@ class AppController extends Controller {
 
         header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
         header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+        header("P3P: CP=CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR");
 
         if ($this->loginValide && !$this->Myuser->isLogin()) {
             if ($this->action == 'index' && $this->name == 'Default')
@@ -70,7 +71,7 @@ class AppController extends Controller {
         if ($message === '')
             $message = '操作成功!';
         if (!DEBUG) {
-            if ($this->isAjax()) {
+            if ($this->isAjax() || $this->isJsonp()) {
 
                 if ($this->isJsonp()) {
                     $this->_jsonpReturn($message, 1);

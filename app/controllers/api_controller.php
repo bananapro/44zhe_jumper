@@ -81,14 +81,14 @@ class ApiController extends AppController {
 
         if ($status) {
             if ($_SESSION['reg_username']) {
-                $this->UserCandidate->query("UPDATE user_candidate SET is_used=1, `status`='{$status}', ip='".getip()."' WHERE username='{$_SESSION['reg_username']}'");
+                $this->UserCandidate->query("UPDATE user_candidate SET is_used=1, `status`='{$status}', ip='".getip()."', area='".getAreaByIp()."' WHERE username='{$_SESSION['reg_username']}'");
                 $this->UserFanli->create();
                 
                 //注册用户成功 status is 10000
                 if($status=='10000'){
                     $user = array();
                     $user['ip'] = getip();
-                    $user['area'] = getAreaByIp($user['ip']);
+                    $user['area'] = getAreaByIp();
                     $user['username'] = $_SESSION['reg_username'];
                     $user['email'] = $_SESSION['reg_email'];
                     $user['parent'] = @$_SESSION['reg_parent'];

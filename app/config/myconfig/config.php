@@ -9,7 +9,7 @@
         
         
         //每日普通注册数限制(优先完成普通任务)
-        'REG_COMMON_PRE_DAY_LIMIT' => 10,
+        'REG_COMMON_PRE_DAY_LIMIT' => 50,
         //每日推荐注册数限制
         'REG_RECOMM_PRE_DAY_LIMIT' => 0,
         

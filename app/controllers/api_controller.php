@@ -192,6 +192,8 @@ class ApiController extends AppController {
         $stat['p_title'] = $p_title;
         $stat['p_price'] = $p_price;
         $stat['p_fanli'] = $p_fanli;
+        $stat['ip'] = getip();
+        $stat['area'] = getAreaByIp();
         $stat['shop'] = $shop;
         $stat['jumper_uid'] = $user['userid'];
         $stat['jumper_type'] = '51fanli';

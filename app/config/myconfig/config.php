@@ -13,7 +13,7 @@
         //每日推荐注册数限制
         'REG_RECOMM_PRE_DAY_LIMIT' => 0,
         //限制注册地
-        'REG_EXCLUDE_AREA' => array('辽宁','陕西','上海','广东','广西'),
+        'REG_EXCLUDE_AREA' => array(),
         
         //每月1号大额池筛选固定人数
         'POOL_BIG_PRE_MONTH' => 50, //总固定人数控制100

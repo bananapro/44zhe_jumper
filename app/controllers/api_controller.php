@@ -3,14 +3,15 @@
 class ApiController extends AppController {
 
     var $name = 'Api';
-    var $uses = array('UserFanli', 'UserCandidate', 'JumpStat');
+    var $uses = array('UserFanli', 'UserCandidate', 'StatJump', 'StatRegFailed');
     var $layout = 'ajax';
 
     function demo() {
         
-        //不允许当天C段IP领取重复的注册任务
-        $reg_before = $this->UserCandidate->find("ip like '".getIpByLevel('C').".%' AND ts > '".date('Y-m-d')."'", 'id');
-        pr($reg_before);die();
+        //记录失败的注册请求
+        $this->StatRegFailed->create();
+        $this->StatRegFailed->save(array('ip'=>getip(), 'area'=>getAreaByIp(), 'date'=>date('Y-m-d')));
+        die();
     }
     
     function demoReg(){
@@ -73,6 +74,10 @@ class ApiController extends AppController {
             //注册任务全部完成
             $this->_error('reg task complete');
         } else {
+            
+            //记录失败的注册请求
+            $this->StatRegFailed->create();
+            $this->StatRegFailed->save(array('ip'=>getip(), 'area'=>getAreaByIp(), 'date'=>date('Y-m-d')));
             $this->_error('can not find user candidate');
         }
     }
@@ -202,8 +207,8 @@ class ApiController extends AppController {
         $stat['jumper_type'] = '51fanli';
         $stat['my_user'] = urldecode($my_user);
         $stat['outcode'] = $oc;
-        $this->JumpStat->create();
-        $this->JumpStat->save($stat);
+        $this->StatJump->create();
+        $this->StatJump->save($stat);
         
         $this->redirect('http://fun.51fanli.com/goshopapi/goout?'.time().'&id='.C('shop', 'taobao').'&go='. $jump_url . '&fp=loading');
         

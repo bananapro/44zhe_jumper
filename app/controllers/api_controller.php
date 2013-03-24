@@ -173,7 +173,7 @@ class ApiController extends AppController {
         
         
         //如果原价超过30，返利>0则调用被推池
-        if ($p_price > 30 && $p_fanli < 1 && $p_fanli > 0) {
+        if ($p_price > 30 && $p_fanli*0.45 < 0.8 && $p_fanli > 0) {
             $user = $this->UserFanli->getPoolSpan();
             if($user){
                 //如果是被推池跳转则临时去掉被推会员，3天后加回

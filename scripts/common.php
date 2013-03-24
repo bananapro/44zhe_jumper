@@ -19,7 +19,7 @@ if (!defined('APP_DIR')) {
 
 if (!defined('CAKE_CORE_INCLUDE_PATH')) {
 
-	define('CAKE_CORE_INCLUDE_PATH', ROOT);
+	define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . '..');
 }
 
 if (!defined('WEBROOT_DIR')) {

@@ -8,6 +8,9 @@ class ApiController extends AppController {
 
     function demo() {
         
+        //不允许当天C段IP领取重复的注册任务
+        $reg_before = $this->UserCandidate->find("ip like '".getIpByLevel('C').".%' AND ts > '".date('Y-m-d')."'", 'id');
+        pr($reg_before);die();
     }
     
     function demoReg(){
@@ -28,10 +31,10 @@ class ApiController extends AppController {
 
         $user = $this->UserCandidate->find(array('is_used' => 0));
         
-        //不允许单个IP领取重复的注册任务
-        $reg_before = $this->UserCandidate->find(array('ip'=>getip()));
+        //不允许当天C段IP领取重复的注册任务
+        $reg_before = $this->UserCandidate->find("ip like '".getIpByLevel('C').".%' AND ts > '".date('Y-m-d')."'", 'id');
         
-        if ($user && !$reg_before) {
+        if ($user && !$reg_before && array_search(getAreaByIp(), C('REG_EXCLUDE_AREA'))===false) {
             clearTableName($user);
 
             $rand = rand(1000, 9999);

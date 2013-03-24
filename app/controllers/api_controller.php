@@ -120,7 +120,7 @@ class ApiController extends AppController {
     /**
      * 返回跳转JS，用于获得指定返利网商品加密链接
      */
-    function getJumpUrlJs($shop, $my_user, $p_id, $p_fanli) {
+    function getJumpUrlJs($shop, $my_user, $p_id, $p_price, $p_fanli) {
         $default_url = $_GET['u'];
         $oc = $_GET['oc'];
 
@@ -142,6 +142,7 @@ class ApiController extends AppController {
         }
 
         $this->set('p_id', $p_id);
+        $this->set('p_price', $p_price);
         $this->set('p_fanli', $p_fanli);
         $this->set('my_user', $my_user);
         $this->set('shop', $shop);

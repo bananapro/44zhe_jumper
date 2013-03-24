@@ -9,9 +9,8 @@ $.ajax({
         
         if(e.status == 1){
             p_title = encodeURIComponent(e.data.title);
-            p_price = e.data.price;
             ju = encodeURIComponent(e.data.url);
-            window.location.href = '<?=DOMAIN?>/api/jump/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/'+p_price+'/<?=$p_fanli?>?p_title='+p_title+'&ju='+ju+'&oc=<?=$oc?>';
+            window.location.href = '<?=DOMAIN?>/api/jump/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?p_title='+p_title+'&ju='+ju+'&oc=<?=$oc?>';
         }else{
             window.location.href = '<?=$default_url?>';
         }

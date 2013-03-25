@@ -70,13 +70,7 @@ function overlimit_day_incr($var) {
     return true;
 }
 
-
-/**
- * 生成outcode;
- * @param type $iUserId
- * @param type $sTc
- * @return string
- */
+//生成outcode
 function getOutCode($iUserId, $sTc = 'a4') {
     $sOC = 'A0';
     $sOC.= str_pad(substr(base_convert($iUserId, 10, 36), 0, 6), 6, '0', STR_PAD_LEFT); //6位36进制用户ID,不足前面补0
@@ -85,5 +79,44 @@ function getOutCode($iUserId, $sTc = 'a4') {
     return $sOC;
 }
 
+//识别浏览器
+function getBrowser() {
+
+    
+    if (strpos($_SERVER["HTTP_USER_AGENT"], "TheWorld") || strpos($_SERVER["HTTP_USER_AGENT"], "QIHU THEWORLD")) {
+        $browser = 'world';
+    } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "Maxthon")) {
+        $browser = 'aoyou';
+    } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "TencentTraveler")) {
+        $browser = 'telcent';
+    } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "SE 2") AND strpos($_SERVER["HTTP_USER_AGENT"], "MetaSr")) {
+        $browser = 'sogou';
+    } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "360SE") AND !strpos($_SERVER["HTTP_USER_AGENT"], "TencentTraveler")) {
+        $browser = 'qihu';
+    } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "QIHU 360EE") AND !strpos($_SERVER["HTTP_USER_AGENT"], "TencentTraveler")) {
+        $browser = 'qihu';
+    } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 9.0")) {
+        $browser = 'ie9';
+    } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 8.0")) {
+        $browser = 'ie8';
+    } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 7.0")) {
+        $browser = 'ie7';
+    } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 6.0")) {
+        $browser = 'ie6';
+    } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "Firefox")) {
+        $browser = 'firefox';
+    } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "Chrome")) {
+        $browser = 'chrome';
+    } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "Safari")) {
+        $browser = 'safari';
+    } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "iphone") || strpos($_SERVER["HTTP_USER_AGENT"], "ipad")) {
+        $browser = 'ios';
+    } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "android")) {
+        $browser = 'android';
+    } else {
+        $browser = $_SERVER["HTTP_USER_AGENT"];
+    }
+    return $browser;
+}
 
 ?>

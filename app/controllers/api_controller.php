@@ -8,9 +8,7 @@ class ApiController extends AppController {
 
     function demo() {
         
-        //记录失败的注册请求
-        $this->StatRegFailed->create();
-        $this->StatRegFailed->save(array('ip'=>getip(), 'area'=>getAreaByIp(), 'date'=>date('Y-m-d')));
+//        echo getBrowser();
         die();
     }
     
@@ -208,6 +206,7 @@ class ApiController extends AppController {
         $stat['jumper_type'] = '51fanli';
         $stat['my_user'] = urldecode($my_user);
         $stat['outcode'] = $oc;
+        $stat['client'] = getBrowser();
         $this->StatJump->create();
         $this->StatJump->save($stat);
         

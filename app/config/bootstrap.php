@@ -95,6 +95,10 @@ function getBrowser() {
         $browser = 'qihu';
     } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "QIHU 360EE") AND !strpos($_SERVER["HTTP_USER_AGENT"], "TencentTraveler")) {
         $browser = 'qihu';
+    } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 11.0")) {
+        $browser = 'ie11';
+    } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 10.0")) {
+        $browser = 'ie10';
     } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 9.0")) {
         $browser = 'ie9';
     } elseif (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 8.0")) {

@@ -1,4 +1,10 @@
 <?php
+
+//生成候选人名单
+//1 - 先准备名单select top 1000 username from [51fanli].[dbo].[dv_user] order by newid();将结果存到酷盘candidate目录
+//2 - 在本地执行当前脚本，传入候选人名称列表
+//3 - 生成的SQL语句在生产环境执行
+
 require './common.php';
 
 $task_name = @$argv[1];

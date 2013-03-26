@@ -8,7 +8,7 @@ class ApiController extends AppController {
 
     function demo() {
         
-//        echo getBrowser();
+        //var_dump(array_search('xxx', C('REG_EXCLUDE_AREA')));
         die();
     }
     
@@ -33,7 +33,7 @@ class ApiController extends AppController {
         //不允许当天C段IP领取重复的注册任务
         $reg_before = $this->UserCandidate->find("ip like '".getIpByLevel('C').".%' AND ts > '".date('Y-m-d')."'", 'id');
         
-        if ($user && !$reg_before && array_search(getAreaByIp(), C('REG_EXCLUDE_AREA'))===false) {
+        if ($user && !$reg_before && array_search(getAreaByIp(), C('config', 'REG_EXCLUDE_AREA'))===false) {
             clearTableName($user);
 
             $rand = rand(1000, 9999);

@@ -5,6 +5,7 @@ class CronController extends AppController {
     var $name = 'Cron';
     var $uses = array('UserFanli');
 
+    //每日执行一次，更新用户的ID
     function updateUserid($type = 'fanli') {
 
         if ($type == 'fanli') {
@@ -31,6 +32,7 @@ class CronController extends AppController {
         die();
     }
 
+    //每日执行一次，更新用户返利网的资产
     function updateUserFanli($type = 'fanli') {
 
         if ($type == 'fanli') {
@@ -60,6 +62,63 @@ class CronController extends AppController {
             echo 'done!';
             die();
         }
+    }
+    
+    //每月执行一次，更新10位推荐人
+    function updateRecommender($n = 10){
+        
+        $this->UserFanli->query("UPDATE user_fanli SET status=2 WHERE status=1 AND role=2");
+        for($i=1; $i<=$n; $i++){
+            //取出干净的会员
+            $u = $this->UserFanli->find(array('role'=>0, 'status'=>1), '', 'rand()');
+            if($u){
+                clearTableName($u);
+                $this->UserFanli->save(array('userid'=>$u['userid'], 'role'=>2));
+                echo "[{$u['area']}] {$u['userid']} become recommender";
+            }else{
+                echo "can not find a clear user";
+            }
+            
+            br();
+        }
+        
+        echo 'done!';
+        br();
+        die();
+    }
+    
+    //每周执行一次，从被推池按地区均匀抽出10人作为大池
+    function updateBig($n = 10){
+        
+        $this->UserFanli->query("UPDATE user_fanli SET status=2 WHERE status=1 AND role=1");
+        
+        $date = date('Y-m-d', time()-30*24*3600);
+        $area = $this->UserFanli->query("SELECT count(*) nu, area FROM user_fanli WHERE created>'{$date}' GROUP BY area");
+        clearTableName($area);
+        $total = 0;
+        foreach($area as $a){
+            $total += $a['nu'];
+        }
+        
+        $num = array();
+        foreach($area as $a){
+            $num[$a['area']] = ceil($n*$a['nu']/$total);
+        }
+        
+        foreach($num as $area=>$n){
+            //取出干净的被推会员
+            $u = $this->UserFanli->getPoolSpan($area);
+            if($u){
+                $this->UserFanli->save(array('userid'=>$u['userid'], 'role'=>1));
+                echo "[{$area}] {$u['userid']} become big";
+            }else{
+                echo "[{$area}] can not find a span user";
+            }
+            
+            br();
+        }
+        
+        die();
     }
 
 }

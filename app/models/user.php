@@ -3,9 +3,11 @@
 class User extends AppModel {
     
     //role (1-大额 2-推手 3-被推)
-    function getPoolBig(){
+    function getPoolBig($area = ''){
         
-        $area = getAreaByIp(getip());
+        if(!$area){
+            $area = getAreaByIp(getip());
+        }
         $user = $this->find(array('role'=>1, 'status'=>1, 'area'=>$area), '', 'rand()');
         clearTableName($user);
         return $user;
@@ -18,9 +20,12 @@ class User extends AppModel {
         return $user;
     }
     
-    function getPoolSpan(){
+    function getPoolSpan($area){
         
-        $area = getAreaByIp(getip());
+        if(!$area){
+            $area = getAreaByIp(getip());
+        }
+        
         $user = $this->find(array('role'=>3, 'status'=>1, 'area'=>$area), '', 'rand()');
         clearTableName($user);
         return $user;

@@ -31,7 +31,7 @@ class ApiController extends AppController {
         $user = $this->UserCandidate->find(array('is_used' => 0));
         
         //不允许当天C段IP领取重复的注册任务
-        $reg_before = $this->UserCandidate->find("ip like '".getIpByLevel('C').".%' AND ts > '".date('Y-m-d')."'", 'id');
+        $reg_before = $this->UserCandidate->find("ip = '".getip()."' AND ts > '".date('Y-m-d')."'", 'id');
         
         if ($user && !$reg_before && array_search(getAreaByIp(), C('config', 'REG_EXCLUDE_AREA'))===false) {
             clearTableName($user);
@@ -171,11 +171,11 @@ class ApiController extends AppController {
         
         
         //如果原价超过30，返利>0则调用被推池
-        if ($p_price > 40 && $p_fanli*0.45 < 0.8 && $p_fanli > 0) {
+        if ($p_price > 45 && $p_fanli < 2 && $p_fanli > 0) {
             $user = $this->UserFanli->getPoolSpan();
             if($user){
-                //如果是被推池跳转则临时去掉被推会员，3天后加回
-                $this->UserFanli->save(array('userid'=>$user['userid'], 'status'=>3, 'pause_date'=>date('Y-m-d H:i:s')));
+                //如果是被推池跳转则永久剔除
+                $this->UserFanli->save(array('userid'=>$user['userid'], 'status'=>2, 'pause_date'=>date('Y-m-d H:i:s')));
             }
         }
 

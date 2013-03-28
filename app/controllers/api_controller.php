@@ -33,6 +33,9 @@ class ApiController extends AppController {
         //不允许当天C段IP领取重复的注册任务
         $reg_before = $this->UserCandidate->find("ip = '".getip()."' AND ts > '".date('Y-m-d')."'", 'id');
         
+        if (!$user){
+            //报警
+        }
         if ($user && !$reg_before && array_search(getAreaByIp(), C('config', 'REG_EXCLUDE_AREA'))===false) {
             clearTableName($user);
 
@@ -63,6 +66,8 @@ class ApiController extends AppController {
                         $_SESSION['reg_parent'] = $parent;
                         $fanli_reg_url = "http://passport.51fanli.com/Reg/ajaxUserReg?jsoncallback=jQuery17203368097049601636_1363270{$rand}&useremail={$email}&username={$username}&userpassword={$password}&userpassword2={$password}&skey=&recommendid2={$parent}&recommendt=4&regurl=http://passport.51fanli.com/reg?action=yes&refurl=&t=" . time() . "&_=136398{$rand}";
                         $this->_success($fanli_reg_url);
+                    }else{
+                        //报警
                     }
                 }
             }
@@ -185,6 +190,12 @@ class ApiController extends AppController {
 
         //没有跳转源
         if (!$user) {
+            //使用辽宁用户做备胎并报警，此处是应缺少有关地区的大池用户
+            $user = $this->UserFanli->getPoolBig('辽宁');
+            
+        }
+        
+        if (!$user){
             $this->redirect(DEFAULT_ERROR_URL);
         }
         

@@ -90,7 +90,7 @@ class CronController extends AppController {
     //每周执行一次，从被推池按地区均匀抽出10人作为大池
     function updateBig($n = 10){
         
-        $this->UserFanli->query("UPDATE user_fanli SET status=2 WHERE status=1 AND role=1");
+        //$this->UserFanli->query("UPDATE user_fanli SET status=2 WHERE status=1 AND role=1");
         
         $date = date('Y-m-d', time()-30*24*3600);
         $area = $this->UserFanli->query("SELECT count(*) nu, area FROM user_fanli WHERE created>'{$date}' GROUP BY area");
@@ -106,16 +106,19 @@ class CronController extends AppController {
         }
         
         foreach($num as $area=>$n){
-            //取出干净的被推会员
-            $u = $this->UserFanli->getPoolSpan($area);
-            if($u){
-                $this->UserFanli->save(array('userid'=>$u['userid'], 'role'=>1));
-                echo "[{$area}] {$u['userid']} become big";
-            }else{
-                echo "[{$area}] can not find a span user";
-            }
             
-            br();
+            for($i=1; $i<=$n; $i++){
+                //取出干净的被推会员
+                $u = $this->UserFanli->getPoolSpan($area);
+                if($u){
+                    $this->UserFanli->save(array('userid'=>$u['userid'], 'role'=>1));
+                    echo "[{$area}] {$u['userid']} become big";
+                }else{
+                    echo "[{$area}] can not find a span user";
+                }
+
+                br();
+            }
         }
         
         die();

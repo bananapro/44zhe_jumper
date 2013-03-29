@@ -20,7 +20,42 @@ class ApiController extends AppController {
        
     }
     
+    /**
+     * 获取人工推荐任务
+     */
+    function getRecommendJobs($n=10){
+        
+        $total = $this->UserFanli->findCount(array('role'=>3, 'status'=>1));
+        
+        if($total - 50 <= 0){//预留50个被推
+            $this->redirect('/api/nojobs');
+        }
+        
+        if($total - 50 - $n < 0){
+            $n = $total - 50;
+        }
+        
+        $users = $this->UserFanli->findAll(array('role'=>3, 'status'=>1), '', '', $n);
+        clearTableName($users);
+        $area = array();
+        foreach ($users as $u){
+            @$area[$u['area']] += 1;
+        }
+        pr($area);
+        die();
+    }
+    
+    /**
+     * 人工处理推荐任务
+     * @param type $id
+     */
     function doRecommendTask($id=''){
+        
+        $total = $this->UserFanli->findCount(array('role'=>3, 'status'=>1));
+        if($total < 50){
+            $this->redirect('/api/nojobs');
+        }
+        
         if(!$id){
             echo 'id param can not be empty';
         }
@@ -249,21 +284,6 @@ class ApiController extends AppController {
         
         $this->redirect('http://fun.51fanli.com/goshopapi/goout?'.time().'&id='.C('shop', 'taobao').'&go='. $jump_url . '&fp=loading');
         
-    }
-    
-    /**
-     * 获取人工推荐任务
-     */
-    function getRecommendJobs(){
-        
-        $users = $this->UserFanli->findAll(array('role'=>3, 'status'=>1), '', 'rand()', 10);
-        clearTableName($users);
-        $area = array();
-        foreach ($users as $u){
-            @$area[$u['area']] += 1;
-        }
-        pr($area);
-        die();
     }
 
 }

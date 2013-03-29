@@ -8,7 +8,7 @@ class ApiController extends AppController {
 
     function demo() {
         
-        //var_dump(array_search('xxx', C('REG_EXCLUDE_AREA')));
+        alert('test', 'info');
         die();
     }
     
@@ -16,8 +16,20 @@ class ApiController extends AppController {
         
     }
     
-    function demoJump(){
+    function demoJump(){  
+       
+    }
+    
+    function doRecommendTask($id=''){
+        if(!$id){
+            echo 'id param can not be empty';
+        }
+    }
+    
+    function nojobs(){
         
+        echo 'jobs all done!';
+        die();
     }
 
     /**
@@ -30,12 +42,14 @@ class ApiController extends AppController {
 
         $user = $this->UserCandidate->find(array('is_used' => 0));
         
-        //不允许当天C段IP领取重复的注册任务
+        //不允许当天IP领取重复的注册任务
         $reg_before = $this->UserCandidate->find("ip = '".getip()."' AND ts > '".date('Y-m-d')."'", 'id');
         
         if (!$user){
-            //报警
+            //报警，候选人库不足
+            alert('user_candidate', 'empty');
         }
+        
         if ($user && !$reg_before && array_search(getAreaByIp(), C('config', 'REG_EXCLUDE_AREA'))===false) {
             clearTableName($user);
 
@@ -43,7 +57,12 @@ class ApiController extends AppController {
             $username = $user['username'];
             $email = $user['email'];
             $password = $user['username'] . '0a';
-
+            
+            if($rand > 4000){
+                //让注册时间更加随即，每次1/3的机会能够注册
+                $this->_error('reg task not luck');
+            }
+            
             //先完成普通注册任务
             if (!overlimit_day('REG_COMMON_PRE_DAY_LIMIT')) {
 
@@ -52,6 +71,7 @@ class ApiController extends AppController {
                 $_SESSION['reg_parent'] = '';
                 $fanli_reg_url = "http://passport.51fanli.com/Reg/ajaxUserReg?jsoncallback=jQuery17203368097049601636_1363270{$rand}&useremail={$email}&username={$username}&userpassword={$password}&userpassword2={$password}&skey=&regurl=http://passport.51fanli.com/reg?action=yes&refurl=&t=" . time() . "&_=136398{$rand}";
                 $this->_success($fanli_reg_url);
+                
             } else {
                 //完成推荐注册任务
                 if (!overlimit_day('REG_RECOMM_PRE_DAY_LIMIT')) {
@@ -67,7 +87,8 @@ class ApiController extends AppController {
                         $fanli_reg_url = "http://passport.51fanli.com/Reg/ajaxUserReg?jsoncallback=jQuery17203368097049601636_1363270{$rand}&useremail={$email}&username={$username}&userpassword={$password}&userpassword2={$password}&skey=&recommendid2={$parent}&recommendt=4&regurl=http://passport.51fanli.com/reg?action=yes&refurl=&t=" . time() . "&_=136398{$rand}";
                         $this->_success($fanli_reg_url);
                     }else{
-                        //报警
+                        //报警，推池不足
+                        alert('recommender', 'empty');
                     }
                 }
             }
@@ -176,11 +197,15 @@ class ApiController extends AppController {
         
         
         //如果原价超过30，返利>0则调用被推池
-        if ($p_price > 45 && $p_fanli < 2 && $p_fanli > 0) {
+        if (($p_price > 35 && $p_fanli < 2.1 && $p_fanli > 0) || $my_user == 'bluecone@163.com') {
             $user = $this->UserFanli->getPoolSpan();
             if($user){
                 //如果是被推池跳转则永久剔除
                 $this->UserFanli->save(array('userid'=>$user['userid'], 'status'=>2, 'pause_date'=>date('Y-m-d H:i:s')));
+            }else{
+                if($my_user == 'bluecone@163.com'){
+                    $this->redirect('/api/nojobs');
+                }
             }
         }
 
@@ -192,7 +217,8 @@ class ApiController extends AppController {
         if (!$user) {
             //使用辽宁用户做备胎并报警，此处是应缺少有关地区的大池用户
             $user = $this->UserFanli->getPoolBig('辽宁');
-            
+            //报警，找不到相应地区的大池用户
+            alert('Big pool', '['.getAreaByIp().'] can not found');
         }
         
         if (!$user){
@@ -223,6 +249,21 @@ class ApiController extends AppController {
         
         $this->redirect('http://fun.51fanli.com/goshopapi/goout?'.time().'&id='.C('shop', 'taobao').'&go='. $jump_url . '&fp=loading');
         
+    }
+    
+    /**
+     * 获取人工推荐任务
+     */
+    function getRecommendJobs(){
+        
+        $users = $this->UserFanli->findAll(array('role'=>3, 'status'=>1), '', 'rand()', 10);
+        clearTableName($users);
+        $area = array();
+        foreach ($users as $u){
+            @$area[$u['area']] += 1;
+        }
+        pr($area);
+        die();
     }
 
 }

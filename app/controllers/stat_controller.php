@@ -3,7 +3,7 @@
 class StatController extends AppController {
 
     var $name = 'Stat';
-    var $uses = array('UserFanli', 'StatJump', 'UserCandidate');
+    var $uses = array('UserFanli', 'StatJump', 'UserCandidate', 'Alert');
 
 
     function basic(){
@@ -39,9 +39,14 @@ class StatController extends AppController {
         
         
         //最新跳转记录
-        $last_jumps = $this->StatJump->findAll('', '', 'id DESC', 10);
+        $last_jumps = $this->StatJump->findAll('', '', 'id DESC', 15);
         clearTableName($last_jumps);
         $this->set('last_jumps', $last_jumps);
+        
+        //最新报警
+        $last_alerts = $this->Alert->findAll('', '', 'id DESC', 5);
+        clearTableName($last_alerts);
+        $this->set('last_alerts', $last_alerts);
     }
 
 }

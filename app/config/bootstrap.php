@@ -145,4 +145,16 @@ function ApiFanliPassport($api ,$params, $secret = '9f93eab2452f8dba5c7b9dd49dd8
     return 'http://passport.51fanli.com'.$api.'?'.$p;
 }
 
+function alert($target, $info){
+    
+    if(!$target || !$info){
+        return;
+    }
+    
+    $db = new Alert();
+    $db->create();
+    $db->save(array('target'=>$target, 'info'=>$info));
+    return true;
+}
+
 ?>

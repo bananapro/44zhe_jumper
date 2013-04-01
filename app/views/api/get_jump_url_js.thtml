@@ -12,15 +12,15 @@ $.ajax({
             ju = encodeURIComponent(e.data.url);
             window.location.href = '<?=DOMAIN?>/api/jump/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?p_title='+p_title+'&ju='+ju+'&oc=<?=$oc?>';
         }else{
-            window.location.href = '<?=$default_url?>';
+            window.location.href = '<?=DOMAIN?>/api/alert/jump/51fanli_status_error?u=<?=$default_url?>';
         }
         
     },
     error: function(){
-        window.location.href = '<?=$default_url?>';
+        window.location.href = '<?=DOMAIN?>/api/alert/jump/request_51fanli_error?u=<?=$default_url?>';
     }
     
 });
 <?php else:?>
-window.location.href = '<?=$default_url?>';
+window.location.href = '<?=DOMAIN?>/api/alert/jump/js_no_pass?u=<?=$default_url?>';
 <?php endif;?>

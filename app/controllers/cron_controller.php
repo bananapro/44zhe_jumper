@@ -43,9 +43,9 @@ class CronController extends AppController {
             
             $userids = fieldSet($users, 'userid');
             //对用户进行分段，每50个一组
-            $page = ceil(count($userids) / 50);
+            $page = ceil(count($userids) / 30);
             for ($i = 0; $i < $page; $i++) {
-                $new = array_slice($userids, $i*50, 50);
+                $new = array_slice($userids, $i*30, 30);
                 $ids = join($new, ',');
                 $p = array();
                 $p['userid'] = $ids;

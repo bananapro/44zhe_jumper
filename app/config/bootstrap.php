@@ -36,9 +36,11 @@ function com2day($day1, $day2, $com = null) {
  * @param type $var
  * @return boolean
  */
-function overlimit_day($var) {
+function overlimit_day($var, $d=null) {
+    
+    if(!$d)$d = date('Ymd');
     $limit = C('config', $var);
-    $file = '/tmp/overlimit_day/' . $var . '/' . date('Ymd');
+    $file = '/tmp/overlimit_day/' . $var . '/' . $d;
     if (is_file($file)) {
         $today = intval(file_get_contents($file));
         if ($today >= $limit)
@@ -56,14 +58,16 @@ function overlimit_day($var) {
  * @param type $var
  * @return boolean
  */
-function overlimit_day_incr($var) {
-    $file = '/tmp/overlimit_day/' . $var . '/' . date('Ymd');
+function overlimit_day_incr($var, $d=null, $incr=1) {
+    
+    if(!$d)$d = date('Ymd');
+    $file = '/tmp/overlimit_day/' . $var . '/' . $d;
     if (is_file($file)) {
         $today = intval(file_get_contents($file));
-        $today = $today + 1;
+        $today = $today + $incr;
     } else {
         mkdirs($file);
-        $today = 1;
+        $today = $incr;
     }
 
     file_put_contents($file, $today);

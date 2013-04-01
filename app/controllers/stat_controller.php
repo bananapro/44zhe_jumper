@@ -27,6 +27,9 @@ class StatController extends AppController {
         $s['y_fanli_num'] = $this->StatJump->findSum('p_fanli', "ts>'".$yesterday."' AND ts<'".$today."'");
         $s['t_fanli_num'] = $this->StatJump->findSum('p_fanli', "ts>'".$today."'");
         
+        $s['y_r_num'] = $this->UserFanli->findCount("ts>'".$yesterday."' AND ts<'".$today."' AND status=2 AND role=3");
+        $s['t_r_num'] = $this->UserFanli->findCount("ts>'".$today."' AND status=2 AND role=3");
+        
         $this->set('s', $s);
         
         //跳转中介统计
@@ -47,6 +50,10 @@ class StatController extends AppController {
         $last_alerts = $this->Alert->findAll('', '', 'id DESC', 5);
         clearTableName($last_alerts);
         $this->set('last_alerts', $last_alerts);
+        
+        //特殊账号跳转额
+        $sp = file_get_contents('/tmp/overlimit_day/SP_FANLI_MAX/' . date('Ym'));
+        $this->set('sp', $sp);
     }
 
 }

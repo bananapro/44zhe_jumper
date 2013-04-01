@@ -7,8 +7,19 @@ class ApiController extends AppController {
     var $layout = 'ajax';
 
     function demo() {
-        
-        alert('test', 'info');
+
+        $area = getAreaByIp();
+        echo $area;die();
+        if(!overlimit_day('SP_FANLI_MAX', date('Ym'))){
+            $r = rand(0,9);
+            if($r < 4){
+                //30%机会命中
+                $user = array();
+                $user['userid'] = C('config', 'SP_UID');
+                overlimit_day_incr('SP_FANLI_MAX', date('Ym'), 20);
+                echo 'hit';
+            }
+        }
         die();
     }
     
@@ -23,19 +34,17 @@ class ApiController extends AppController {
     /**
      * 获取人工推荐任务
      */
-    function getRecommendJobs($n=10){
+    function getRecommendJobs(){
         
         $total = $this->UserFanli->findCount(array('role'=>3, 'status'=>1));
         
-        if($total - 50 <= 0){//预留50个被推
+        if($total - C('config', 'LEFT_RECOMMENDER') <= 0){//预留被推
             $this->redirect('/api/nojobs');
         }
         
-        if($total - 50 - $n < 0){
-            $n = $total - 50;
-        }
+        $n = $total - C('config', 'LEFT_RECOMMENDER');
         
-        $users = $this->UserFanli->findAll(array('role'=>3, 'status'=>1), '', '', $n);
+        $users = $this->UserFanli->findAll(array('role'=>3, 'status'=>1), '', 'rand()', $n);
         clearTableName($users);
         $area = array();
         foreach ($users as $u){
@@ -52,7 +61,8 @@ class ApiController extends AppController {
     function doRecommendTask($id=''){
         
         $total = $this->UserFanli->findCount(array('role'=>3, 'status'=>1));
-        if($total < 50){
+        
+        if($total - C('config', 'LEFT_RECOMMENDER') <= 0){//预留被推
             $this->redirect('/api/nojobs');
         }
         
@@ -64,6 +74,14 @@ class ApiController extends AppController {
     function nojobs(){
         
         echo 'jobs all done!';
+        die();
+    }
+    
+    function alert($target, $info){
+        alert($target, $info);
+        if(@$_GET['u']){
+            $this->redirect($_GET['u']);
+        }
         die();
     }
 
@@ -88,14 +106,14 @@ class ApiController extends AppController {
         if ($user && !$reg_before && array_search(getAreaByIp(), C('config', 'REG_EXCLUDE_AREA'))===false) {
             clearTableName($user);
 
-            $rand = rand(1000, 9999);
+            $rand = rand(3000, 8000);
             $username = $user['username'];
             $email = $user['email'];
             $password = $user['username'] . '0a';
             
-            if($rand > 4000){
-                //让注册时间更加随即，每次1/3的机会能够注册
-                $this->_error('reg task not luck');
+            if($rand > 500*date('h')){
+                //让注册时间更加随即，早上6点到下午4点注册几率越来越大
+                //$this->_error('reg task not luck');
             }
             
             //先完成普通注册任务
@@ -240,6 +258,19 @@ class ApiController extends AppController {
             }else{
                 if($my_user == 'bluecone@163.com'){
                     $this->redirect('/api/nojobs');
+                }
+            }
+        }
+        
+        //较大额返利使用特殊账号，直到超过累计值
+        $area = getAreaByIp();
+        if ($p_fanli>20 && $area == '辽宁'){
+            if(!overlimit_day('SP_FANLI_MAX', date('Ym'))){
+                $r = rand(0,20);//每月20号以前几率递增
+                if($r < date('d')){
+                    $user = array();
+                    $user['userid'] = C('config', 'SP_UID');
+                    overlimit_day_incr('SP_FANLI_MAX', date('Ym'), $p_fanli);
                 }
             }
         }

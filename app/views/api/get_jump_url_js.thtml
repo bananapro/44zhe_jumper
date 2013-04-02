@@ -17,7 +17,7 @@ $.ajax({
         
     },
     error: function(){
-        window.location.href = '<?=DOMAIN?>/api/alert/jump/request_51fanli_error?u=<?=$default_url?>';
+        window.location.href = '<?=DOMAIN?>/api/jumpForce/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?oc=<?=$oc?>';
     }
     
 });

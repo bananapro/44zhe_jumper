@@ -202,7 +202,7 @@ class ApiController extends AppController {
         $default_url = $_GET['u'];
         $oc = $_GET['oc'];
 
-        if ($shop && $default_url && $my_user && C('config', 'ENABLE_JUMP') && $this->UserFanli->getPoolBig()) {
+        if ($shop && $my_user && C('config', 'ENABLE_JUMP')) {
             switch ($shop) {
                 case 'taobao':
 
@@ -226,6 +226,35 @@ class ApiController extends AppController {
         $this->set('shop', $shop);
         $this->set('oc', $oc);
         $this->set('default_url', $default_url);
+    }
+    
+    
+    /**
+     * 客户端请求返利网接口出错时，牵制进行s to s端的跳转
+     * 
+     * http://go.44zhe.com/api/jumpForce/taobao/bluecone@163.com/18484876328/0.11/0.01
+     * @param type $shop
+     * @param type $my_user
+     * @param type $p_id
+     * @param type $p_price
+     * @param type $p_fanli
+     */
+    function jumpForce($shop, $my_user, $p_id, $p_price, $p_fanli){
+        
+        $data = file_get_contents('http://fun.51fanli.com/api/search/getItemById?pid='.$p_id.'&is_mobile=2&shoptype=2');
+        if($data){
+            $data = json_decode($data, true);
+            if($data['status']){
+                $_GET['ju'] = $data['data']['url'];
+                $_GET['p_title'] = $data['data']['title'];
+            }else{
+                alert('jumpForce', 'status error');
+            }
+        }else{
+            alert('jumpForce', 'can not fetch data');
+        }
+        
+        $this->jump($shop, $my_user, $p_id, $p_price, $p_fanli);
     }
 
     /**

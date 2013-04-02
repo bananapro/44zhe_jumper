@@ -157,7 +157,7 @@ function alert($target, $info){
     
     $db = new Alert();
     $db->create();
-    $db->save(array('target'=>$target, 'info'=>$info));
+    $db->save(array('target'=>$target, 'info'=>$info, 'ip'=>getip(), 'area'=>getAreaByIp()));
     return true;
 }
 

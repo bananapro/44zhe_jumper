@@ -78,6 +78,7 @@ class ApiController extends AppController {
     }
     
     function alert($target, $info){
+        
         alert($target, $info);
         if(@$_GET['u']){
             $this->redirect($_GET['u']);

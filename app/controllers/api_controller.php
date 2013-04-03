@@ -8,18 +8,8 @@ class ApiController extends AppController {
 
     function demo() {
 
-        $area = getAreaByIp();
-        echo $area;die();
-        if(!overlimit_day('SP_FANLI_MAX', date('Ym'))){
-            $r = rand(0,9);
-            if($r < 4){
-                //30%机会命中
-                $user = array();
-                $user['userid'] = C('config', 'SP_UID');
-                overlimit_day_incr('SP_FANLI_MAX', date('Ym'), 20);
-                echo 'hit';
-            }
-        }
+        $a = $_GET['oc'];
+        //var_dump($a);
         die();
     }
     
@@ -58,7 +48,17 @@ class ApiController extends AppController {
      * 人工处理推荐任务
      * @param type $id
      */
-    function doRecommendTask($id=''){
+    function doRecommendTask($pid=''){
+        
+        if($pid < 10000){
+            echo 'Pid param must be num!';
+            die();
+        }
+        
+        if($this->StatJump->find(array('ip'=>getip()))){
+            echo 'Please change your ip!';
+            die();
+        }
         
         $total = $this->UserFanli->findCount(array('role'=>3, 'status'=>1));
         
@@ -66,9 +66,11 @@ class ApiController extends AppController {
             $this->redirect('/api/nojobs');
         }
         
-        if(!$id){
-            echo 'id param can not be empty';
+        if(!$pid){
+            echo 'pid param can not be empty';
+            die();
         }
+        $this->set('pid', $pid);
     }
     
     function nojobs(){
@@ -82,8 +84,9 @@ class ApiController extends AppController {
         alert($target, $info);
         if(@$_GET['u']){
             $this->redirect($_GET['u']);
+        }else{
+            $this->redirect(DEFAULT_ERROR_URL);
         }
-        die();
     }
 
     /**
@@ -230,7 +233,7 @@ class ApiController extends AppController {
     
     
     /**
-     * 客户端请求返利网接口出错时，牵制进行s to s端的跳转
+     * 客户端请求返利网接口出错时，强制进行s to s端的跳转
      * 
      * http://go.44zhe.com/api/jumpForce/taobao/bluecone@163.com/18484876328/0.11/0.01
      * @param type $shop
@@ -249,9 +252,11 @@ class ApiController extends AppController {
                 $_GET['p_title'] = $data['data']['title'];
             }else{
                 alert('jumpForce', 'status error');
+                $this->redirect(DEFAULT_ERROR_URL);
             }
         }else{
             alert('jumpForce', 'can not fetch data');
+            $this->redirect(DEFAULT_ERROR_URL);
         }
         
         $this->jump($shop, $my_user, $p_id, $p_price, $p_fanli);
@@ -271,7 +276,7 @@ class ApiController extends AppController {
         $jump_url = $_GET['ju'];
         $p_title = $_GET['p_title'];
         $oc = $_GET['oc'];
-
+        
         if(preg_match('/go=(.+?)&tc/i', $jump_url, $match)){
             $jump_url = $match[1];
         }else{
@@ -340,6 +345,11 @@ class ApiController extends AppController {
         $stat['my_user'] = urldecode($my_user);
         $stat['outcode'] = $oc;
         $stat['client'] = getBrowser();
+        
+        foreach($stat as $k=>$v){
+            if(!$v)unset($stat[$k]);
+        }
+        
         $this->StatJump->create();
         $this->StatJump->save($stat);
         

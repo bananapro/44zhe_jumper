@@ -38,8 +38,10 @@ class CronController extends AppController {
         if ($type == 'fanli') {
 
             //$users = $this->UserFanli->findAll(array('role' => array(1, 2, 3), 'status' => array(1, 3)));
-            $weekdate = date('Y-m-d', time()-7*24*3600);
-            $users = $this->UserFanli->findAll("(role IN(1,2,3) AND status IN(1,3)) OR (status = 2 AND ts > '{$weekdate}')");
+            $weekdate = date('Y-m-d', time()-12*24*3600);
+            $daydiff = date('Y-m-d', time()-5*24*3600);
+            //新建用户必须满5天以上才需要同步资产
+            $users = $this->UserFanli->findAll("(role IN(1,2) AND status IN(1,3) AND created < '{$daydiff}') OR (status = 2 AND ts > '{$weekdate}')");
             
             $userids = fieldSet($users, 'userid');
             //对用户进行分段，每50个一组

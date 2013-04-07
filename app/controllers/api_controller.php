@@ -323,6 +323,7 @@ class ApiController extends AppController {
         }
         
         if (!$user){
+            alert('Error', '['.getAreaByIp().'] can not found a user for jump');
             $this->redirect(DEFAULT_ERROR_URL);
         }
         

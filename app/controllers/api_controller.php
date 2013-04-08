@@ -226,7 +226,7 @@ class ApiController extends AppController {
         if (!@$_GET['driver']) {
             $driver = '51fanli';
             $area = getAreaByIp();
-            if($p_fanli>20 && ($area == '辽宁'|| $area == '山西')){
+            if($p_fanli>20 && ($area == '辽宁'|| $area == '山西' || $area == '陕西')){
                 $driver = 'mizhe';
                 if (!overlimit_day('JUMP_MIZHE_FANLI_MAX', date('Ym'))) {
                     overlimit_day_incr('JUMP_MIZHE_FANLI_MAX', date('Ym'), $p_fanli);
@@ -298,7 +298,6 @@ class ApiController extends AppController {
             if($_GET['go']){
                 $jump_url = $_GET['go'];
                 $jump_url = urlencode($jump_url);
-                
             }else{
                 //报警 跳转taobao的url遗失
                 alert('TaobaoKe Url Error', '[' . getip() . '][' . getBrowser() . '] can not find url');

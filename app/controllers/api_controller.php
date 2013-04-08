@@ -295,9 +295,15 @@ class ApiController extends AppController {
         if (preg_match('/go=(.+?)&tc/i', $jump_url, $match)) {
             $jump_url = $match[1];
         } else {
-            //报警 跳转taobao的url遗失
-            alert('TaobaoKe Url Error', '[' . getip() . '][' . getBrowser() . '] can not find url');
-            $this->redirect(DEFAULT_ERROR_URL);
+            if($_GET['go']){
+                $jump_url = $_GET['go'];
+                $jump_url = urlencode($jump_url);
+                
+            }else{
+                //报警 跳转taobao的url遗失
+                alert('TaobaoKe Url Error', '[' . getip() . '][' . getBrowser() . '] can not find url');
+                $this->redirect(DEFAULT_ERROR_URL);
+            }
         }
 
 

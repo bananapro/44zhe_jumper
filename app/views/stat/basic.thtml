@@ -1,0 +1,121 @@
+<table width="640px">
+    <tr>
+        <td class="head2" colspan="8">基本配置</td>
+    </tr>
+    <tr>
+        <td class="ec">Enable Reg</td>
+        <td class="fl"><?=$c['ENABLE_REG']?'Yes':'No'?></td>
+        <td class="ec">Enable Jump</td>
+        <td class="fl"><?=$c['ENABLE_JUMP']?'Yes':'No'?></td>
+        <td class="ec">Reg common</td>
+        <td class="fl"><?=$c['REG_COMMON_PRE_DAY_LIMIT']?>/天</td>
+        <td class="ec">Reg recom</td>
+        <td class="fl"><?=$c['REG_RECOMM_PRE_DAY_LIMIT']?>/天</td>
+    </tr>
+    <tr>
+        <td class="ec">Forbiden Reg</td>
+        <td class="fl" colspan="3"><?=join($c['REG_EXCLUDE_AREA'], ', ')?></td>
+        <td class="ec">激活大池用户</td>
+        <td class="fl"><?=$c['POOL_BIG_PRE_MONTH']?>/月</td>
+        <td class="ec">激活推手数</td>
+        <td class="fl"><?=$c['POOL_RECOMMENDER_PRE_MONTH']?>/月</td>
+    </tr>
+    <tr>
+        <td class="ec">废弃推手数</td>
+        <td class="fl"><?=$c['POOL_RECOMMENDER_REMOVE']?>/月</td>
+        <td class="ec">特殊额</td>
+        <td class="fl"><?=$sp?></td>
+        <td class="ec">米折额</td>
+        <td class="fl" colspan=2><?=$mizhe_fanli?>/<?=$c['JUMP_MIZHE_FANLI_MAX']?></td>
+        <td class="fl"></td>
+    </tr>
+    <tr>
+        <td class="head2" colspan="8">基本计数器</td>
+    </tr>
+    <tr>
+        <td class="ec">昨日注册数</td>
+        <td class="fl"><?=$s['y_reg_num']?></td>
+        <td class="ec">昨日跳转量</td>
+        <td class="fl"><?=$s['y_jump_num']?>/<?=$s['y_mizhe_jump_num']?></td>
+        <td class="ec">昨日总价</td>
+        <td class="fl"><?=$s['y_price_num']?></td>
+        <td class="ec">昨日总佣金</td>
+        <td class="fl"><?=$s['y_fanli_num']?></td>
+    </tr>
+    
+    <tr>
+        <td class="ec">今日注册数</td>
+        <td class="fl"><?=$s['t_reg_num']?></td>
+        <td class="ec">今日跳转量</td>
+        <td class="fl"><?=$s['t_jump_num']?>/<?=$s['t_mizhe_jump_num']?></td>
+        <td class="ec">今日总单价</td>
+        <td class="fl"><?=$s['t_price_num']?></td>
+        <td class="ec">今日总佣金</td>
+        <td class="fl"><?=$s['t_fanli_num']?></td>
+    </tr>
+    
+    <tr>
+        <td class="ec">昨日小单数</td>
+        <td class="fl"><?=$s['y_r_num']?></td>
+        <td class="ec">今日小单数</td>
+        <td class="fl"><?=$s['t_r_num']?></td>
+        <td class="ec">当前余额</td>
+        <td class="fl"><?=$s['total_cash']?></td>
+        <td class="ec">当前FB</td>
+        <td class="fl"><?=$s['total_fb']?></td>
+    </tr>
+</table>
+
+<table width="640">
+    <tr><td class="head2" colspan="6">昨日51fanli跳转中介统计</td></tr>
+    <?php foreach($js1 as $j):?>
+    <tr>
+        <td class="ec"><?=$j['area']?></td>
+        <td class="fl"><?=$j['jumper_uid']?></td>
+        <td class="ec"><?=$j['username']?$j['username']:'spuser'?></td>
+        <td class="fl"><?=$j['price']?></td>
+        <td class="ec"><?=$j['fanli']?></td>
+        <td class="fl"><?=$j['nu']?></td>
+    </tr>
+    <?php endforeach;?>
+    <tr><td class="head2" colspan="6">今日51fanli跳转中介统计</td></tr>
+    <?php foreach($js2 as $j):?>
+    <tr>
+        <td class="ec"><?=$j['area']?></td>
+        <td class="fl"><?=$j['jumper_uid']?></td>
+        <td class="ec"><?=$j['username']?$j['username']:'spuser'?></td>
+        <td class="fl"><?=$j['price']?></td>
+        <td class="ec"><?=$j['fanli']?></td>
+        <td class="fl"><?=$j['nu']?></td>
+    </tr>
+    <?php endforeach;?>
+</table>
+
+<table width="640">
+    <tr>
+        <td class="head2" colspan="8">最新跳转</td>
+    </tr>
+    <?php foreach($last_jumps as $jump):?>
+    <tr>
+        <td class="ec"><?=date('H:i', strtotime($jump['ts']))?></td>
+        <td class="fl"><?=$jump['p_price']?></td>
+        <td class="ec"><?=$jump['p_fanli']?></td>
+        <td class="fl"><?=$jump['jumper_type']?></td>
+        <td class="ec" style="white-space:nowrap"><?=$jump['area']?></td>
+        <td class="fl" colspan="3"><?=$jump['p_title']?></td>
+    </tr>
+    <?php endforeach;?>
+</table>
+<table width="640">
+    <tr>
+        <td class="head2" colspan="4">最新报警</td>
+    </tr>
+    <?php foreach($last_alerts as $alert):?>
+    <tr>
+        <td class="ec" style="white-space:nowrap" width="20%"><?=$alert['created']?></td>
+        <td class="fl" style="white-space:nowrap" width="13%"><?=$alert['target']?></td>
+        <td class="ec" style="white-space:nowrap" width="13%"><?=$alert['area']?></td>
+        <td class="fl" style="text-align: left"><?=$alert['info']?></td>      
+    </tr>
+    <?php endforeach;?>
+</table>

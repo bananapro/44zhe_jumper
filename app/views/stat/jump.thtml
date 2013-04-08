@@ -1,0 +1,27 @@
+<table width="920">
+    <tr>
+        <td class="head2" colspan="7"><?=$date?>跳转记录一共:<?=count($last_jumps)?></td>
+    </tr>
+    <tr>
+        <td class="fl">序号</td>
+        <td class="ec">时间</td>
+        <td class="fl">价格</td>
+        <td class="ec">返利</td>
+        <td class="fl">跟踪码</td>
+        <td class="ec" style="white-space:nowrap">地区</td>
+        <td class="ec">商品名称</td>
+    </tr>
+    <?php $i=1?>
+    <?php foreach($last_jumps as $jump):?>
+    <tr>
+        <td class="fl"><?=$i?></td>
+        <td class="ec"><?=date('H:i:s', strtotime($jump['ts']))?></td>
+        <td class="fl"><?=$jump['p_price']?></td>
+        <td class="ec"><?=$jump['p_fanli']?></td>
+        <td class="fl" style="white-space:nowrap"><?=$jump['area']?></td>
+        <td class="ec"><?=$jump['outcode']?></td>
+        <td class="fl" style="text-align:left"><?=$jump['p_title']?></td>
+    </tr>
+    <?php $i++;?>
+    <?php endforeach;?>
+</table>

@@ -57,7 +57,11 @@ class CronController extends AppController {
                 if ($data['status'] == 1 && $data['data']) {
                     foreach ($data['data'] as $userid => $info) {
                         $this->UserFanli->save(array('userid' => $userid, 'fl_cash' => $info['fanli_yuan'], 'fl_fb' => $info['jifen']));
-                        echo "{$userid} => cash:{$info['fanli_yuan']} FB:{$info['jifen']}";
+                        $role = searchArray($users, 'userid', $userid, 'role');
+                        
+                        if(!$info['fanli_yuan'] && !$info['jifen'])continue;
+                        echo "{$userid}:{$role} => cash:<b>{$info['fanli_yuan']}</b> FB:{$info['jifen']}";
+                        
                         br();
                     }
                 }

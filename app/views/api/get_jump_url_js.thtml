@@ -1,6 +1,8 @@
 <?php
     if($pass):
 ?>
+
+<?php if($driver == '51fanli'):?>
 $.ajax({
     dataType: "jsonp",
     url: "<?=$api_url?>",
@@ -21,6 +23,10 @@ $.ajax({
     }
     
 });
+<?php elseif($driver == 'mizhe'):?>
+window.location.href = '<?=DOMAIN?>/api/jumpMizhe/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?oc=<?=$oc?>';
+<?php endif;?>
+
 <?php else:?>
 window.location.href = '<?=DOMAIN?>/api/alert/jump/js_no_pass?u=<?=$default_url?>';
 <?php endif;?>

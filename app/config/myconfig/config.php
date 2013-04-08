@@ -15,9 +15,12 @@
         //限制注册地
         'REG_EXCLUDE_AREA' => array(),
         
-        //特殊账号
+        //特殊账号每月领取额度
         'SP_UID' => 5730909,
-        'SP_FANLI_MAX' => 600,
+        'SP_FANLI_MAX' => 2000,
+        
+        //跳转Mizhe的每月额度
+        'JUMP_MIZHE_FANLI_MAX' => 1000,
         
         //预留被推，以免人工全部都完成
         'LEFT_RECOMMENDER' => 50,

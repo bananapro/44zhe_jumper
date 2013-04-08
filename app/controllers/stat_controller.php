@@ -21,6 +21,9 @@ class StatController extends AppController {
         $s['y_jump_num'] = $this->StatJump->findCount("ts>'".$yesterday."' AND ts<'".$today."' AND outcode<>'test'");
         $s['t_jump_num'] = $this->StatJump->findCount("ts>'".$today."' AND outcode<>'test'");
         
+        $s['y_mizhe_jump_num'] = $this->StatJump->findCount("ts>'".$yesterday."' AND ts<'".$today."' AND outcode<>'test' AND jumper_type='mizhe'");
+        $s['t_mizhe_jump_num'] = $this->StatJump->findCount("ts>'".$today."' AND outcode<>'test'  AND jumper_type='mizhe'");
+        
         $s['y_price_num'] = $this->StatJump->findSum('p_price', "ts>'".$yesterday."' AND ts<'".$today."'");
         $s['t_price_num'] = $this->StatJump->findSum('p_price', "ts>'".$today."'");
         
@@ -36,8 +39,8 @@ class StatController extends AppController {
         $this->set('s', $s);
         
         //跳转中介统计
-        $j1 = $this->StatJump->query("SELECT count(*) as nu, jumper_uid, username, a.area, sum(p_price) price, sum(p_fanli) fanli FROM stat_jump a LEFT JOIN user_fanli ON(jumper_uid = userid) WHERE a.ts>'".$yesterday."' AND a.ts<'".$today."' AND outcode<>'test' GROUP BY jumper_uid ORDER BY nu DESC");
-        $j2 = $this->StatJump->query("SELECT count(*) as nu, jumper_uid, username, a.area, sum(p_price) price, sum(p_fanli) fanli FROM stat_jump a LEFT JOIN user_fanli ON(jumper_uid = userid) WHERE a.ts>'".$today."' AND outcode<>'test'  GROUP BY jumper_uid ORDER BY nu DESC");
+        $j1 = $this->StatJump->query("SELECT count(*) as nu, jumper_uid, username, a.area, sum(p_price) price, sum(p_fanli) fanli FROM stat_jump a LEFT JOIN user_fanli ON(jumper_uid = userid) WHERE a.ts>'".$yesterday."' AND a.ts<'".$today."' AND outcode<>'test' AND jumper_type='51fanli' GROUP BY jumper_uid ORDER BY nu DESC");
+        $j2 = $this->StatJump->query("SELECT count(*) as nu, jumper_uid, username, a.area, sum(p_price) price, sum(p_fanli) fanli FROM stat_jump a LEFT JOIN user_fanli ON(jumper_uid = userid) WHERE a.ts>'".$today."' AND outcode<>'test' AND jumper_type='51fanli' GROUP BY jumper_uid ORDER BY nu DESC");
         clearTableName($j1);
         clearTableName($j2);
         $this->set('js1', $j1);
@@ -57,6 +60,9 @@ class StatController extends AppController {
         //特殊账号跳转额
         $sp = @file_get_contents('/tmp/overlimit_day/SP_FANLI_MAX/' . date('Ym'));
         $this->set('sp', $sp);
+        
+        $mizhe_fanli = @file_get_contents('/tmp/overlimit_day/JUMP_MIZHE_FANLI_MAX/' . date('Ym'));
+        $this->set('mizhe_fanli', floatval($mizhe_fanli));
         
     }
     

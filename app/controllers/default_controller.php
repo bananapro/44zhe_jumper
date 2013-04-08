@@ -8,8 +8,6 @@ class DefaultController extends AppController {
     var $layout = 'ajax';
 
     function index(){
-        echo 'hello';
-        die();
     }
 }
 

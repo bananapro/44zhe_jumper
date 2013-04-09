@@ -38,11 +38,12 @@ class CronController extends AppController {
         if ($type == 'fanli') {
 
             //$users = $this->UserFanli->findAll(array('role' => array(1, 2, 3), 'status' => array(1, 3)));
-            $weekdate = date('Y-m-d', time()-12*24*3600);
-            $daydiff = date('Y-m-d', time()-5*24*3600);
-            //新建用户必须满5天以上才需要同步资产
-            $users = $this->UserFanli->findAll("(role IN(1,2) AND status IN(1,3) AND created < '{$daydiff}') OR (status = 2 AND ts > '{$weekdate}')");
-            
+            $weekdate = date('Y-m-d', time()-15*24*3600);
+            $daydiff = date('Y-m-d', time()-7*24*3600);
+            //新建用户必须满7天以上才需要同步资产
+            $users = $this->UserFanli->findAll("(role IN(1,2) AND status IN(1,3) AND created < '{$daydiff}') OR (status = 2 AND pause_date > '{$weekdate}')");
+            echo "update ".count($users)." users";
+            br(2);
             $userids = fieldSet($users, 'userid');
             //对用户进行分段，每50个一组
             $page = ceil(count($userids) / 30);
@@ -67,7 +68,7 @@ class CronController extends AppController {
                 }
             }
 
-
+            br();
             echo 'done!';
             die();
         }
@@ -76,7 +77,9 @@ class CronController extends AppController {
     //每月执行一次，更新10位推荐人
     function updateRecommender($n = 10){
         
-        $this->UserFanli->query("UPDATE user_fanli SET status=2 WHERE status=1 AND role=2");
+        $date = date('Y-m-d H:i:s');
+        $this->UserFanli->query("UPDATE user_fanli SET status=2, pause_date='".$date."'  WHERE status=1 AND role=2");
+        
         for($i=1; $i<=$n; $i++){
             //取出干净的会员
             $u = $this->UserFanli->find(array('role'=>0, 'status'=>1), '', 'rand()');
@@ -99,7 +102,8 @@ class CronController extends AppController {
     //每周执行一次，从被推池按地区均匀抽出10人作为大池
     function updateBig($n = 10){
         
-        //$this->UserFanli->query("UPDATE user_fanli SET status=2 WHERE status=1 AND role=1");
+        $date = date('Y-m-d H:i:s');
+        $this->UserFanli->query("UPDATE user_fanli SET status=2, pause_date='".$date."' WHERE status=1 AND role=1");
         
         $date = date('Y-m-d', time()-30*24*3600);
         $area = $this->UserFanli->query("SELECT count(*) nu, area FROM user_fanli WHERE created>'{$date}' GROUP BY area");

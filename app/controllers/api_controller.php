@@ -226,9 +226,11 @@ class ApiController extends AppController {
         if (!@$_GET['driver']) {
             $driver = '51fanli';
             $area = getAreaByIp();
+            
+            //筛选米折用户
             if($p_fanli>20 && ($area == '辽宁'|| $area == '山西' || $area == '陕西')){
-                $driver = 'mizhe';
                 if (!overlimit_day('JUMP_MIZHE_FANLI_MAX', date('Ym'))) {
+                    $driver = 'mizhe';
                     overlimit_day_incr('JUMP_MIZHE_FANLI_MAX', date('Ym'), $p_fanli);
                 }
             }

@@ -323,7 +323,7 @@ class ApiController extends AppController {
 
         //较大额返利使用特殊账号，直到超过累计值
         $area = getAreaByIp();
-        if ($p_fanli > 20 && $area == '辽宁') {
+        if ($p_fanli > 30 && $area == '辽宁') {
             if (!overlimit_day('SP_FANLI_MAX', date('Ym'))) {
                 $r = rand(0, 20); //每月20号以前几率递增
                 if ($r < date('d')) {

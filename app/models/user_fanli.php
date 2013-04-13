@@ -1,5 +1,4 @@
 <?php
-
 require_once 'user.php';
 
 class UserFanli extends User {

@@ -93,7 +93,7 @@ class AppController extends Controller {
             $message = '系统发生错误，请重试!';
         if (!DEBUG) {
             if ($this->isAjax()) {
-                
+
                 if ($this->isJsonp()) {
                     $this->_jsonpReturn($message, 0);
                 } else {

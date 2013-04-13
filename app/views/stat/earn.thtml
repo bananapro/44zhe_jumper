@@ -1,0 +1,7 @@
+<?php
+    require_once  MYLIBS . 'ofc-library/open_flash_chart_object.php';
+?>
+<table>
+<tr><td><?php open_flash_chart_object( 1250, 400, '/stat/dataEarn?job=51fanli&y_num=50&date_num=60' ,true, '/');?></td></tr>
+<tr><td><?php open_flash_chart_object( 1250, 400, '/stat/dataJump?job=51fanli&y_num=200&date_num=60' ,true, '/');?></td></tr>
+</table>

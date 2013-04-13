@@ -19,6 +19,9 @@
 <a href='/api/doRecommendTask/xxxxxx' target='_blank'>Do Jump Task</a>
 <br />
 <br />
+<a href='/stat' target='_blank'>Stat Center</a>
+<br />
+<br />
 <a href='/cron/createRsyncOrderSql' target='_blank'>Create Rsync Order SQL</a>
 <br />
 <br />

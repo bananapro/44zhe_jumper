@@ -10,6 +10,9 @@ class StatController extends AppController {
 		$this->set('title', '统计中心');
 	}
 
+	function index(){
+	}
+
 	function basic() {
 		//当前配置状态
 		$config = C('config');
@@ -67,9 +70,6 @@ class StatController extends AppController {
 
 		$mizhe_fanli = @file_get_contents('/tmp/overlimit_day/JUMP_MIZHE_FANLI_MAX/' . date('Ym'));
 		$this->set('mizhe_fanli', floatval($mizhe_fanli));
-	}
-
-	function earn(){
 	}
 
 	function dataEarn() {

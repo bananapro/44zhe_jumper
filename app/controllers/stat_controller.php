@@ -163,12 +163,12 @@ class StatController extends AppController {
 		foreach ($datas as $data) {
 			//@$new_datas['总金额'][$data['created']] = intval($data['price']);
 			@$new_datas['总佣金(元)'][$data['created']] = intval($data['fanli']);
-			@$new_datas['总订单数'][$data['created']] = $data['nu'];
+			@$new_datas['跳转次数'][$data['created']] = $data['nu'];
 		}
 
 		require_once  MYLIBS . 'ofc-library/open-flash-chart.php';
 		$g = new graph();
-		$g->title('每日跳转统计 (每日更新)', '{font-size: 16px; color: #736AFF}');
+		$g->title('每日跳转统计 (实时更新)', '{font-size: 16px; color: #736AFF}');
 
 		$max = array();
 		foreach ($new_datas as $node => $data) {

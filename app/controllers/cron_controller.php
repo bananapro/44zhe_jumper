@@ -144,16 +144,23 @@ class CronController extends AppController {
 	//生成同步订单的SQL，执行完后保存到本地，上传到对账首页
 	function createRsyncOrderSql($target='51fanli') {
 		//账户被停用后仍然继续跟单21天
+		$page_size = 100;
 		$weekdate = date('Y-m-d', time() - 21 * 24 * 3600);
 		$users = $this->UserFanli->findAll("(role IN(1,2) AND status IN(1,3)) OR (status = 2 AND pause_date > '{$weekdate}')");
 		$userids = fieldSet($users, 'userid');
 //对用户进行分段，每30个一组
-		$page = ceil(count($userids) / 50);
+		$page = ceil(count($userids) / $page_size);
 
 		$sql = <<<ETO
 select [编号] as id, num_iid,fanlistate,ordernum_parent,productnum,productprice,seller_nick,yongjin,buydate,[dingdan].inputdate,memberzhanghao from [51fanli].[dbo].[dingdan]  left join
 [51fanli].[dbo].[FL_ods] on [编号] = did
 where s_id='712' and memberzhanghao IN({userid}) and [编号] > {max_id}
+ETO;
+
+		$sql_change_status = <<<ETO
+select [编号] as id, num_iid,fanlistate,ordernum_parent,productnum,productprice,seller_nick,yongjin,buydate,[dingdan].inputdate,memberzhanghao from [51fanli].[dbo].[dingdan]  left join
+[51fanli].[dbo].[FL_ods] on [编号] = did
+where s_id='712' AND [编号] IN ({did})
 ETO;
 
 		$sql_arr = array();
@@ -163,13 +170,22 @@ ETO;
 		$max_did = intval($max_did['did']);
 		if(!$max_did)$max_did = '70273945';
 		for ($i = 0; $i < $page; $i++) {
-			$new = array_slice($userids, $i * 50, 50);
+			$new = array_slice($userids, $i * $page_size, $page_size);
 			$ids = join($new, ',');
-
 			$sql_arr[] = str_replace(array('{userid}', '{max_id}'), array($ids, $max_did), $sql);
 		}
 
 		echo join(";<br /><br />", $sql_arr);
+
+		$orders = $this->OrderFanli->findAll(array('status'=>array(2,3,4,5)));
+		$dids = fieldSet($orders, 'did');
+		$dids = join($dids, ',');
+
+		if($dids){
+			$sql_change_status = str_replace('{did}', $dids, $sql_change_status);
+			br(2);
+			echo $sql_change_status;
+		}
 		die();
 	}
 

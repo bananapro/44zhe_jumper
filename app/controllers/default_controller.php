@@ -75,6 +75,9 @@ class DefaultController extends AppController {
 							$n['outcode'] = $global_jumper[$n['jumper_uid']][$n['p_seller']];
 						}
 					}
+
+					if($n['outcode'] == 'test')continue;
+					
 					if(!$this->OrderFanli->find(array('did'=>$n['did'] ,'status'=>$n['status']))){
 
 						if($id = $this->OrderFanli->field('id', array('did'=>$n['did']))){

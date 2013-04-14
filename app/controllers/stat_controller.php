@@ -89,6 +89,72 @@ class StatController extends AppController {
 			'0x736AFF', '0x6AFF73', '0xADB5C7', '0xC11B01', '0x9933CC',
 			'0xd070ac', '0x799191', '0x7D8E99');
 
+		$datas = $this->OrderFanli->query("SELECT sum(p_fanli) as fanli,status,donedate FROM order_fanli WHERE donedate>'$last_date' GROUP BY donedate,status");
+		clearTableName($datas);
+		$new_datas = array();
+
+		$max_node = array();
+
+		foreach ($datas as $data) {
+			$node_name = $data['status'];
+			switch($data['status']){
+				case '1':$node_name = '已确认结算金额(元)';break;
+				case '3':$node_name = '订单无效金额';break;
+				case '4':$node_name = '订单确认中金额';break;
+			}
+			@$new_datas[$node_name][$data['donedate']] = $data['fanli'];
+		}
+
+		require_once  MYLIBS . 'ofc-library/open-flash-chart.php';
+		$g = new graph();
+		$g->title('返利网每日返现统计 (每周更新-按订单完成日期)', '{font-size: 16px; color: #736AFF}');
+
+		$max = array();
+		foreach ($new_datas as $node => $data) {
+			//if(!array_search($node, array_keys($max_node)))continue;
+			$every_date = array();
+			for ($i = $date_num; $i > -1; $i--) {
+
+				$every_date[] = intval(@$data[date('Y-m-d', strtotime("-$i day"))]);
+			}
+			$max[] = max($every_date);
+			//pr($every_date);
+			$g->set_data($every_date);
+			$g->line(2, array_shift($colors), $node, 12);
+		}
+
+		$date_arr = array();
+		for ($i = $date_num; $i > -1; $i--) {
+			$date_arr[] = date('d', strtotime("-$i day"));
+		}
+
+		$g->set_x_labels($date_arr);
+		$g->set_x_label_style(10, '0x000000', 0, 2);
+
+		$g->set_y_max(ceil(max($max) / $y_num) * $y_num);
+		$g->y_label_steps(10);
+		$g->set_y_legend($job_title . ' chart', 12, '#736AFF');
+		echo $g->render();
+		die();
+	}
+
+	function dataBuy() {
+
+		$date_num = 14;
+		$y_num = 100;
+
+		$job_title = $_GET['job'];
+		if ($_GET['y_num'])
+			$y_num = $_GET['y_num'];
+		if ($_GET['date_num'])
+			$date_num = $_GET['date_num'];
+
+		$last_date = date('Y-m-d', strtotime('-' . $date_num . ' day'));
+		$colors = array('0x9933CC', '0x50CC33', '0x736AFF', '0x736AFF', '0xD54C78', '0x3334AD',
+			'0x339966', 'F50505', '0x8BB1A1', 'BAA8BD', '0xC31812', '0x424581',
+			'0x736AFF', '0x6AFF73', '0xADB5C7', '0xC11B01', '0x9933CC',
+			'0xd070ac', '0x799191', '0x7D8E99');
+
 		$datas = $this->OrderFanli->query("SELECT sum(p_fanli) as fanli,status,buydate FROM order_fanli WHERE buydate>'$last_date' GROUP BY buydate,status");
 		clearTableName($datas);
 		$new_datas = array();
@@ -107,7 +173,7 @@ class StatController extends AppController {
 
 		require_once  MYLIBS . 'ofc-library/open-flash-chart.php';
 		$g = new graph();
-		$g->title('返利网每日返现统计 (每周更新)', '{font-size: 16px; color: #736AFF}');
+		$g->title('返利网每日返现统计 (每周更新-按订单下单日期)', '{font-size: 16px; color: #736AFF}');
 
 		$max = array();
 		foreach ($new_datas as $node => $data) {

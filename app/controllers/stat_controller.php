@@ -5,12 +5,13 @@ class StatController extends AppController {
 	var $name = 'Stat';
 	var $uses = array('UserFanli', 'StatJump', 'UserCandidate', 'Alert', 'OrderFanli');
 
-	function beforeRender(){
+	function beforeRender() {
 		parent::beforeRender();
 		$this->set('title', '统计中心');
 	}
 
-	function index(){
+	function index($type='normal') {
+		$this->set('type', $type);
 	}
 
 	function basic() {
@@ -76,6 +77,7 @@ class StatController extends AppController {
 
 		$date_num = 14;
 		$y_num = 100;
+		$senior = $_GET['type'] == 'senior' ? true : false;
 
 		$job_title = $_GET['job'];
 		if ($_GET['y_num'])
@@ -84,8 +86,8 @@ class StatController extends AppController {
 			$date_num = $_GET['date_num'];
 
 		$last_date = date('Y-m-d', strtotime('-' . $date_num . ' day'));
-		$colors = array('0x9933CC', '0x50CC33', '0x736AFF', '0x736AFF', '0xD54C78', '0x3334AD',
-			'0x339966', 'F50505', '0x8BB1A1', 'BAA8BD', '0xC31812', '0x424581',
+		$colors = array('0x9933CC', '0x50CC33', '0x736AFF', '0xF50505', '0xD54C78', '0x3334AD',
+			'0x339966', '0xF50505', '0x8BB1A1', 'BAA8BD', '0xC31812', '0x424581',
 			'0x736AFF', '0x6AFF73', '0xADB5C7', '0xC11B01', '0x9933CC',
 			'0xd070ac', '0x799191', '0x7D8E99');
 
@@ -97,15 +99,26 @@ class StatController extends AppController {
 
 		foreach ($datas as $data) {
 			$node_name = $data['status'];
-			switch($data['status']){
-				case '1':$node_name = '已确认结算金额(元)';break;
-				case '3':$node_name = '订单无效金额';break;
-				case '4':$node_name = '订单确认中金额';break;
+			switch ($data['status']) {
+				case '1':$node_name = '已确认结算金额(元)';
+					break;
+				case '3':$node_name = '订单无效金额';
+					break;
+				case '4':$node_name = '订单确认中金额';
+					break;
 			}
 			@$new_datas[$node_name][$data['donedate']] = $data['fanli'];
 		}
 
-		require_once  MYLIBS . 'ofc-library/open-flash-chart.php';
+		if ($senior) {
+			$datas = $this->OrderFanli->query("SELECT sum(p_fanli) as fanli,donedate FROM order_fanli WHERE type=2 AND donedate>'$last_date' GROUP BY donedate");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['Mi结算'][$data['donedate']] = $data['fanli'];
+			}
+		}
+
+		require_once MYLIBS . 'ofc-library/open-flash-chart.php';
 		$g = new graph();
 		$g->title('返利网每日返现统计 (每周更新-按订单完成日期)', '{font-size: 16px; color: #736AFF}');
 
@@ -149,9 +162,11 @@ class StatController extends AppController {
 		if ($_GET['date_num'])
 			$date_num = $_GET['date_num'];
 
+		$senior = $_GET['type'] == 'senior' ? true : false;
+
 		$last_date = date('Y-m-d', strtotime('-' . $date_num . ' day'));
-		$colors = array('0x9933CC', '0x50CC33', '0x736AFF', '0x736AFF', '0xD54C78', '0x3334AD',
-			'0x339966', 'F50505', '0x8BB1A1', 'BAA8BD', '0xC31812', '0x424581',
+		$colors = array('0x9933CC', '0x50CC33', '0x736AFF', '0xF50505', '0xD54C78', '0x3334AD',
+			'0x339966', '0xF50505', '0x8BB1A1', 'BAA8BD', '0xC31812', '0x424581',
 			'0x736AFF', '0x6AFF73', '0xADB5C7', '0xC11B01', '0x9933CC',
 			'0xd070ac', '0x799191', '0x7D8E99');
 
@@ -163,15 +178,26 @@ class StatController extends AppController {
 
 		foreach ($datas as $data) {
 			$node_name = $data['status'];
-			switch($data['status']){
-				case '1':$node_name = '已确认结算金额(元)';break;
-				case '3':$node_name = '订单无效金额';break;
-				case '4':$node_name = '订单确认中金额';break;
+			switch ($data['status']) {
+				case '1':$node_name = '已确认结算金额(元)';
+					break;
+				case '3':$node_name = '订单无效金额';
+					break;
+				case '4':$node_name = '订单确认中金额';
+					break;
 			}
 			@$new_datas[$node_name][$data['buydate']] = $data['fanli'];
 		}
 
-		require_once  MYLIBS . 'ofc-library/open-flash-chart.php';
+		if ($senior) {
+			$datas = $this->OrderFanli->query("SELECT sum(p_fanli) as fanli,buydate FROM order_fanli WHERE type=2 AND buydate>'$last_date' GROUP BY buydate");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['Mi结算'][$data['buydate']] = $data['fanli'];
+			}
+		}
+
+		require_once MYLIBS . 'ofc-library/open-flash-chart.php';
 		$g = new graph();
 		$g->title('返利网每日返现统计 (每周更新-按订单下单日期)', '{font-size: 16px; color: #736AFF}');
 
@@ -215,6 +241,8 @@ class StatController extends AppController {
 		if ($_GET['date_num'])
 			$date_num = $_GET['date_num'];
 
+		$senior = $_GET['type'] == 'senior' ? true : false;
+
 		$last_date = date('Y-m-d', strtotime('-' . $date_num . ' day'));
 		$colors = array('0x9933CC', '0x50CC33', '0x736AFF', '0x736AFF', '0xD54C78', '0x3334AD',
 			'0x339966', 'F50505', '0x8BB1A1', 'BAA8BD', '0xC31812', '0x424581',
@@ -232,7 +260,15 @@ class StatController extends AppController {
 			@$new_datas['跳转次数'][$data['created']] = $data['nu'];
 		}
 
-		require_once  MYLIBS . 'ofc-library/open-flash-chart.php';
+		if ($senior) {
+			$datas = $this->StatJump->query("SELECT sum(p_price) as price, sum(p_fanli) as fanli,count(*) as nu,DATE(created) as created FROM stat_jump WHERE jumper_type='mizhe' AND DATE(created)>'$last_date' GROUP BY DATE(created)");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['Mi佣金(元)'][$data['created']] = intval($data['fanli']);
+			}
+		}
+
+		require_once MYLIBS . 'ofc-library/open-flash-chart.php';
 		$g = new graph();
 		$g->title('每日跳转统计 (实时更新)', '{font-size: 16px; color: #736AFF}');
 

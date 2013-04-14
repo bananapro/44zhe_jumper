@@ -2,7 +2,7 @@
     require_once  MYLIBS . 'ofc-library/open_flash_chart_object.php';
 ?>
 <table>
-<tr><td><?php open_flash_chart_object( 1200, 300, '/stat/dataBuy?job=51fanli&y_num=30&date_num=60' ,true, '/');?></td></tr>
-<tr><td><?php open_flash_chart_object( 1200, 300, '/stat/dataEarn?job=51fanli&y_num=30&date_num=60' ,true, '/');?></td></tr>
-<tr><td><?php open_flash_chart_object( 1200, 500, '/stat/dataJump?job=51fanli&y_num=200&date_num=60' ,true, '/');?></td></tr>
+<tr><td><?php open_flash_chart_object( 1200, 300, '/stat/dataBuy?job=51fanli&type='.$type.'&y_num=30&date_num=60' ,true, '/');?></td></tr>
+<tr><td><?php open_flash_chart_object( 1200, 300, '/stat/dataEarn?job=51fanli&type='.$type.'&y_num=30&date_num=60' ,true, '/');?></td></tr>
+<tr><td><?php open_flash_chart_object( 1200, 500, '/stat/dataJump?job=51fanli&type='.$type.'&y_num=200&date_num=60' ,true, '/');?></td></tr>
 </table>

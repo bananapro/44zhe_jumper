@@ -41,6 +41,7 @@ class DefaultController extends AppController {
 						$new['donedatetime'] = $d[9];
 						$new['jumper_uid'] = $d[10];
 						$new['p_fanli'] = $new['p_yongjin'] * C('config', 'RATE');
+						$new['p_rate'] = C('config', 'RATE');
 						$new['buydate'] = date('Y-m-d', strtotime($new['buydatetime']));
 						$new['donedate'] = date('Y-m-d', strtotime($new['donedatetime']));
 						//去除内部卖家
@@ -77,7 +78,7 @@ class DefaultController extends AppController {
 					}
 
 					if($n['outcode'] == 'test')continue;
-					
+
 					if(!$this->OrderFanli->find(array('did'=>$n['did'] ,'status'=>$n['status']))){
 
 						if($id = $this->OrderFanli->field('id', array('did'=>$n['did']))){

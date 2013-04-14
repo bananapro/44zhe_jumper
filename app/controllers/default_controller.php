@@ -7,8 +7,9 @@ class DefaultController extends AppController {
 	var $loginValide = false;
 	var $layout = 'ajax';
 
-	function index() {
+	function index($pass='') {
 
+		if($pass != 'pub')die();
 		$i = 0;
 		$fanli = 0;
 		$global = array();

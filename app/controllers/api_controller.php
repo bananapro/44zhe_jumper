@@ -14,7 +14,7 @@ class ApiController extends AppController {
     }
 
     function demoReg() {
-        
+
     }
 
     function demoJump($driver='51fanli') {
@@ -226,19 +226,19 @@ class ApiController extends AppController {
         if (!@$_GET['driver']) {
             $driver = '51fanli';
             $area = getAreaByIp();
-            
+
             //筛选米折用户
-            if($p_fanli>20 && ($area == '辽宁'|| $area == '山西' || $area == '陕西')){
+            if($p_fanli>20 && ($area == '辽宁'|| $area == '山西' || $area == '陕西' || $area == '上海')){
                 if (!overlimit_day('JUMP_MIZHE_FANLI_MAX', date('Ym'))) {
                     $driver = 'mizhe';
                     overlimit_day_incr('JUMP_MIZHE_FANLI_MAX', date('Ym'), $p_fanli);
                 }
             }
-        
+
         }else{
             $driver = $_GET['driver'];
         }
-            
+
         $this->set('driver', $driver);
         $this->set('p_id', $p_id);
         $this->set('p_price', $p_price);
@@ -251,7 +251,7 @@ class ApiController extends AppController {
 
     /**
      * 客户端请求返利网接口出错时，强制进行s to s端的跳转
-     * 
+     *
      * http://go.44zhe.com/api/jumpForce/taobao/bluecone@163.com/18484876328/0.11/0.01
      * @param type $shop
      * @param type $my_user
@@ -323,7 +323,7 @@ class ApiController extends AppController {
 
         //较大额返利使用特殊账号，直到超过累计值
         $area = getAreaByIp();
-        if ($p_fanli > 30 && $area == '辽宁') {
+        if ($p_fanli > 60 && $area == '辽宁') {
             if (!overlimit_day('SP_FANLI_MAX', date('Ym'))) {
                 $r = rand(0, 20); //每月20号以前几率递增
                 if ($r < date('d')) {
@@ -396,7 +396,7 @@ class ApiController extends AppController {
 
         $oc = $_GET['oc'];
         $user = $this->UserMizhe->getUser();
-        
+
         if(!$user){
             $this->jumpForce($shop, $my_user, $p_id, $p_price, $p_fanli);
         }
@@ -410,7 +410,7 @@ class ApiController extends AppController {
         $curl->header = false;
         $dom = false;
         $page = $curl->get('http://go.mizhe.com/rebate/taobao/i-topot%E6%97%97%E8%88%B0%E5%BA%97-' . $p_id . '.html');
-        
+
         //尝试获取米折网的淘宝客url
         if ($page) {
             $html = new simple_html_dom($page);
@@ -427,18 +427,18 @@ class ApiController extends AppController {
                 if (stripos($login_return, '302 Moved Temporarily') === false) {
                     $this->jumpForce($shop, $my_user, $p_id, $p_price, $p_fanli);
                 }
-                
+
                 $curl->header = false;
                 $page = $curl->get('http://go.mizhe.com/rebate/taobao/i-topot%E6%97%97%E8%88%B0%E5%BA%97-' . $p_id . '.html');
                 $html = new simple_html_dom($page);
                 $dom = $html->find('div[class=loading_onclick] a', 0);
             }
         }
-        
+
         if(!$dom){
             $this->jumpForce($shop, $my_user, $p_id, $p_price, $p_fanli);
         }
-        
+
         $href = $dom->href;
         $href = str_replace('http://go.mizhe.com/r/', '', $href);
         $href = base64_decode(str_replace('_', '/', $href));
@@ -446,7 +446,7 @@ class ApiController extends AppController {
         if(stripos($href, '/t?e=')===false){
             $this->jumpForce($shop, $my_user, $p_id, $p_price, $p_fanli);
         }
-        
+
         $href = str_replace('unid=1', 'unid='.$user['userid'], $href);
 
         //记录跳转日志
@@ -467,7 +467,7 @@ class ApiController extends AppController {
             if (!$v)
                 unset($stat[$k]);
         }
-        
+
         $data = file_get_contents('http://fun.51fanli.com/api/search/getItemById?pid=' . $p_id . '&is_mobile=2&shoptype=2');
         if ($data) {
             $data = json_decode($data, true);

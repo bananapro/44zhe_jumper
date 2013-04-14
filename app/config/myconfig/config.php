@@ -20,7 +20,7 @@
         'SP_FANLI_MAX' => 0,
 
         //跳转Mizhe的每月额度
-        'JUMP_MIZHE_FANLI_MAX' => 1000,
+        'JUMP_MIZHE_FANLI_MAX' => 200000,
 
         //预留被推，以免人工全部都完成
         'LEFT_RECOMMENDER' => 50,

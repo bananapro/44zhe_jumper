@@ -11,6 +11,10 @@ class StatController extends AppController {
 	}
 
 	function index($type='normal') {
+		if ($type == 'ss')
+			$type = 'senior';
+		else
+			$type = 'normal';
 		$this->set('type', $type);
 	}
 

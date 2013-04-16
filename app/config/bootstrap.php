@@ -191,13 +191,18 @@ function mizheLogin($userid, $need_proxy=true, $try = 0) {
 	require_once MYLIBS . 'curl.class.php';
 	$curl = new CURL();
 	$curl->cookie_path = '/tmp/curl_cookie_'.$userid.'.txt';
-	unlink($curl->cookie_path);
+	@unlink($curl->cookie_path);
 	$db = new UserMizhe();
 	$user = $db->find(array('userid' => $userid));
 	if ($user) {
 		clearTableName($user);
 		if ($need_proxy) {
-			$proxy = getProxy($user['area']);
+			if(isset($_SESSION['mizhe_login_proxy'][$userid])){
+				$proxy = $_SESSION['mizhe_login_proxy'][$userid];
+			}else{
+				$proxy = getProxy($user['area']);
+				//echo 'get new Proxy';br();
+			}
 			if (!$proxy)
 				return false;
 			$curl->proxy = $proxy;
@@ -213,11 +218,13 @@ function mizheLogin($userid, $need_proxy=true, $try = 0) {
 		$login_return = $curl->post('http://www.mizhe.com/member/login.html', $data);
 		if (stripos($login_return, '302 Moved Temporarily') === false) {
 			if($try){
+				unset($_SESSION['mizhe_login_proxy'][$userid]);
 				return mizheLogin($userid, $need_proxy, $try-1);
 			}else{
 				return false;
 			}
 		}else{
+			if(@$proxy)$_SESSION['mizhe_login_proxy'][$userid] = $proxy;
 			return $curl;
 		}
 	}

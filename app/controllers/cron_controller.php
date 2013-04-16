@@ -3,7 +3,7 @@
 class CronController extends AppController {
 
 	var $name = 'Cron';
-	var $uses = array('UserFanli', 'OrderFanli');
+	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe');
 
 	//每日执行一次，更新用户的ID
 	function updateUserid($type = 'fanli') {
@@ -72,6 +72,51 @@ class CronController extends AppController {
 
 			br();
 			echo 'done!';
+			die();
+		}
+
+		if ($type == 'mizhe') {
+
+			$users = $this->UserMizhe->findAll();
+			clearTableName($users);
+
+			require_once MYLIBS . 'html_dom.class.php';
+
+			foreach ($users as $user) {
+				$succ = false;
+				$curl = mizheLogin($user['userid'], true);
+				if ($curl) {
+					$i = $curl->get('http://i.mizhe.com/');
+					if ($i) {
+						$html = new simple_html_dom($i);
+						$dom = $html->find('span[class=green-price] em', 0);
+						if ($dom) {
+
+							$cash = 0;
+							$cash = $dom->text();
+
+							$dom = $html->find('span[class=price] em', 0);
+							$cash_history = 0;
+							$cash_history = $dom->text();
+
+							if($cash || $cash_history){
+								$succ = true;
+								$this->UserMizhe->save(array('userid'=>$user['userid'], 'cash'=>$cash, 'cash_history'=>$cash_history));
+								echo "{$user['userid']} cash:{$cash} cash_history: {$cash_history}";
+								br();
+							}
+						}
+					}
+				}
+
+				if(!$succ){
+					$succ = false;
+					echo "{$user['userid']} cash update error!";
+					br();
+				}
+			}
+
+			echo 'done';
 			die();
 		}
 	}
@@ -168,7 +213,8 @@ ETO;
 		$max_did = $this->OrderFanli->find('', 'did', 'did desc');
 		clearTableName($max_did);
 		$max_did = intval($max_did['did']);
-		if(!$max_did)$max_did = '70273945';
+		if (!$max_did)
+			$max_did = '70273945';
 		for ($i = 0; $i < $page; $i++) {
 			$new = array_slice($userids, $i * $page_size, $page_size);
 			$ids = join($new, ',');
@@ -177,11 +223,11 @@ ETO;
 
 		echo join(";<br /><br />", $sql_arr);
 
-		$orders = $this->OrderFanli->findAll(array('status'=>array(2,3,4,5)));
+		$orders = $this->OrderFanli->findAll(array('status' => array(2, 3, 4, 5)));
 		$dids = fieldSet($orders, 'did');
 		$dids = join($dids, ',');
 
-		if($dids){
+		if ($dids) {
 			$sql_change_status = str_replace('{did}', $dids, $sql_change_status);
 			br(2);
 			echo $sql_change_status;

@@ -12,11 +12,21 @@ class ApiController extends AppController {
 		$curl = mizheLogin(5251301, true);
 		if ($curl) {
 			$i = $curl->get('http://i.mizhe.com/');
-			$html = new simple_html_dom($i);
-			$dom = $html->find('span[class=green-price] em', 0);
-			echo $dom->text();
-		}else{
-			echo 'die';
+			if($i){
+				$html = new simple_html_dom($i);
+				$dom = $html->find('span[class=green-price] em', 0);
+				if($dom){
+					$cash = $dom->text();
+
+					$dom = $html->find('span[class=price] em', 0);
+					$cash_history = $dom->text();
+
+					$dom = $html->find('span[class=green-price] em', 0);
+					$mifen = $dom->text();
+
+					echo "cash:{$cash} cash_history: {$cash_history} mifen:{$mifen}";
+				}
+			}
 		}
 		die();
 	}

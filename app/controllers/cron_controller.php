@@ -83,6 +83,14 @@ class CronController extends AppController {
 			require_once MYLIBS . 'html_dom.class.php';
 
 			foreach ($users as $user) {
+
+				//防止一个session内重复更新
+				if(@$_SESSION['mizhe_update'][$user['userid']]){
+					echo "{$user['userid']} updated this session";
+					br();
+					continue;
+				}
+				
 				$succ = false;
 				$curl = mizheLogin($user['userid'], true);
 				if ($curl) {
@@ -102,6 +110,7 @@ class CronController extends AppController {
 							if($cash || $cash_history){
 								$succ = true;
 								$this->UserMizhe->save(array('userid'=>$user['userid'], 'cash'=>$cash, 'cash_history'=>$cash_history));
+								$_SESSION['mizhe_update'][$user['userid']] = true;
 								echo "{$user['userid']} cash:{$cash} cash_history: {$cash_history}";
 								br();
 							}
@@ -110,7 +119,9 @@ class CronController extends AppController {
 				}
 
 				if(!$succ){
+					//更新不成功则应重新换代理
 					$succ = false;
+					unset($_SESSION['mizhe_login_proxy'][$user['userid']]);
 					echo "{$user['userid']} cash update error!";
 					br();
 				}

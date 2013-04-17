@@ -230,7 +230,7 @@ class ApiController extends AppController {
 			$area = getAreaByIp();
 
 			//筛选米折用户
-			if ($p_fanli > 3 && ($area == '辽宁' || $area == '山西' || $area == '陕西' || $area == '上海')) {
+			if ($p_fanli > 3) {
 				if (!overlimit_day('JUMP_MIZHE_FANLI_MAX', date('Ym'))) {
 					$driver = 'mizhe';
 					overlimit_day_incr('JUMP_MIZHE_FANLI_MAX', date('Ym'), $p_fanli);
@@ -403,6 +403,10 @@ class ApiController extends AppController {
 		$oc = $_GET['oc'];
 		$user = $this->UserMizhe->getUser();
 		if (!$user) {
+			$user = $this->UserMizhe->getUser('辽宁');
+		}
+
+		if(!$user){
 			$this->jumpForce($shop, $my_user, $p_id, $p_price, $p_fanli);
 		}
 

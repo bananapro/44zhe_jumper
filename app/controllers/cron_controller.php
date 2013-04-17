@@ -3,7 +3,7 @@
 class CronController extends AppController {
 
 	var $name = 'Cron';
-	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe');
+	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe', 'StatJump');
 
 	//每日执行一次，更新用户的ID
 	function updateUserid($type = 'fanli') {
@@ -81,16 +81,15 @@ class CronController extends AppController {
 			clearTableName($users);
 
 			require_once MYLIBS . 'html_dom.class.php';
-
 			foreach ($users as $user) {
 
 				//防止一个session内重复更新
-				if(@$_SESSION['mizhe_update'][$user['userid']]){
+				if (@$_SESSION['mizhe_update'][$user['userid']]) {
 					echo "{$user['userid']} updated this session";
 					br();
 					continue;
 				}
-				
+
 				$succ = false;
 				$curl = mizheLogin($user['userid'], true);
 				if ($curl) {
@@ -107,9 +106,10 @@ class CronController extends AppController {
 							$cash_history = 0;
 							$cash_history = $dom->text();
 
-							if($cash || $cash_history){
+							if ($cash || $cash_history) {
 								$succ = true;
-								$this->UserMizhe->save(array('userid'=>$user['userid'], 'cash'=>$cash, 'cash_history'=>$cash_history));
+								$this->updateMizheOrder($user['userid'], $curl);
+								$this->UserMizhe->save(array('userid' => $user['userid'], 'cash' => $cash, 'cash_history' => $cash_history));
 								$_SESSION['mizhe_update'][$user['userid']] = true;
 								echo "{$user['userid']} cash:{$cash} cash_history: {$cash_history}";
 								br();
@@ -118,7 +118,7 @@ class CronController extends AppController {
 					}
 				}
 
-				if(!$succ){
+				if (!$succ) {
 					//更新不成功则应重新换代理
 					$succ = false;
 					unset($_SESSION['mizhe_login_proxy'][$user['userid']]);
@@ -129,6 +129,111 @@ class CronController extends AppController {
 
 			echo 'done';
 			die();
+		}
+	}
+
+	function updateMizheOrder($userid, $curl) {
+
+		$i = $curl->get('http://i.mizhe.com/order/income.html');
+		if ($i) {
+			$html = new simple_html_dom($i);
+			$doms = $html->find('ul[class=order-list-main] li');
+			$new = array();
+			foreach ($doms as $dom) {
+				$link = $dom->find('a', 0);
+				if ($link) {
+					$link = $link->href;
+					$return = preg_match('/([0-9]+)/i', $link, $matches);
+					if ($return) {
+						$order = array();
+						$order['p_id'] = $matches[1];
+						$p_title = $dom->find('div[class=title] a', 0);
+						$order['p_title'] = $p_title->text();
+
+						$num = $dom->find('div[class=title] p', 0);
+						if (preg_match('/([0-9]+)件/i', $num->text(), $matches)) {
+							$order['num'] = intval($matches[1]); //可能存在同一订单多个
+						}
+
+						$seller = $dom->find('div[class=title] p[class=clearfix] a', 0);
+						$order['p_seller'] = $seller->text();
+
+						$ordernum = $dom->find('div[class=date] b', 0);
+						$order['ordernum'] = $ordernum->text();
+
+						$donedate = $dom->find('div[class=date] p', 1);
+						$order['donedate'] = $donedate->text();
+						$order['donedatetime'] = $donedate->text();
+
+						$y = md5($order['p_title']);
+						$order['did'] = '10' . strtotime($order['donedatetime']) . hexdec($y[1] . $y[2]);
+
+						$p_price = $dom->find('div[class=price] em', 0);
+						$order['p_price'] = $p_price->text();
+
+						$p_yongjin = $dom->find('div[class=rebate] em', 0);
+						$p_yongjin = $p_yongjin->text();
+						$order['p_yongjin'] = $p_yongjin * 100 / 60; //米折网折扣为60%
+						$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
+
+						$order['p_rate'] = C('config', 'RATE');
+						$order['jumper_uid'] = $userid;
+						//去除内部卖家
+						if (in_array($order['p_seller'], C('config', 'HOLD_SELLER'))) {
+							continue;
+						}
+
+						$order['type'] = 2;
+
+						//如果能正常访问到页面，但解析错误，报警
+						if ($order['p_price'] < 1 || !$order['p_title']) {
+							alert('rsync mizhe order', $userid . ' error');
+							continue;
+						}
+
+						//关联jump记录
+						$date_start = date('Y-m-d', strtotime($order['donedatetime']) - 12 * 24 * 3600);
+						$hit = $this->StatJump->find("p_id = {$order['p_id']} AND created>'{$date_start}'");
+
+						if ($hit) {
+							clearTableName($hit);
+							$global[$order['ordernum']] = $hit['outcode'];
+							$global_jumper[$hit['jumper_uid']][$order['p_seller']] = $hit['outcode'];
+						}
+
+						$new[] = $order;
+					}
+				}
+			}
+
+			$fanli = 0;
+			$i = 0;
+			foreach ($new as $n) {
+
+				if (isset($global[$n['ordernum']])) {
+					$n['outcode'] = $global[$n['ordernum']];
+				}
+				else {
+					if (isset($global_jumper[$n['jumper_uid']][$n['p_seller']])) {
+						$n['outcode'] = $global_jumper[$n['jumper_uid']][$n['p_seller']];
+					}
+				}
+
+				if ($n['outcode'] == 'test')
+					continue;
+
+				if ($this->OrderFanli->find(array('did' => $n['did'])))
+					continue;
+
+				$this->OrderFanli->create();
+				$this->OrderFanli->save($n);
+				$fanli += $n['p_fanli'];
+				$i++;
+			}
+			$fanli = floatval($fanli);
+			$message = "{$userid} orders: {$i} fanli: {$fanli} rate: " . C('config', 'RATE') * 100 . "%";
+			echo $message;
+			br(2);
 		}
 	}
 

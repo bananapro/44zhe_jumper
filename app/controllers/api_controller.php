@@ -3,31 +3,11 @@
 class ApiController extends AppController {
 
 	var $name = 'Api';
-	var $uses = array('UserFanli', 'UserMizhe', 'UserCandidate', 'StatJump', 'StatRegFailed');
+	var $uses = array('UserFanli', 'UserMizhe', 'UserCandidate', 'StatJump', 'StatRegFailed', 'StatJump', 'OrderFanli');
 	var $layout = 'ajax';
 
 	function demo() {
 
-		require_once MYLIBS . 'html_dom.class.php';
-		$curl = mizheLogin(5251301, true);
-		if ($curl) {
-			$i = $curl->get('http://i.mizhe.com/');
-			if($i){
-				$html = new simple_html_dom($i);
-				$dom = $html->find('span[class=green-price] em', 0);
-				if($dom){
-					$cash = $dom->text();
-
-					$dom = $html->find('span[class=price] em', 0);
-					$cash_history = $dom->text();
-
-					$dom = $html->find('span[class=green-price] em', 0);
-					$mifen = $dom->text();
-
-					echo "cash:{$cash} cash_history: {$cash_history} mifen:{$mifen}";
-				}
-			}
-		}
 		die();
 	}
 
@@ -250,7 +230,7 @@ class ApiController extends AppController {
 			$area = getAreaByIp();
 
 			//筛选米折用户
-			if ($p_fanli > 20 && ($area == '辽宁' || $area == '山西' || $area == '陕西' || $area == '上海')) {
+			if ($p_fanli > 3 && ($area == '辽宁' || $area == '山西' || $area == '陕西' || $area == '上海')) {
 				if (!overlimit_day('JUMP_MIZHE_FANLI_MAX', date('Ym'))) {
 					$driver = 'mizhe';
 					overlimit_day_incr('JUMP_MIZHE_FANLI_MAX', date('Ym'), $p_fanli);

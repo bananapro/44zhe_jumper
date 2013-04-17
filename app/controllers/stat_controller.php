@@ -3,7 +3,7 @@
 class StatController extends AppController {
 
 	var $name = 'Stat';
-	var $uses = array('UserFanli', 'StatJump', 'UserCandidate', 'Alert', 'OrderFanli');
+	var $uses = array('UserFanli', 'StatJump', 'UserCandidate', 'Alert', 'OrderFanli', 'UserMizhe');
 
 	function beforeRender() {
 		parent::beforeRender();
@@ -47,6 +47,9 @@ class StatController extends AppController {
 
 		$s['total_cash'] = $this->UserFanli->findSum('fl_cash');
 		$s['total_fb'] = $this->UserFanli->findSum('fl_fb');
+
+		$s['total_mizhe_cash'] = $this->UserMizhe->findSum('cash');
+		$s['total_mizhe_history_cash'] = $this->UserMizhe->findSum('cash_history');
 
 		$this->set('s', $s);
 

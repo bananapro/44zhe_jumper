@@ -42,7 +42,6 @@
         <td class="ec">昨日总佣金</td>
         <td class="fl"><?=$s['y_fanli_num']?></td>
     </tr>
-    
     <tr>
         <td class="ec">今日注册数</td>
         <td class="fl"><?=$s['t_reg_num']?></td>
@@ -53,7 +52,6 @@
         <td class="ec">今日总佣金</td>
         <td class="fl"><?=$s['t_fanli_num']?></td>
     </tr>
-    
     <tr>
         <td class="ec">昨日小单数</td>
         <td class="fl"><?=$s['y_r_num']?></td>
@@ -63,6 +61,16 @@
         <td class="fl"><?=$s['total_cash']?></td>
         <td class="ec">当前FB</td>
         <td class="fl"><?=$s['total_fb']?></td>
+    </tr>
+    <tr>
+        <td class="ec">米折现金</td>
+        <td class="fl"><?=$s['total_mizhe_cash']?></td>
+        <td class="ec">历史现金</td>
+        <td class="fl"><?=($s['total_mizhe_history_cash'] - $s['total_mizhe_cash'])?></td>
+        <td class="ec"></td>
+        <td class="fl"></td>
+        <td class="ec"></td>
+        <td class="fl"></td>
     </tr>
 </table>
 
@@ -115,7 +123,7 @@
         <td class="ec" style="white-space:nowrap" width="20%"><?=$alert['created']?></td>
         <td class="fl" style="white-space:nowrap" width="13%"><?=$alert['target']?></td>
         <td class="ec" style="white-space:nowrap" width="13%"><?=$alert['area']?></td>
-        <td class="fl" style="text-align: left"><?=$alert['info']?></td>      
+        <td class="fl" style="text-align: left"><?=$alert['info']?></td>
     </tr>
     <?php endforeach;?>
 </table>

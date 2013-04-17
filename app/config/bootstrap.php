@@ -217,8 +217,8 @@ function mizheLogin($userid, $need_proxy=true, $try = 0) {
 		$data['remember-me'] = 'on';
 		$login_return = $curl->post('http://www.mizhe.com/member/login.html', $data);
 		if (stripos($login_return, '302 Moved Temporarily') === false) {
+			unset($_SESSION['mizhe_login_proxy'][$userid]);
 			if($try){
-				unset($_SESSION['mizhe_login_proxy'][$userid]);
 				return mizheLogin($userid, $need_proxy, $try-1);
 			}else{
 				return false;

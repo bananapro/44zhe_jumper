@@ -92,7 +92,7 @@ class DefaultController extends AppController {
 						$i++;
 					}
 				}
-				$fanli = intval($fanli);
+				$fanli = floatval($fanli);
 				$message = "orders: {$i} fanli: {$fanli} rate: " . C('config', 'RATE')*100 . "%";
 			}
 			else {

@@ -38,6 +38,12 @@
 		'HOLD_SELLER' => array('bluecone'),
 
 		//结算费率
-		'RATE' => 0.45
+		'RATE' => 0.45,
+
+		//代理提取订单号
+		'PROXY_ORDER' => '240588199581457',
+
+		//默认登陆米折的账户，用于读取跳转链接
+		'MIZHE_DEFAULT_LOGIN_USERID' => 5249518,
     )
 ?>

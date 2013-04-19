@@ -7,7 +7,8 @@ class ApiController extends AppController {
 	var $layout = 'ajax';
 
 	function demo() {
-
+		$user = $this->UserFanli->getPoolSpan('', 2);
+		pr($user);
 		die();
 	}
 
@@ -230,7 +231,7 @@ class ApiController extends AppController {
 			$area = getAreaByIp();
 
 			//筛选米折用户
-			if ($p_fanli > 3) {
+			if ($p_fanli > 5) {
 				if (!overlimit_day('JUMP_MIZHE_FANLI_MAX', date('Ym'))) {
 					$driver = 'mizhe';
 					overlimit_day_incr('JUMP_MIZHE_FANLI_MAX', date('Ym'), $p_fanli);
@@ -313,10 +314,29 @@ class ApiController extends AppController {
 			}
 		}
 
+		//改良算法，小于5元跳推荐，12天后无推荐成功恢复推手身份
+		if ($p_fanli <= 5) {
 
-		//如果原价超过30，返利>0则调用被推池
-		if (($p_price > 35 && $p_fanli < 2.1 && $p_fanli > 0)) {
-			$user = $this->UserFanli->getPoolSpan();
+			if($p_price >= 30){
+
+				//专门用来测试返利网模式跳转
+				if ($my_user == 'bluecone@163.com' && getAreaByIp()=='上海') {
+					$user = $this->UserFanli->getPoolSpan('辽宁');
+				}else{
+					$user = $this->UserFanli->getPoolSpan();
+				}
+
+                if(!$user){
+                    alert('Pool Error', 'level 1 empty');
+                }
+
+			}else{
+				$user = $this->UserFanli->getPoolSpan('', 2);
+                if(!$user){
+                    alert('Pool Error', 'level 2 empty');
+                }
+			}
+
 			if ($user) {
 				//如果是被推池跳转则永久剔除
 				$this->UserFanli->save(array('userid' => $user['userid'], 'status' => 2, 'pause_date' => date('Y-m-d H:i:s')));

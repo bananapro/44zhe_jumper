@@ -19,15 +19,22 @@ class User extends AppModel {
         return $user;
     }
 
-    function getPoolSpan($area){
+    function getPoolSpan($area = '', $level=1){
 
+		//level 1 - 没用过的推手(用于直接给金额大于30的跳转)
+		//level 2 - 用过的推手(用户给金额小于30的跳转)
         if(!$area){
             $area = getAreaByIp(getip());
         }
 
-        $user = $this->find(array('role'=>3, 'status'=>1, 'area'=>$area), '', 'rand()');
+		if($level==1){
+			$user = $this->query("SELECT * FROM user_fanli WHERE status=1 AND role=3 AND area='{$area}' AND pause_date='0000-00-00 00:00:00' LIMIT 1");
+		}else{
+			$user = $this->query("SELECT * FROM user_fanli WHERE status=1 AND role=3 AND area='{$area}' AND pause_date>'2013-04-01' LIMIT 1");
+		}
+
         clearTableName($user);
-        return $user;
+        return $user[0];
     }
 }
 

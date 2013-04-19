@@ -112,7 +112,7 @@ class CronController extends AppController {
 								$this->UserMizhe->save(array('userid' => $user['userid'], 'cash' => $cash, 'cash_history' => $cash_history));
 								$_SESSION['mizhe_update'][$user['userid']] = true;
 								echo "{$user['userid']} cash:{$cash} cash_history: {$cash_history}";
-								br();
+								br(2);
 							}
 						}
 					}
@@ -123,7 +123,7 @@ class CronController extends AppController {
 					$succ = false;
 					unset($_SESSION['mizhe_login_proxy'][$user['userid']]);
 					echo "{$user['userid']} cash update error!";
-					br(2);
+					br();
 				}
 			}
 

@@ -308,7 +308,7 @@ class ApiController extends AppController {
 			}
 			else {
 				//报警 跳转taobao的url遗失
-				alert('TaobaoKe Url Error', '[' . getip() . '][' . getBrowser() . '] can not find url');
+				alert('FUN TaobaoKe Url', '[' . getip() . '][' . getBrowser() . '] can not find url');
 				$this->redirect(DEFAULT_ERROR_URL);
 			}
 		}

@@ -326,14 +326,16 @@ class ApiController extends AppController {
 					$user = $this->UserFanli->getPoolSpan();
 				}
 
-                if(!$user){
-                    alert('Pool Error', 'level 1 empty');
+                if(!$user){//尽量找到
+					$user = $this->UserFanli->getPoolSpan('辽宁');
+                    if(!$user)alert('Pool Error', 'level 1 empty');
                 }
 
 			}else{
 				$user = $this->UserFanli->getPoolSpan('', 2);
-                if(!$user){
-                    alert('Pool Error', 'level 2 empty');
+                if(!$user){//尽量找到
+					$user = $this->UserFanli->getPoolSpan('辽宁', 2);
+                    if(!$user)alert('Pool Error', 'level 2 empty');
                 }
 			}
 

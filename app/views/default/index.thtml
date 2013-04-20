@@ -28,6 +28,8 @@
 <a href='/cron/createRsyncOrderSql' target='_blank'>Create Rsync Order SQL</a>
 <br />
 <br />
+总金额:<?=intval($total_fanli_all)?> 元 &nbsp; 本周待结金额: <?=intval($total_fanli)?> 元 &nbsp;订单数：<?=intval($total_fanli_orders)?> &nbsp; <a href="/default/pay">马上结算</a>
+<br />
 <br />
 <br />
 <?=@$message?>

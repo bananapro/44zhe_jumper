@@ -35,7 +35,14 @@ class DefaultController extends AppController {
 		$i = 0;
 		$fanli = 0;
 		$global = array();
+		$message = '';
 		$new2 = array();
+
+		$last = date('Y-m-d');
+		$total_fanli = $this->OrderFanli->findSum('p_fanli', "payed=0 AND status=1 AND donedate<'{$last}'");
+		$total_fanli_all = $this->OrderFanli->findSum('p_fanli', "payed=0");
+		$total_fanli_orders = $this->OrderFanli->findCount("payed=0 AND status=1 AND donedate<'{$last}'");
+		//提交了订单入库
 		if (isset($_FILES['file'])) {
 			$file = file_get_contents($_FILES["file"]["tmp_name"]);
 
@@ -145,6 +152,26 @@ class DefaultController extends AppController {
 			}
 		}
 		$this->set('message', $message);
+		$this->set('total_fanli', $total_fanli);
+		$this->set('total_fanli_orders', $total_fanli_orders);
+		$this->set('total_fanli_all', $total_fanli_all);
+	}
+
+	function pay(){
+
+		$last = date('Y-m-d');
+		$orders = $this->OrderFanli->findAll("payed=0 AND status=1 AND donedate<'{$last}'");
+		clearTableName($orders);
+		$i = 0;
+		$fanli = 0;
+		foreach($orders as $order){
+			$this->OrderFanli->save(array('id'=>$order['id'], 'payed'=>1, 'payed_date'=>$last));
+			$fanli += $order['p_fanli'];
+			$i++;
+		}
+
+		echo "<script>alert('payed {$i} orders {$fanli}');window.location.href='/Default/index/pub'</script>";
+		die();
 	}
 
 }

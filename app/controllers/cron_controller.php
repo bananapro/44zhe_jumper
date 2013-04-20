@@ -326,7 +326,7 @@ ETO;
 
 		$sql_arr = array();
 
-		$max_did = $this->OrderFanli->find('', 'did', 'did desc');
+		$max_did = $this->OrderFanli->find(array('type'=>1), 'did', 'did desc');
 		clearTableName($max_did);
 		$max_did = intval($max_did['did']);
 		if (!$max_did)

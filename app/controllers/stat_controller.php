@@ -109,9 +109,9 @@ class StatController extends AppController {
 			switch ($data['status']) {
 				case '1':$node_name = '已确认结算金额(元)';
 					break;
-				case '3':$node_name = '订单确认中(10天)';
+				case '3':$node_name = '订单确认中(需10天)';
 					break;
-				case '4':$node_name = '订单确认中(20天)';
+				case '4':$node_name = '订单确认中(需20天)';
 					break;
 			}
 			@$new_datas[$node_name][$data['donedate']] = $data['fanli'];
@@ -188,9 +188,9 @@ class StatController extends AppController {
 			switch ($data['status']) {
 				case '1':$node_name = '已确认结算金额(元)';
 					break;
-				case '3':$node_name = '订单无效金额(10天)';
+				case '3':$node_name = '订单无效金额(需10天)';
 					break;
-				case '4':$node_name = '订单确认中(20天)';
+				case '4':$node_name = '订单确认中(需20天)';
 					break;
 			}
 			@$new_datas[$node_name][$data['buydate']] = $data['fanli'];

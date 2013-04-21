@@ -188,7 +188,7 @@ class StatController extends AppController {
 			switch ($data['status']) {
 				case '1':$node_name = '已确认结算金额(元)';
 					break;
-				case '3':$node_name = '订单无效金额(需10天)';
+				case '3':$node_name = '订单确认中(需10天)';
 					break;
 				case '4':$node_name = '订单确认中(需20天)';
 					break;
@@ -308,6 +308,7 @@ class StatController extends AppController {
 		die();
 	}
 
+	//最新跳转记录，for集东
 	function jump($date = null) {
 		if (!$date)
 			$date = date('Y-m-d');

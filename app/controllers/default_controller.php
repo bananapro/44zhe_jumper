@@ -3,7 +3,7 @@
 class DefaultController extends AppController {
 
 	var $name = 'Default';
-	var $uses = array('OrderFanli', 'StatJump', 'UserFanli');
+	var $uses = array('OrderFanli', 'StatJump', 'UserFanli', 'UserMizhe');
 	var $loginValide = false;
 
 	function index($pass='') {
@@ -15,11 +15,6 @@ class DefaultController extends AppController {
 		$global = array();
 		$message = '';
 		$new2 = array();
-
-		$last = date('Y-m-d');
-		$total_fanli = $this->OrderFanli->findSum('p_fanli', "payed=0 AND status=1 AND donedate<'{$last}'");
-		$total_fanli_all = $this->OrderFanli->findSum('p_fanli', "payed=0");
-		$total_fanli_orders = $this->OrderFanli->findCount("payed=0 AND status=1 AND donedate<'{$last}'");
 		//提交了订单入库
 		if (isset($_FILES['file'])) {
 			$file = file_get_contents($_FILES["file"]["tmp_name"]);
@@ -98,7 +93,7 @@ class DefaultController extends AppController {
 
 						$this->OrderFanli->create();
 						$this->OrderFanli->save($n);
-						$fanli += $n['p_fanli'];
+						$fanli += number_format($n['p_fanli'], 2);
 						$i++;
 					}
 				}
@@ -130,14 +125,36 @@ class DefaultController extends AppController {
 			}
 		}
 
-		$this->up();
+		$this->doRestore();
+
+		$total_date = date('Y-m-d', time()-24*3600);
+		$total_fanli = $this->OrderFanli->findSum('p_fanli', "payed=0 AND status=1 AND donedate<='{$total_date}'");
+		$total_yongjin = $this->OrderFanli->findSum('p_yongjin', "payed=0 AND status=1 AND donedate<='{$total_date}'");
+		$total_fanli_orders = $this->OrderFanli->findCount("payed=0 AND status=1 AND donedate<='{$total_date}'");
+
+		//总利润 = 返利网总历史返利 + 返利网总历史现金 + 米折网总历史现金 - 已结算
+		$history_51fanli_fanli = $this->UserFanli->findSum('fl_cash');
+		$history_51fanli_fb = $this->UserFanli->findSum('fl_fb')/100;
+		$history_mizhe_cash = $this->UserMizhe->findSum('cash_history');
+		$total_payed = $this->OrderFanli->findSum('p_fanli', array('status'=>1));
+		$total_earn = number_format($history_51fanli_fanli + $history_51fanli_fb + $history_mizhe_cash - $total_payed, 2);
+
+		//等待支取
+		$waiting_51fanli_fanli = $this->UserFanli->findSum('fl_cash');
+		$waiting_51fanli_fb = $this->UserFanli->findSum('fl_fb')/100;
+		$waiting_mizhe_cash = $this->UserMizhe->findSum('cash');
+		$total_waiting = number_format($waiting_51fanli_fanli + $waiting_51fanli_fb + $waiting_mizhe_cash, 2);
+
 		$this->set('message', $message);
 		$this->set('total_fanli', $total_fanli);
+		$this->set('total_yongjin', $total_yongjin);
+		$this->set('total_date', $total_date);
 		$this->set('total_fanli_orders', $total_fanli_orders);
-		$this->set('total_fanli_all', $total_fanli_all);
+		$this->set('total_waiting', $total_waiting);
+		$this->set('total_earn', $total_earn);
 	}
 
-	function pay(){
+	function doPay(){
 
 		$last = date('Y-m-d');
 		$orders = $this->OrderFanli->findAll("payed=0 AND status=1 AND donedate<'{$last}'");
@@ -156,7 +173,7 @@ class DefaultController extends AppController {
 
 	//15天以前被暂停的推手，如果账户无资产，则恢复身份并清空pause_date
 	//如果有资产，则查询order判断购物金额是否大于30，如果小于30则重新恢复身份
-	function up() {
+	function doRestore() {
 
 		$weekdate = date('Y-m-d', time() - 12 * 24 * 3600);
 		$weekdate2 = date('Y-m-d', time() - 26 * 24 * 3600);

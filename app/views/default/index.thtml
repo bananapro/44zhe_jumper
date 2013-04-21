@@ -1,3 +1,4 @@
+<div style="font-size:14px; font-weight:bold; text-align:left; padding:20px">
 <a href='/api/demoJump' target='_blank'>TEST 51fanli Jump</a>
 <br />
 <br />
@@ -22,13 +23,18 @@
 <a href='/api/doRecommendTask/xxxxxx' target='_blank'>Do Jump Task</a>
 <br />
 <br />
+<a href='/stat/basic' target='_blank'>Stat Basic</a>
+<br />
+<br />
 <a href='/stat/index/ss' target='_blank'>Stat Center</a>
 <br />
 <br />
 <a href='/cron/createRsyncOrderSql' target='_blank'>Create Rsync Order SQL</a>
 <br />
 <br />
-总金额:<?=intval($total_fanli_all)?> 元 &nbsp; 本周待结金额: <?=intval($total_fanli)?> 元 &nbsp;订单数：<?=intval($total_fanli_orders)?> &nbsp; <a href="/default/pay">马上结算</a>
+<a href="/default/waitingDetail" target="_blank">渠道总利润: <?=intval($total_earn)?> 元(SP) &nbsp; 待领取：<?=$total_waiting?> 元</a><br /><br />
+至<?=$total_date?> :<br />总佣金: <?=intval($total_yongjin)?> 元 &nbsp; 扣除渠道(<?=C('config', 'RATE')*100?>%): <?=intval($total_fanli)?> 元 &nbsp;订单数：<?=intval($total_fanli_orders)?> &nbsp; <br /><br />
+<a href="/default/doPay">马上结算</a>
 <br />
 <br />
 <br />
@@ -40,4 +46,4 @@ update orders
 <input type="file" value="" name="file"/>
 <input type="submit" value="submit" />
 </form>
-
+</div>

@@ -40,8 +40,8 @@ class CronController extends AppController {
 
 			//$users = $this->UserFanli->findAll(array('role' => array(1, 2, 3), 'status' => array(1, 3)));
 			$weekdate = date('Y-m-d', time() - 15 * 24 * 3600);
-			$daydiff = date('Y-m-d', time() - 7 * 24 * 3600);
-			//新建用户必须满7天以上才需要同步资产
+			$daydiff = date('Y-m-d', time() - 3 * 24 * 3600);
+			//新建用户必须满3天以上才需要同步资产
 			$users = $this->UserFanli->findAll("(role IN(1,2) AND status IN(1,3) AND created < '{$daydiff}') OR (status = 2 AND pause_date > '{$weekdate}')");
 			echo "update " . count($users) . " users";
 			br(2);
@@ -173,7 +173,7 @@ class CronController extends AppController {
 
 						$p_yongjin = $dom->find('div[class=rebate] em', 0);
 						$p_yongjin = $p_yongjin->text();
-						$order['p_yongjin'] = $p_yongjin * 100 / 60; //米折网折扣为60%
+						$order['p_yongjin'] = $p_yongjin * 100 / C('config', 'MIZHE_RATE'); //米折网折扣
 						$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
 
 						$order['p_rate'] = C('config', 'RATE');

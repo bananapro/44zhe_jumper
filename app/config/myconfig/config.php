@@ -44,7 +44,7 @@
 		'MIZHE_RATE' => 60,
 
 		//代理提取订单号
-		'PROXY_ORDER' => '240588199581457',
+		'PROXY_ORDER' => '332416764371457',
 
 		//默认登陆米折的账户，用于读取跳转链接
 		'MIZHE_DEFAULT_LOGIN_USERID' => 5249518,

@@ -165,6 +165,10 @@ class CronController extends AppController {
 						$order['donedate'] = $donedate->text();
 						$order['donedatetime'] = $donedate->text();
 
+						//下单日期反推10天
+						$order['buydate'] = date('Y-m-d', strtotime($order['donedate'])-10*24*3600);
+						$order['buydatetime'] = date('Y-m-d H:i:s', strtotime($order['donedatetime'])-10*24*3600);
+
 						$y = md5($order['p_title']);
 						$order['did'] = '10' . strtotime($order['donedatetime']) . hexdec($y[1] . $y[2]);
 

@@ -77,7 +77,7 @@ class CronController extends AppController {
 
 		if ($type == 'mizhe') {
 
-			$users = $this->UserMizhe->findAll(array('status'=>1));
+			$users = $this->UserMizhe->findAll(array('status'=>array(0,1)));
 			clearTableName($users);
 
 			require_once MYLIBS . 'html_dom.class.php';

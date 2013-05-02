@@ -123,7 +123,7 @@ class CronController extends AppController {
 					$succ = false;
 					unset($_SESSION['mizhe_login_proxy'][$user['userid']]);
 					echo "{$user['userid']} cash update error!";
-					br();
+					br(2);
 				}
 			}
 
@@ -230,7 +230,7 @@ class CronController extends AppController {
 				$fanli += $n['p_fanli'];
 				$i++;
 			}
-			$fanli = floatval($fanli);
+			$fanli = intval($fanli);
 			$message = "{$userid} orders: {$i} fanli: {$fanli} rate: " . C('config', 'RATE') * 100 . "%";
 			echo $message;
 			br();

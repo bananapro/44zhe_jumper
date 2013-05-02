@@ -128,16 +128,17 @@ class DefaultController extends AppController {
 		$this->doRestore();
 
 		$total_date = date('Y-m-d', time()-24*3600);
+		$total_51fanli_earn = $this->UserFanli->findSum('fl_cash');
 		$total_fanli = $this->OrderFanli->findSum('p_fanli', "payed=0 AND status=1 AND donedate<='{$total_date}'");
 		$total_yongjin = $this->OrderFanli->findSum('p_yongjin', "payed=0 AND status=1 AND donedate<='{$total_date}'");
 		$total_fanli_orders = $this->OrderFanli->findCount("payed=0 AND status=1 AND donedate<='{$total_date}'");
 
-		//总利润 = 返利网总历史返利 + 返利网总历史现金 + 米折网总历史现金 - 已结算
-		$history_51fanli_fanli = $this->UserFanli->findSum('fl_cash');
-		$history_51fanli_fb = $this->UserFanli->findSum('fl_fb')/100;
+		//总利润 = 返利网现金 + 米折网总历史现金 - 已结算
+		//$history_51fanli_fanli = $this->UserFanli->findSum('fl_cash');
+		//$history_51fanli_fb = $this->UserFanli->findSum('fl_fb')/100;
 		$history_mizhe_cash = $this->UserMizhe->findSum('cash_history');
-		$total_payed = $this->OrderFanli->findSum('p_fanli', array('status'=>1));
-		$total_earn = number_format($history_51fanli_fanli + $history_51fanli_fb + $history_mizhe_cash - $total_payed, 2);
+		$total_mizhe_payed = $this->OrderFanli->findSum('p_fanli', array('status'=>1, 'type'=>2));
+		$total_earn = number_format($total_51fanli_earn + $history_mizhe_cash - $total_mizhe_payed, 2);
 
 		//等待支取
 		$waiting_51fanli_fanli = $this->UserFanli->findSum('fl_cash');

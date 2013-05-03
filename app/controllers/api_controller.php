@@ -314,8 +314,8 @@ class ApiController extends AppController {
 			}
 		}
 
-		//改良算法，小于5元跳推荐，12天后无推荐成功恢复推手身份
-		if ($p_fanli <= 5) {
+		//改良算法，小于3元跳推荐，12天后无推荐成功恢复推手身份
+		if ($p_fanli <= 3) {
 
 			if($p_price >= 30){
 

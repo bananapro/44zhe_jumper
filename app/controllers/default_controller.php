@@ -129,7 +129,7 @@ class DefaultController extends AppController {
 
 		$total_date = date('Y-m-d', time()-24*3600);
 		$total_51fanli_earn = $this->UserFanli->findSum('fl_cash');
-		$total_51fanli_fb = $this->UserFanli->findSum('fl_fb');
+		$total_51fanli_fb = $this->UserFanli->findSum('fl_fb')/100;
 		$total_fanli = $this->OrderFanli->findSum('p_fanli', "payed=0 AND status=1 AND donedate<='{$total_date}'");
 		$total_yongjin = $this->OrderFanli->findSum('p_yongjin', "payed=0 AND status=1 AND donedate<='{$total_date}'");
 		$total_fanli_orders = $this->OrderFanli->findCount("payed=0 AND status=1 AND donedate<='{$total_date}'");

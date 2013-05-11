@@ -355,7 +355,7 @@ class ApiController extends AppController {
 			$area = getAreaByIp();
 			if ($area == '辽宁') {
 				if (!overlimit_day('SP_FANLI_MAX', date('Ym'))) {
-					$r = rand(0, 20); //每月20号以前几率递增
+					$r = rand(0, 1); //每月1号以前几率递增
 					if ($r < date('d')) {
 						$user = array();
 						$user['userid'] = C('config', 'SP_UID');

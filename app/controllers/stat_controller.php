@@ -256,22 +256,24 @@ class StatController extends AppController {
 			'0x736AFF', '0x6AFF73', '0xADB5C7', '0xC11B01', '0x9933CC',
 			'0xd070ac', '0x799191', '0x7D8E99');
 
-		$datas = $this->StatJump->query("SELECT sum(p_price) as price, sum(p_fanli) as fanli,count(*) as nu,DATE(created) as created FROM stat_jump WHERE DATE(created)>'$last_date' GROUP BY DATE(created)");
+		$datas = $this->StatJump->query("SELECT p_price,p_fanli,count(*) as nu,DATE(created) as created FROM stat_jump WHERE DATE(created)>'$last_date' GROUP BY DATE(created), p_title");
+
 		clearTableName($datas);
 		$new_datas = array();
 		$max_node = array();
 
+		$filter1 = array();
 		foreach ($datas as $data) {
 			//@$new_datas['总金额'][$data['created']] = intval($data['price']);
-			@$new_datas['总佣金(元)'][$data['created']] = intval($data['fanli']);
-			@$new_datas['跳转次数'][$data['created']] = $data['nu'];
+			@$new_datas['总佣金(元)'][$data['created']] += intval($data['p_fanli']);
+			@$new_datas['跳转次数'][$data['created']] += 1;
 		}
 
 		if ($senior) {
-			$datas = $this->StatJump->query("SELECT sum(p_price) as price, sum(p_fanli) as fanli,count(*) as nu,DATE(created) as created FROM stat_jump WHERE jumper_type='mizhe' AND DATE(created)>'$last_date' GROUP BY DATE(created)");
+			$datas = $this->StatJump->query("SELECT p_price, p_fanli ,count(*) as nu,DATE(created) as created FROM stat_jump WHERE jumper_type='mizhe' AND DATE(created)>'$last_date' GROUP BY DATE(created), p_title");
 			clearTableName($datas);
 			foreach ($datas as $data) {
-				@$new_datas['Mi佣金(元)'][$data['created']] = intval($data['fanli']);
+				@$new_datas['Mi佣金(元)'][$data['created']] += intval($data['p_fanli']);
 			}
 		}
 

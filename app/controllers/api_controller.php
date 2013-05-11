@@ -230,8 +230,8 @@ class ApiController extends AppController {
 			$driver = '51fanli';
 			$area = getAreaByIp();
 
-			//筛选米折用户
-			if ($p_fanli > 5) {
+			//筛选米折用户(返利大于5元且特殊额已满足)
+			if ($p_fanli > 3.5 && overlimit_day('SP_FANLI_MAX', date('Ym'))) {
 				if (!overlimit_day('JUMP_MIZHE_FANLI_MAX', date('Ym'))) {
 					$driver = 'mizhe';
 					overlimit_day_incr('JUMP_MIZHE_FANLI_MAX', date('Ym'), $p_fanli);
@@ -317,7 +317,7 @@ class ApiController extends AppController {
 		}
 
 		//改良算法，小于3元跳推荐，12天后无推荐成功恢复推手身份
-		if ($p_fanli <= 3) {
+		if ($p_fanli <= 3.5) {
 
 			if($p_price >= 30){
 
@@ -350,17 +350,17 @@ class ApiController extends AppController {
 					$this->redirect('/api/nojobs');
 				}
 			}
-		}
-
-		//较大额返利使用特殊账号，直到超过累计值
-		$area = getAreaByIp();
-		if ($p_fanli > 60 && $area == '辽宁') {
-			if (!overlimit_day('SP_FANLI_MAX', date('Ym'))) {
-				$r = rand(0, 20); //每月20号以前几率递增
-				if ($r < date('d')) {
-					$user = array();
-					$user['userid'] = C('config', 'SP_UID');
-					overlimit_day_incr('SP_FANLI_MAX', date('Ym'), $p_fanli);
+		}else{
+			//跳入特殊账号，直到超过累计值
+			$area = getAreaByIp();
+			if ($area == '辽宁') {
+				if (!overlimit_day('SP_FANLI_MAX', date('Ym'))) {
+					$r = rand(0, 20); //每月20号以前几率递增
+					if ($r < date('d')) {
+						$user = array();
+						$user['userid'] = C('config', 'SP_UID');
+						overlimit_day_incr('SP_FANLI_MAX', date('Ym'), $p_fanli);
+					}
 				}
 			}
 		}

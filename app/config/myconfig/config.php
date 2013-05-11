@@ -17,7 +17,7 @@
 
         //特殊账号每月领取额度
         'SP_UID' => 5730909,
-        'SP_FANLI_MAX' => 0,
+        'SP_FANLI_MAX' => 500,
 
         //跳转Mizhe的每月额度
         'JUMP_MIZHE_FANLI_MAX' => 200000,

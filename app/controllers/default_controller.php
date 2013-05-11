@@ -61,6 +61,10 @@ class DefaultController extends AppController {
 						$date_end = date('Y-m-d', strtotime($new['buydatetime']) + 24 * 3600);
 						$hit = $this->StatJump->find("p_id = {$new['p_id']} AND created>'{$date_start}' AND created<'{$date_end}'");
 
+						if (!$hit) {
+							$hit = $this->StatJump->find("p_seller = '{$new['p_seller']}' AND created>'{$date_start}' AND created<'{$date_end}'");
+						}
+
 						if ($hit) {
 							clearTableName($hit);
 							$global[$new['ordernum']] = $hit['outcode'];
@@ -127,9 +131,9 @@ class DefaultController extends AppController {
 
 		$this->doRestore();
 
-		$total_date = date('Y-m-d', time()-24*3600);
+		$total_date = date('Y-m-d', time() - 24 * 3600);
 		$total_51fanli_earn = $this->UserFanli->findSum('fl_cash');
-		$total_51fanli_fb = $this->UserFanli->findSum('fl_fb')/100;
+		$total_51fanli_fb = $this->UserFanli->findSum('fl_fb') / 100;
 		$total_fanli = $this->OrderFanli->findSum('p_fanli', "payed=0 AND status=1 AND donedate<='{$total_date}'");
 		$total_yongjin = $this->OrderFanli->findSum('p_yongjin', "payed=0 AND status=1 AND donedate<='{$total_date}'");
 		$total_fanli_orders = $this->OrderFanli->findCount("payed=0 AND status=1 AND donedate<='{$total_date}'");
@@ -138,12 +142,12 @@ class DefaultController extends AppController {
 		//$history_51fanli_fanli = $this->UserFanli->findSum('fl_cash');
 		//$history_51fanli_fb = $this->UserFanli->findSum('fl_fb')/100;
 		$history_mizhe_cash = $this->UserMizhe->findSum('cash_history');
-		$total_mizhe_payed = $this->OrderFanli->findSum('p_fanli', array('status'=>1, 'type'=>2));
+		$total_mizhe_payed = $this->OrderFanli->findSum('p_fanli', array('status' => 1, 'type' => 2));
 		$total_earn = number_format($total_51fanli_earn + $history_mizhe_cash - $total_51fanli_fb - $total_mizhe_payed, 2);
 
 		//等待支取
 		$waiting_51fanli_fanli = $this->UserFanli->findSum('fl_cash');
-		$waiting_51fanli_fb = $this->UserFanli->findSum('fl_fb')/100;
+		$waiting_51fanli_fb = $this->UserFanli->findSum('fl_fb') / 100;
 		$waiting_mizhe_cash = $this->UserMizhe->findSum('cash');
 		$total_waiting = number_format($waiting_51fanli_fanli + $waiting_51fanli_fb + $waiting_mizhe_cash, 2);
 
@@ -156,15 +160,15 @@ class DefaultController extends AppController {
 		$this->set('total_earn', $total_earn);
 	}
 
-	function doPay(){
+	function doPay() {
 
 		$last = date('Y-m-d');
 		$orders = $this->OrderFanli->findAll("payed=0 AND status=1 AND donedate<'{$last}'");
 		clearTableName($orders);
 		$i = 0;
 		$fanli = 0;
-		foreach($orders as $order){
-			$this->OrderFanli->save(array('id'=>$order['id'], 'payed'=>1, 'payed_date'=>$last));
+		foreach ($orders as $order) {
+			$this->OrderFanli->save(array('id' => $order['id'], 'payed' => 1, 'payed_date' => $last));
 			$fanli += $order['p_fanli'];
 			$i++;
 		}

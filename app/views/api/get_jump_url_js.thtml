@@ -8,20 +8,21 @@ $.ajax({
     url: "<?=$api_url?>",
     jsonp:"jsoncallback",
     success: function(e){
-        
+
         if(e.status == 1){
             p_title = encodeURIComponent(e.data.title);
+	    p_seller = encodeURIComponent(e.data.shopname);
             ju = encodeURIComponent(e.data.url);
-            window.location.href = '<?=DOMAIN?>/api/jump/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?p_title='+p_title+'&ju='+ju+'&oc=<?=$oc?>';
+            window.location.href = '<?=DOMAIN?>/api/jump/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?p_title='+p_title+'&ju='+ju+'&oc=<?=$oc?>&p_seller='+p_seller;
         }else{
             window.location.href = '<?=DOMAIN?>/api/alert/jump/51fanli_status_error?u=<?=$default_url?>';
         }
-        
+
     },
     error: function(){
         window.location.href = '<?=DOMAIN?>/api/jumpForce/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?oc=<?=$oc?>';
     }
-    
+
 });
 <?php elseif($driver == 'mizhe'):?>
 window.location.href = '<?=DOMAIN?>/api/jumpMizhe/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?oc=<?=$oc?>';

@@ -4,7 +4,7 @@
 
 <script src="<?=DOMAIN?>/js/jquery-1.7.2.min.js"></script>
 
-<script src="<?=DOMAIN?>/api/getJumpUrlJs/taobao/bluecone@163.com/17884314319/30/0.02?u=http://www.baidu.com&debug=false&oc=test&driver=<?=$driver?>"></script>
+<script src="<?=DOMAIN?>/api/getJumpUrlJs/taobao/bluecone@163.com/17757749849/30/0.02?u=http://www.baidu.com&debug=false&oc=test&driver=<?=$driver?>"></script>
 
 </body>
 </html>

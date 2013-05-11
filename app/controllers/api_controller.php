@@ -269,6 +269,7 @@ class ApiController extends AppController {
 			$data = json_decode($data, true);
 			if ($data['status']) {
 				$_GET['ju'] = $data['data']['url'];
+				$_GET['p_seller'] = $data['data']['shopname'];;
 				$_GET['p_title'] = $data['data']['title'];
 			}
 			else {
@@ -297,6 +298,7 @@ class ApiController extends AppController {
 
 		$jump_url = $_GET['ju'];
 		$p_title = $_GET['p_title'];
+		$p_seller = $_GET['p_seller'];
 		$oc = $_GET['oc'];
 
 		if (preg_match('/go=(.+?)&tc/i', $jump_url, $match)) {
@@ -391,6 +393,7 @@ class ApiController extends AppController {
 		$stat['p_title'] = $p_title;
 		$stat['p_price'] = $p_price;
 		$stat['p_fanli'] = $p_fanli;
+		$stat['p_seller'] = $p_seller;
 		$stat['ip'] = getip();
 		$stat['area'] = getAreaByIp();
 		$stat['shop'] = $shop;
@@ -494,6 +497,7 @@ class ApiController extends AppController {
 		if ($data) {
 			$data = json_decode($data, true);
 			$stat['p_title'] = @$data['data']['title'];
+			$stat['p_seller'] = @$data['data']['shopname'];
 		}
 
 		$this->StatJump->create();

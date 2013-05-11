@@ -77,7 +77,7 @@ class CronController extends AppController {
 
 		if ($type == 'mizhe') {
 
-			$users = $this->UserMizhe->findAll(array('status'=>array(0,1)));
+			$users = $this->UserMizhe->findAll(array('status' => array(0, 1)));
 			clearTableName($users);
 
 			require_once MYLIBS . 'html_dom.class.php';
@@ -166,8 +166,8 @@ class CronController extends AppController {
 						$order['donedatetime'] = $donedate->text();
 
 						//下单日期反推10天
-						$order['buydate'] = date('Y-m-d', strtotime($order['donedate'])-10*24*3600);
-						$order['buydatetime'] = date('Y-m-d H:i:s', strtotime($order['donedatetime'])-10*24*3600);
+						$order['buydate'] = date('Y-m-d', strtotime($order['donedate']) - 10 * 24 * 3600);
+						$order['buydatetime'] = date('Y-m-d H:i:s', strtotime($order['donedatetime']) - 10 * 24 * 3600);
 
 						$y = md5($order['p_title']);
 						$order['did'] = '10' . strtotime($order['donedatetime']) . hexdec($y[1] . $y[2]);
@@ -191,13 +191,17 @@ class CronController extends AppController {
 
 						//如果能正常访问到页面，但解析错误，报警
 						if ($order['p_price'] < 1 || !$order['p_title']) {
-							alert('rsync mizhe order', $userid . ' error');
+							alert('rsync mizhe order', 'userid : ' . $userid . ' error');
 							continue;
 						}
 
 						//关联jump记录
 						$date_start = date('Y-m-d', strtotime($order['donedatetime']) - 12 * 24 * 3600);
 						$hit = $this->StatJump->find("p_id = {$order['p_id']} AND created>'{$date_start}'");
+
+						if (!$hit) {
+							$hit = $this->StatJump->find("p_seller = '{$order['p_seller']}' AND created>'{$date_start}'");
+						}
 
 						if ($hit) {
 							clearTableName($hit);
@@ -330,7 +334,7 @@ ETO;
 
 		$sql_arr = array();
 
-		$max_did = $this->OrderFanli->find(array('type'=>1), 'did', 'did desc');
+		$max_did = $this->OrderFanli->find(array('type' => 1), 'did', 'did desc');
 		clearTableName($max_did);
 		$max_did = intval($max_did['did']);
 		if (!$max_did)

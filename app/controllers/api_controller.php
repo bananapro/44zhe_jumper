@@ -204,7 +204,7 @@ class ApiController extends AppController {
 	/**
 	 * 返回跳转JS，用于获得指定返利网商品加密链接
 	 */
-	function getJumpUrlJs($shop, $my_user, $p_id, $p_price, $p_fanli) {
+	function getJumpUrlJs($shop, $my_user, $p_id='', $p_price='', $p_fanli='') {
 		$default_url = $_GET['u'];
 		$oc = $_GET['oc'];
 		if ($shop && $my_user && $p_id && C('config', 'ENABLE_JUMP')) {

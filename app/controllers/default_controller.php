@@ -28,7 +28,7 @@ class DefaultController extends AppController {
 			if ($datas) {
 				foreach ($datas as $data) {
 					$d = explode("\t", trim($data));
-					if (!isset($d[9])) {
+					if (!isset($d[9]) || !@$d[7]) {
 						$message = 'file format error!';
 					}
 					else {

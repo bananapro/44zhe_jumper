@@ -200,8 +200,8 @@ function mizheLogin($userid, $need_proxy=true, $try = 0) {
 			if(isset($_SESSION['mizhe_login_proxy'][$userid])){
 				$proxy = $_SESSION['mizhe_login_proxy'][$userid];
 			}else{
-				$proxy = getProxy($user['area']);
-				//$proxy = getProxy('广东');
+				//$proxy = getProxy($user['area']);
+				$proxy = getProxy('深圳');
 				//echo 'get new Proxy';br();
 			}
 			if (!$proxy)

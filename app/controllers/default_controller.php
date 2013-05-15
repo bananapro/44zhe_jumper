@@ -143,7 +143,7 @@ class DefaultController extends AppController {
 		//$history_51fanli_fb = $this->UserFanli->findSum('fl_fb')/100;
 		$history_mizhe_cash = $this->UserMizhe->findSum('cash_history');
 		$total_mizhe_payed = $this->OrderFanli->findSum('p_fanli', array('status' => 1, 'type' => 2));
-		$total_earn = number_format($total_51fanli_earn + $history_mizhe_cash - $total_51fanli_fb - $total_mizhe_payed, 2);
+		$total_earn = $total_51fanli_earn + $history_mizhe_cash - $total_51fanli_fb - $total_mizhe_payed;
 
 		//等待支取
 		$waiting_51fanli_fanli = $this->UserFanli->findSum('fl_cash');

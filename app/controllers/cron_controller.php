@@ -359,6 +359,40 @@ ETO;
 		die();
 	}
 
+
+	function createDuixianScript(){
+
+		$users = $this->UserFanli->findAll("fl_fb>0 AND alipay<>''");
+		clearTableName($users);
+		$userids = array();
+		foreach($users as $user){
+			$api = ApiFanliPassport('/api/admin/updateBank', array('userid'=>$user['userid'], 'pay_method'=>2, 'pay_account'=>$user['alipay'], 'ip'=>'127.0.0.1'));
+			echo "wget '$api'";
+			echo "<br />";
+			$userids[] = $user['userid'];
+		}
+
+		echo "<br />";
+		echo "<br />";
+		echo "<br />";
+
+		foreach($users as $user){
+			echo "/usr/local/php5/bin/php autocash_pay.php {$user['userid']}<br />";
+		}
+
+		echo "<br />";
+		echo "<br />";
+		echo "<br />";
+
+		$ids = join(',', $userids);
+		echo "DELETE FROM 51fanli_passport.tb_pay_account WHERE userid IN ($ids) AND pay_method=2";
+
+		echo "<br />";
+		echo "<br />";
+
+		echo "UPDATE  `user_fanli` SET fl_fb =0,alipay =  '' WHERE userid IN ($ids)";
+		die();
+	}
 }
 
 ?>

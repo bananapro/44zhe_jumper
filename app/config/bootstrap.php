@@ -190,16 +190,17 @@ function mizheLogin($userid, $need_proxy=true, $try = 0) {
 	//TODO 20分钟内用同个proxy，且如果有remember cookie则先判断i.mizhe.com是否登陆(防止重复登陆)
 	require_once MYLIBS . 'curl.class.php';
 	$curl = new CURL();
-	$curl->cookie_path = '/tmp/curl_cookie_'.$userid.'.txt';
+	$curl->cookie_path = '/tmp/curl_cookie_' . $userid . '.txt';
 	@unlink($curl->cookie_path);
 	$db = new UserMizhe();
 	$user = $db->find(array('userid' => $userid));
 	if ($user) {
 		clearTableName($user);
 		if ($need_proxy) {
-			if(isset($_SESSION['mizhe_login_proxy'][$userid])){
+			if (isset($_SESSION['mizhe_login_proxy'][$userid])) {
 				$proxy = $_SESSION['mizhe_login_proxy'][$userid];
-			}else{
+			}
+			else {
 				//$proxy = getProxy($user['area']);
 				$proxy = getProxy('深圳');
 				//echo 'get new Proxy';br();
@@ -219,13 +220,16 @@ function mizheLogin($userid, $need_proxy=true, $try = 0) {
 		$login_return = $curl->post('http://www.mizhe.com/member/login.html', $data);
 		if (stripos($login_return, '302 Moved Temporarily') === false) {
 			unset($_SESSION['mizhe_login_proxy'][$userid]);
-			if($try){
-				return mizheLogin($userid, $need_proxy, $try-1);
-			}else{
+			if ($try) {
+				return mizheLogin($userid, $need_proxy, $try - 1);
+			}
+			else {
 				return false;
 			}
-		}else{
-			if(@$proxy)$_SESSION['mizhe_login_proxy'][$userid] = $proxy;
+		}
+		else {
+			if (@$proxy)
+				$_SESSION['mizhe_login_proxy'][$userid] = $proxy;
 			return $curl;
 		}
 	}
@@ -237,7 +241,7 @@ function getProxy($p) {
 	if (!$p)
 		return false;
 
-	$api = "http://www.xinxinproxy.com/httpip/json?count=1&orderId=" . C('config', 'PROXY_ORDER') . "&isNew=true&isps=电信&includeProvinces=".$p;
+	$api = "http://www.xinxinproxy.com/httpip/json?count=1&orderId=" . C('config', 'PROXY_ORDER') . "&isNew=true&isps=电信&includeProvinces=" . $p;
 	$data = file_get_contents($api);
 
 	if (!$data) {

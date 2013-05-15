@@ -227,7 +227,7 @@ class CronController extends AppController {
 					}
 				}
 
-				if ($n['outcode'] == 'test')
+				if (@$n['outcode'] == 'test')
 					continue;
 
 				if ($this->OrderFanli->find(array('did' => $n['did'])))

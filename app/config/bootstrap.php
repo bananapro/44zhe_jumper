@@ -201,12 +201,16 @@ function mizheLogin($userid, $need_proxy=true, $try = 0) {
 				$proxy = $_SESSION['mizhe_login_proxy'][$userid];
 			}
 			else {
-				//$proxy = getProxy($user['area']);
-				$proxy = getProxy('深圳');
+
+				$proxy = getProxy($user['area']);
+				//$proxy = getProxy('上海');
 				//echo 'get new Proxy';br();
 			}
-			if (!$proxy)
+
+			if (!$proxy){
 				return false;
+			}
+
 			$curl->proxy = $proxy;
 		}
 
@@ -218,12 +222,14 @@ function mizheLogin($userid, $need_proxy=true, $try = 0) {
 		$data['passwd'] = $user['password'];
 		$data['remember-me'] = 'on';
 		$login_return = $curl->post('http://www.mizhe.com/member/login.html', $data);
+
 		if (stripos($login_return, '302 Moved Temporarily') === false) {
 			unset($_SESSION['mizhe_login_proxy'][$userid]);
 			if ($try) {
 				return mizheLogin($userid, $need_proxy, $try - 1);
 			}
 			else {
+				alert('login', $login_return);
 				return false;
 			}
 		}
@@ -263,13 +269,20 @@ function getProxy($p) {
 
 	if ($data['availableDate'] < 3) {
 		alert('get proxy', 'date expire ' . $data['availableDate']);
+		return;
 	}
 
 	if ($data['remainCount'] < 10) {
 		alert('get proxy', 'remainCount less than ' . $data['remainCount']);
+		return;
 	}
 
-	$proxy = $data['ips'][0];
+	if(isset($data['ips'][0])){
+		$proxy = $data['ips'][0];
+	}else{
+		alert('get proxy', $p.' proxy empty');
+		return;
+	}
 
 	return $proxy;
 }

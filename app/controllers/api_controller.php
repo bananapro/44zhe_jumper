@@ -227,7 +227,7 @@ class ApiController extends AppController {
 
 		//选择驱动跳转模块
 		if (!@$_GET['driver']) {
-			$driver = '51fanli';
+			$driver = 'mizhe';
 			$area = getAreaByIp();
 
 			//筛选米折用户(返利大于5元且特殊额已满足)
@@ -429,9 +429,6 @@ class ApiController extends AppController {
 
 		$oc = $_GET['oc'];
 		$user = $this->UserMizhe->getUser();
-		if (!$user) {
-			$user = $this->UserMizhe->getUser('辽宁');
-		}
 
 		if (!$user) {
 			$this->jumpForce($shop, $my_user, $p_id, $p_price, $p_fanli);

@@ -229,7 +229,7 @@ function mizheLogin($userid, $need_proxy=true, $try = 0) {
 				return mizheLogin($userid, $need_proxy, $try - 1);
 			}
 			else {
-				alert('login', $login_return);
+				alert('mizhe login', $login_return);
 				return false;
 			}
 		}

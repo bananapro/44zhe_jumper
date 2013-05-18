@@ -11,13 +11,13 @@
         //每日普通注册数限制(优先完成普通任务)
         'REG_COMMON_PRE_DAY_LIMIT' => 5,
         //每日推荐注册数限制
-        'REG_RECOMM_PRE_DAY_LIMIT' => 80,
+        'REG_RECOMM_PRE_DAY_LIMIT' => 110,
         //限制注册地
         'REG_EXCLUDE_AREA' => array(),
 
         //特殊账号每月领取额度
         'SP_UID' => 5730909,
-        'SP_FANLI_MAX' => 500,
+        'SP_FANLI_MAX' => 0,
 
         //跳转Mizhe的每月额度
         'JUMP_MIZHE_FANLI_MAX' => 200000,

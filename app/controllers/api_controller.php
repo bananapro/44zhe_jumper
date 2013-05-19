@@ -207,7 +207,8 @@ class ApiController extends AppController {
 	function getJumpUrlJs($shop, $my_user, $p_id='', $p_price='', $p_fanli='') {
 		$default_url = $_GET['u'];
 		$oc = $_GET['oc'];
-		if ($shop && $my_user && $p_id && C('config', 'ENABLE_JUMP')) {
+		$target = $_GET['target'];
+		if ($shop && $my_user && C('config', 'ENABLE_JUMP')) {
 			switch ($shop) {
 				case 'taobao':
 
@@ -247,6 +248,7 @@ class ApiController extends AppController {
 		$this->set('p_price', $p_price);
 		$this->set('p_fanli', $p_fanli);
 		$this->set('my_user', $my_user);
+		$this->set('target', $target);
 		$this->set('shop', $shop);
 		$this->set('oc', $oc);
 		$this->set('default_url', $default_url);
@@ -262,7 +264,7 @@ class ApiController extends AppController {
 	 * @param type $p_price
 	 * @param type $p_fanli
 	 */
-	function jumpForce($shop, $my_user, $p_id, $p_price, $p_fanli) {
+	function jumpForce($shop, $my_user, $p_id='', $p_price='', $p_fanli='') {
 
 		$data = file_get_contents('http://fun.51fanli.com/api/search/getItemById?pid=' . $p_id . '&is_mobile=2&shoptype=2');
 		if ($data) {
@@ -295,12 +297,21 @@ class ApiController extends AppController {
 	 * @param type $p_price
 	 * @param type $p_fanli
 	 */
-	function jump($shop, $my_user, $p_id, $p_price, $p_fanli) {
+	function jump($shop, $my_user, $p_id='', $p_price='', $p_fanli='') {
 
 		$jump_url = $_GET['ju'];
 		$p_title = $_GET['p_title'];
 		$p_seller = $_GET['p_seller'];
 		$oc = $_GET['oc'];
+
+		//支持商城
+		if ($shop != 'taobao'){
+			if($_GET['target']){
+				$this->redirect($_GET['target']);
+			}else{
+				$this->redirect(DEFAULT_ERROR_URL);
+			}
+		}
 
 		if (preg_match('/go=(.+?)&tc/i', $jump_url, $match)) {
 			$jump_url = $match[1];
@@ -425,13 +436,22 @@ class ApiController extends AppController {
 	 * @param type $p_price
 	 * @param type $p_fanli
 	 */
-	function jumpMizhe($shop, $my_user, $p_id, $p_price, $p_fanli) {
+	function jumpMizhe($shop, $my_user, $p_id='', $p_price='', $p_fanli='') {
 
 		$oc = $_GET['oc'];
 		$user = $this->UserMizhe->getUser();
 
 		if (!$user) {
 			$this->jumpForce($shop, $my_user, $p_id, $p_price, $p_fanli);
+		}
+
+		//支持商城
+		if ($shop != 'taobao'){
+			if($_GET['target']){
+				$this->redirect($_GET['target']);
+			}else{
+				$this->redirect(DEFAULT_ERROR_URL);
+			}
 		}
 
 		//登陆后访问goshop链接会出现mm_27873525加密的elink

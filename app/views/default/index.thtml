@@ -41,9 +41,21 @@
 <?=@$message?>
 <br />
 <br />
+
+上传返利网订单<br />
 <form action="/default/index/pub" method="post" enctype="multipart/form-data">
-update orders
+
 <input type="file" value="" name="file"/>
+<input type="submit" value="submit" />
+</form>
+
+<br />
+<br />
+<br />
+
+上传mizhe订单<br />
+<form action="/cron/postMizheOrder" method="post" enctype="multipart/form-data" target="_blank">
+userid:<input type="text" value="" name="userid" size="10"/>&nbsp; <input type="file" value="" name="file"/>
 <input type="submit" value="submit" />
 </form>
 </div>

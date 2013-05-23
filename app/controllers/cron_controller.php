@@ -106,11 +106,12 @@ class CronController extends AppController {
 							$cash_history = 0;
 							$cash_history = $dom->text();
 
+							$_SESSION['mizhe_update'][$user['userid']] = true;
 							if ($cash || $cash_history) {
 								$succ = true;
 								$this->updateMizheOrder($user['userid'], $curl);
 								$this->UserMizhe->save(array('userid' => $user['userid'], 'cash' => $cash, 'cash_history' => $cash_history));
-								$_SESSION['mizhe_update'][$user['userid']] = true;
+
 								echo "{$user['userid']} cash:{$cash} cash_history: {$cash_history}";
 								br(2);
 							}
@@ -132,9 +133,28 @@ class CronController extends AppController {
 		}
 	}
 
-	function updateMizheOrder($userid, $curl) {
+	function postMizheOrder(){
 
-		$i = $curl->get('http://i.mizhe.com/order/income.html');
+		if (isset($_FILES['file'])) {
+			$file = file_get_contents($_FILES["file"]["tmp_name"]);
+			$userid = $_POST['userid'];
+			if(!$file || !$userid){
+				die('please input userid & file');
+			}
+
+			require_once MYLIBS . 'html_dom.class.php';
+			$this->updateMizheOrder($userid, null, $file);
+		}
+		die();
+	}
+
+	function updateMizheOrder($userid, $curl, $content='') {
+
+		if ($content)
+			$i = $content;
+		else
+			$i = $curl->get('http://i.mizhe.com/order/income.html');
+
 		if ($i) {
 			$html = new simple_html_dom($i);
 			$doms = $html->find('ul[class=order-list-main] li');

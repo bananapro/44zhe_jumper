@@ -302,6 +302,7 @@ class ApiController extends AppController {
 		$oc = $_GET['oc'];
 		$shop = low($shop);
 		$my_user = low(urldecode($my_user));
+		$target = $_GET['target'];//商城页面
 
 		//支持商城
 		if ($shop != 'taobao') {
@@ -314,10 +315,10 @@ class ApiController extends AppController {
 			if(C('shop_tpl', $shop)){
 				$userid = $this->UserFanli->getShopUser($shop, $my_user);
 				if($userid){
-					$jump_url = $jump_rule->getUrl($userid, $_GET['target']);
+					$jump_url = $jump_rule->getUrl($userid, $target);
 
-					$this->addStatJump($shop, '51fanli', $my_user, $oc, $userid);
-					$this->redirect('http://fun.51fanli.com/goshopapi/goout?' . time() . '&id=' . $jump_rule->ts['id'] . '&go=' . $jump_url . '&fp=loading');
+					$this->_addStatJump($shop, '51fanli', $my_user, $oc, $userid);
+					$this->redirect('http://fun.51fanli.com/goshopapi/goout?' . time() . '&id=' . $jump_rule->ts['id'] . '&go=' . urlencode($jump_url) . '&fp=loading');
 				}else{
 					alert('shop jump', "[$shop][shop user not hit][$target]");
 				}
@@ -410,41 +411,15 @@ class ApiController extends AppController {
 			$this->redirect(DEFAULT_ERROR_URL);
 		}
 
-		addStatJump($shop, '51fanli', $my_user, $oc, $user['userid'], $p_id, $p_title, $p_price, $p_fanli, $p_seller);
+		$this->_addStatJump($shop, '51fanli', $my_user, $oc, $user['userid'], $p_id, $p_title, $p_price, $p_fanli, $p_seller);
 
 		//封装goshop跳转地址
 		$outcode = getOutCode($user['userid']);
 		$jump_url = str_replace('$outcode$', $outcode, urldecode($jump_url));
 		$jump_url = urlencode($jump_url);
 
-		$this->redirect('http://fun.51fanli.com/goshopapi/goout?' . time() . '&id=' . C('shop', 'taobao') . '&go=' . $jump_url . '&fp=loading');
-	}
-
-	function addStatJump($shop, $jumper_type, $my_user, $outcode, $userid, $p_id='', $p_title='', $p_price='', $p_fanli='', $p_seller=''){
-		//记录跳转日志
-		$stat = array();
-		$stat['p_id'] = $p_id;
-		$stat['p_title'] = $p_title;
-		$stat['p_price'] = $p_price;
-		$stat['p_fanli'] = $p_fanli;
-		$stat['p_seller'] = $p_seller;
-		$stat['ip'] = getip();
-		$stat['area'] = getAreaByIp();
-		$stat['shop'] = $shop;
-		$stat['jumper_uid'] = $userid;
-		$stat['jumper_type'] = $jumper_type;
-		$stat['my_user'] = urldecode($my_user);
-		$stat['outcode'] = $outcode;
-		$stat['target'] = $_GET['target'];
-		$stat['client'] = getBrowser();
-
-		foreach ($stat as $k => $v) {
-			if (!$v)
-				unset($stat[$k]);
-		}
-
-		$this->StatJump->create();
-		$this->StatJump->save($stat);
+		$tpl = C('shop_tpl', 'taobao');
+		$this->redirect('http://fun.51fanli.com/goshopapi/goout?' . time() . '&id=' . $tpl['id'] . '&go=' . $jump_url . '&fp=loading');
 	}
 
 	/**
@@ -522,9 +497,40 @@ class ApiController extends AppController {
 			$p_seller = @$data['data']['shopname'];
 		}
 
-		addStatJump($shop, 'mizhe', $my_user, $oc, $user['userid'], $p_id, $p_title, $p_price, $p_fanli, $p_seller);
+		$this->_addStatJump($shop, 'mizhe', $my_user, $oc, $user['userid'], $p_id, $p_title, $p_price, $p_fanli, $p_seller);
 
 		$this->redirect('http://s.click.taobao.com' . $href);
+	}
+
+
+	/*
+	 * 记录跳转日志
+	 */
+	function _addStatJump($shop, $jumper_type, $my_user, $outcode, $userid, $p_id='', $p_title='', $p_price='', $p_fanli='', $p_seller=''){
+		//记录跳转日志
+		$stat = array();
+		$stat['p_id'] = $p_id;
+		$stat['p_title'] = $p_title;
+		$stat['p_price'] = $p_price;
+		$stat['p_fanli'] = $p_fanli;
+		$stat['p_seller'] = $p_seller;
+		$stat['ip'] = getip();
+		$stat['area'] = getAreaByIp();
+		$stat['shop'] = $shop;
+		$stat['jumper_uid'] = $userid;
+		$stat['jumper_type'] = $jumper_type;
+		$stat['my_user'] = urldecode($my_user);
+		$stat['outcode'] = $outcode;
+		$stat['target'] = $_GET['target'];
+		$stat['client'] = getBrowser();
+
+		foreach ($stat as $k => $v) {
+			if (!$v)
+				unset($stat[$k]);
+		}
+
+		$this->StatJump->create();
+		$this->StatJump->save($stat);
 	}
 
 }

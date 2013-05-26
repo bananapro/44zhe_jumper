@@ -110,7 +110,7 @@
         <td class="ec"><?=$jump['p_fanli']?></td>
         <td class="fl"><?=$jump['jumper_type']?></td>
         <td class="ec" style="white-space:nowrap"><?=$jump['area']?></td>
-        <td class="fl" colspan="3"><?=$jump['p_title']?></td>
+        <td class="fl" colspan="3"><?=$jump['p_title']?$jump['p_title']:'<b>['.$jump['shop'].']</b>'.$jump['target']?></td>
     </tr>
     <?php endforeach;?>
 </table>

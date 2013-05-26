@@ -213,6 +213,7 @@ class ApiController extends AppController {
 		$su = $_GET['su'];
 		$target = $_GET['target'];
 		$driver = '';
+		$_SESSION['source'] = $_GET['su'];
 
 		//判断是否允许运作
 		if ($shop && $my_user && C('config', 'ENABLE_JUMP')) {
@@ -230,11 +231,10 @@ class ApiController extends AppController {
 			$driver = '51fanli';
 		}
 
-		//强制所有流量走返利网
-		$driver = '51fanli';
-
 		//筛选米折用户(返利大于5元且特殊额已满足)
-		if (!$driver && $p_fanli > 3.5 && overlimit_day('SP_FANLI_MAX', date('Ym'))) {
+		//if (!$driver && $p_fanli > 3.5 && overlimit_day('SP_FANLI_MAX', date('Ym'))) {
+		//随机20%流量
+		if (rand(0,20)<2) {
 			if (!overlimit_day('JUMP_MIZHE_FANLI_MAX', date('Ym'))) {
 				$driver = 'mizhe';
 				overlimit_day_incr('JUMP_MIZHE_FANLI_MAX', date('Ym'), $p_fanli);
@@ -524,6 +524,7 @@ class ApiController extends AppController {
 		$stat['outcode'] = $outcode;
 		$stat['target'] = $_GET['target'];
 		$stat['client'] = getBrowser();
+		$stat['source'] = $_SESSION['source'];
 
 		foreach ($stat as $k => $v) {
 			if (!$v)

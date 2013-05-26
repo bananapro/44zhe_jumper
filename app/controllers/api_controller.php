@@ -210,6 +210,7 @@ class ApiController extends AppController {
 
 		$default_url = $_GET['u'];
 		$oc = $_GET['oc'];
+		$su = $_GET['su'];
 		$target = $_GET['target'];
 		$driver = '';
 

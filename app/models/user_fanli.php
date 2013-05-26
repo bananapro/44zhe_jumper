@@ -60,7 +60,7 @@ class UserFanli extends User {
 				$u['shopmark'] = unserialize($u['shopmark']);
 			}
 
-			if($u['shopmark'] && $my_user == $u['shopmark'][$shop]['my_user']){
+			if($u['shopmark'] && $my_user == @$u['shopmark'][$shop]['my_user']){
 
 				$u['shopmark'][$shop] = array('my_user'=>$my_user, 'time'=>time());
 				$this->save(array('userid'=>$u['userid'], 'shopmark'=>serialize($u['shopmark'])));

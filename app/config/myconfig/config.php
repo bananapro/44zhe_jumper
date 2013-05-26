@@ -48,5 +48,8 @@
 
 		//默认登陆米折的账户，用于读取跳转链接
 		'MIZHE_DEFAULT_LOGIN_USERID' => 5249518,
+
+		//商城跳转单个用户允许最小间隔
+		'SHOP_JUMP_DS_TIME' => 3*3600,
     )
 ?>

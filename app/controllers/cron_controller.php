@@ -266,7 +266,7 @@ class CronController extends AppController {
 	}
 
 	//每月执行一次，更新10位推荐人
-	function updateRecommender($n = 10) {
+	function updateRecommender($n = 20) {
 
 		$date = date('Y-m-d H:i:s');
 		$this->UserFanli->query("UPDATE user_fanli SET status=2, pause_date='" . $date . "'  WHERE status=1 AND role=2");

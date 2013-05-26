@@ -51,8 +51,25 @@ class UserFanli extends User {
 
 		$users = $this->findAll(array('role'=>4, 'status'=>1));
 		clearTableName($users);
-
 		$hit = false;
+
+
+		//查看最后跳转的用户
+		foreach($users as $u){
+			if($u['shopmark']){
+				$u['shopmark'] = unserialize($u['shopmark']);
+			}
+
+			if($u['shopmark'] && $my_user == $u['shopmark'][$shop]['my_user']){
+
+				$u['shopmark'][$shop] = array('my_user'=>$my_user, 'time'=>time());
+				$this->save(array('userid'=>$u['userid'], 'shopmark'=>serialize($u['shopmark'])));
+				return $u['userid'];
+			}
+
+		}
+
+
 		foreach($users as $u){
 
 			if($u['shopmark']){
@@ -61,13 +78,14 @@ class UserFanli extends User {
 				$u['shopmark'] = array();
 			}
 
-			if(time() - @$u['shopmark'][$shop]['time'] > C('config', 'SHOP_JUMP_DS_TIME') || $my_user == @$u['shopmark'][$shop]['my_user']){
-				$hit = true;
+			if(time() - @$u['shopmark'][$shop]['time'] > C('config', 'SHOP_JUMP_DS_TIME')){
+
 				$u['shopmark'][$shop] = array('my_user'=>$my_user, 'time'=>time());
 				//深圳用户白名单，不计入商城跳转
+
 				$area = getAreaByIp();
 				if($area != '深圳'){
-					$this->save(array('userid'=>$u['userid'], 'shopmark'=>serialize($u['shopmark'])));
+					$return = $this->save(array('userid'=>$u['userid'], 'shopmark'=>serialize($u['shopmark'])));
 				}
 				return $u['userid'];
 			}

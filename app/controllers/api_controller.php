@@ -234,12 +234,14 @@ class ApiController extends AppController {
 		//筛选米折用户(返利大于5元且特殊额已满足)
 		//if (!$driver && $p_fanli > 3.5 && overlimit_day('SP_FANLI_MAX', date('Ym'))) {
 		//随机20%流量
-		if (rand(0,20)<2) {
+		if (!$driver && rand(0,20)<2) {
 			if (!overlimit_day('JUMP_MIZHE_FANLI_MAX', date('Ym'))) {
 				$driver = 'mizhe';
 				overlimit_day_incr('JUMP_MIZHE_FANLI_MAX', date('Ym'), $p_fanli);
 			}
 		}
+
+		if(!$driver) $driver = '51fanli';
 
 		$this->set('driver', $driver);
 		$this->set('p_id', $p_id);

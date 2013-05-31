@@ -17,6 +17,9 @@
 <a href='/cron/updateUserFanli/mizhe' target='_blank'>Update Mizhe Cash</a>
 <br />
 <br />
+<a href='/cron/updateBig/10' target='_blank'>Update Big Pool</a>
+<br />
+<br />
 <a href='/api/getRecommendJobs' target='_blank'>Get Jump Task</a>
 <br />
 <br />

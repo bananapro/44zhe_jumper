@@ -13,29 +13,47 @@
 				    p_title = encodeURIComponent(e.data.title);
 				    p_seller = encodeURIComponent(e.data.shopname);
 				    ju = encodeURIComponent(e.data.url);
-				    window.location.href = '<?=DOMAIN?>/api/jump/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?p_title='+p_title+'&ju='+ju+'&oc=<?=$oc?>&target=<?=$target?>&p_seller='+p_seller;
+				    if(top)
+					top.location.href = '<?=DOMAIN?>/api/jump/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?p_title='+p_title+'&ju='+ju+'&oc=<?=$oc?>&target=<?=$target?>&p_seller='+p_seller;
+				    else
+					window.location.href = '<?=DOMAIN?>/api/jump/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?p_title='+p_title+'&ju='+ju+'&oc=<?=$oc?>&target=<?=$target?>&p_seller='+p_seller;
 				}else{
-				    window.location.href = '<?=DOMAIN?>/api/alert/jump/51fanli_status_error?u=<?=$default_url?>&target=<?=$target?>';
+				    if(top)
+					top.location.href = '<?=DOMAIN?>/api/alert/jump/51fanli_status_error?u=<?=$default_url?>&target=<?=$target?>';
+				    else
+				        window.location.href = '<?=DOMAIN?>/api/alert/jump/51fanli_status_error?u=<?=$default_url?>&target=<?=$target?>';
 				}
 
 			    },
 			    error: function(){
-				window.location.href = '<?=DOMAIN?>/api/jumpForce/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?oc=<?=$oc?>&target=<?=$target?>';
+				if(top)
+				    top.location.href = '<?=DOMAIN?>/api/jumpForce/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?oc=<?=$oc?>&target=<?=$target?>';
+				else
+				    window.location.href = '<?=DOMAIN?>/api/jumpForce/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?oc=<?=$oc?>&target=<?=$target?>';
 			    }
 
 			});
 		<?php else:?>
-		    window.location.href = '<?=DOMAIN?>/api/jump/<?=$shop?>/<?=$my_user?>?oc=<?=$oc?>&target=<?=$target?>';
+		    if(top)
+			top.location.href = '<?=DOMAIN?>/api/jump/<?=$shop?>/<?=$my_user?>?oc=<?=$oc?>&target=<?=$target?>';
+		    else
+			window.location.href = '<?=DOMAIN?>/api/jump/<?=$shop?>/<?=$my_user?>?oc=<?=$oc?>&target=<?=$target?>';
 		<?php endif?>
 
     <?php elseif($driver == 'mizhe'):?>
 		<?php if($shop == 'taobao'):?>
-		    window.location.href = 'http://go.mizhe.com/rebate/taobao/i-serene%E6%97%97%E8%88%B0%E5%BA%97-<?=$p_id?>.html?p=MTM5LjI2&target=dGJrdXJsL3Q_ZT1tJTNEMiUyNnMlM0QlMkJscGdSNEtWbTlBY1FpcEt3UXplUE9lRURyWVZWYTY0eUs4Q2NrZmY3VFZSQWRodUYxNEZNYldVVlRxSjdoZEx4cTNJaFNKTjZHVG5WZVBsS3QzdVBIeWYlMkZhMVRNR2ZWNXh6c0JGWloyeU1UelNKNlJHS1h2MiUyRlNpamRtJTJCbkZPRTN1NWxkbWo2Q1NERk9DUVJwY21LZ2wlMkJKUzRRMkJTNiZ1bmlkPTEmc3BtPTIwMTQuMTIyODc0NjUuMS4w&r=3.6&stop=0&shop=<?=$shop?>&my_user=<?=$my_user?>&p_id=<?=$p_id?>&p_price=<?=$p_price?>&p_fanli=<?=$p_fanli?>&oc=<?=$oc?>&target=<?=$target?>';
+		    if(top)
+			top.location.href = 'http://go.mizhe.com/rebate/taobao/i-serene%E6%97%97%E8%88%B0%E5%BA%97-<?=$p_id?>.html?p=MTM5LjI2&target=dGJrdXJsL3Q_ZT1tJTNEMiUyNnMlM0QlMkJscGdSNEtWbTlBY1FpcEt3UXplUE9lRURyWVZWYTY0eUs4Q2NrZmY3VFZSQWRodUYxNEZNYldVVlRxSjdoZEx4cTNJaFNKTjZHVG5WZVBsS3QzdVBIeWYlMkZhMVRNR2ZWNXh6c0JGWloyeU1UelNKNlJHS1h2MiUyRlNpamRtJTJCbkZPRTN1NWxkbWo2Q1NERk9DUVJwY21LZ2wlMkJKUzRRMkJTNiZ1bmlkPTEmc3BtPTIwMTQuMTIyODc0NjUuMS4w&r=3.6&stop=0&shop=<?=$shop?>&my_user=<?=$my_user?>&p_id=<?=$p_id?>&p_price=<?=$p_price?>&p_fanli=<?=$p_fanli?>&oc=<?=$oc?>&target=<?=$target?>';
+		    else
+			window.location.href = 'http://go.mizhe.com/rebate/taobao/i-serene%E6%97%97%E8%88%B0%E5%BA%97-<?=$p_id?>.html?p=MTM5LjI2&target=dGJrdXJsL3Q_ZT1tJTNEMiUyNnMlM0QlMkJscGdSNEtWbTlBY1FpcEt3UXplUE9lRURyWVZWYTY0eUs4Q2NrZmY3VFZSQWRodUYxNEZNYldVVlRxSjdoZEx4cTNJaFNKTjZHVG5WZVBsS3QzdVBIeWYlMkZhMVRNR2ZWNXh6c0JGWloyeU1UelNKNlJHS1h2MiUyRlNpamRtJTJCbkZPRTN1NWxkbWo2Q1NERk9DUVJwY21LZ2wlMkJKUzRRMkJTNiZ1bmlkPTEmc3BtPTIwMTQuMTIyODc0NjUuMS4w&r=3.6&stop=0&shop=<?=$shop?>&my_user=<?=$my_user?>&p_id=<?=$p_id?>&p_price=<?=$p_price?>&p_fanli=<?=$p_fanli?>&oc=<?=$oc?>&target=<?=$target?>';
 		<?php else:?>
 
 		<?php endif;?>
     <?php endif;?>
 
 <?php else:?>
-    window.location.href = '<?=DOMAIN?>/api/alert/jump/js_no_pass?u=<?=$default_url?>';
+    if(top)
+	top.location.href = '<?=DOMAIN?>/api/alert/jump/js_no_pass?u=<?=$default_url?>';
+    else
+	window.location.href = '<?=DOMAIN?>/api/alert/jump/js_no_pass?u=<?=$default_url?>';
 <?php endif;?>

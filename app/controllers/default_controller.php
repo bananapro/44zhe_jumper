@@ -138,7 +138,7 @@ class DefaultController extends AppController {
 		$total_yongjin = $this->OrderFanli->findSum('p_yongjin', "payed=0 AND status=1 AND donedate<='{$total_date}'");
 		$total_fanli_orders = $this->OrderFanli->findCount("payed=0 AND status=1 AND donedate<='{$total_date}'");
 
-		//总利润 = 返利网推荐现金 + 米折网总历史现金 - 返利网FB(无法提出) - 已结算
+		//总利润 = 返利网推荐现金 + 米折网总历史现金 - 返利网FB(还没提出) - 已结算
 		//$history_51fanli_fanli = $this->UserFanli->findSum('fl_cash');
 		//$history_51fanli_fb = $this->UserFanli->findSum('fl_fb')/100;
 		$history_mizhe_cash = $this->UserMizhe->findSum('cash_history');

@@ -367,7 +367,7 @@ ETO;
 
 		echo join(";<br /><br />", $sql_arr);
 
-		$orders = $this->OrderFanli->findAll(array('status' => array(2, 3, 4, 5)));
+		$orders = $this->OrderFanli->findAll(array('status' => array(2, 3, 4)));
 		$dids = fieldSet($orders, 'did');
 		$dids = join($dids, ',');
 

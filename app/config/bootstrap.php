@@ -269,12 +269,10 @@ function getProxy($p) {
 
 	if ($data['availableDate'] < 3) {
 		alert('get proxy', 'date expire ' . $data['availableDate']);
-		return;
 	}
 
 	if ($data['remainCount'] < 10) {
 		alert('get proxy', 'remainCount less than ' . $data['remainCount']);
-		return;
 	}
 
 	if(isset($data['ips'][0])){

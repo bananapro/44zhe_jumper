@@ -13,6 +13,9 @@ class DefaultController extends AppController {
 		$i = 0;
 		$fanli = 0;
 		$global = array();
+		$global_jumper = array();
+		$source = array();
+		$source_jumper = array();
 		$message = '';
 		$new2 = array();
 		//提交了订单入库
@@ -69,25 +72,35 @@ class DefaultController extends AppController {
 							clearTableName($hit);
 							$global[$new['ordernum']] = $hit['outcode'];
 							$global_jumper[$new['jumper_uid']][$new['p_seller']] = $hit['outcode'];
+							$source[$new['ordernum']] = $hit['source'];
+							$source_jumper[$new['jumper_uid']][$new['p_seller']] = $hit['source'];
 						}
 
 						$new2[] = $new;
 					}
 				}
 
+				$dd = array();
 				foreach ($new2 as $n) {
 
 					if (isset($global[$n['ordernum']])) {
 						$n['outcode'] = $global[$n['ordernum']];
+						$n['source'] = $source[$n['ordernum']];
 					}
 					else {
 						if (isset($global_jumper[$n['jumper_uid']][$n['p_seller']])) {
 							$n['outcode'] = $global_jumper[$n['jumper_uid']][$n['p_seller']];
+							$n['source'] = $source_jumper[$n['jumper_uid']][$n['p_seller']];
 						}
 					}
 
 					if ($n['outcode'] == 'test')
 						continue;
+
+					if (($n['source'] == 1 || !$n['outcode']) && $n['p_fanli']>1 && rand(0,9)<2 && !$this->OrderFanli->find(array('did'=>$n['did']))){
+						$dd[] = $n;
+						continue;
+					}
 
 					if (!$this->OrderFanli->find(array('did' => $n['did'], 'status' => $n['status']))) {
 
@@ -102,8 +115,14 @@ class DefaultController extends AppController {
 					}
 				}
 
+				foreach($dd as $d){
+					$df += number_format($d['p_fanli'], 2);
+					$do .= ','.$d['ordernum'];
+				}
+
+
 				$fanli = floatval($fanli);
-				$message = "orders: {$i} fanli: {$fanli} rate: " . C('config', 'RATE') * 100 . "%";
+				$message .= "p_fanli: {$df}<br />p_order: {$do} <br /><br /><br />orders: {$i} fanli: {$fanli}  rate: " . C('config', 'RATE') * 100 . "%";
 
 				//优化推手，利益最大化
 				//15天以前被暂停的推手，如果账户无资产，则恢复身份并清空pause_date

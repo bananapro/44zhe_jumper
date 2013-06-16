@@ -307,11 +307,12 @@ class CronController extends AppController {
 
 		$num = array();
 		foreach ($area as $a) {
-			$num[$a['area']] = ceil($n * $a['nu'] / $total);
+			$num[$a['area']] = floor($n * $a['nu'] / $total);
 		}
 
 		foreach ($num as $area => $n) {
 
+			if(!$n)continue;
 			for ($i = 1; $i <= $n; $i++) {
 				//取出干净的被推会员
 				$u = $this->UserFanli->getPoolSpan($area);

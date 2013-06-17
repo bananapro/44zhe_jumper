@@ -28,54 +28,113 @@ class DefaultController extends AppController {
 			}
 
 			$datas = explode("\r\n", trim($file));
+
 			if ($datas) {
 				foreach ($datas as $data) {
+					$data = str_ireplace('NULL', '', $data);
 					$d = explode("\t", trim($data));
-					if (!isset($d[9]) || !@$d[7]) {
-						$message = 'file format error!';
-					}
-					else {
-						$new = array();
-						$new['did'] = $d[0];
-						$new['p_id'] = $d[1];
-						$new['status'] = $d[2];
-						$new['ordernum'] = $d[3];
-						$new['p_title'] = $d[4];
-						$new['p_price'] = $d[5];
-						$new['p_seller'] = $d[6];
-						$new['p_yongjin'] = $d[7];
-						$new['buydatetime'] = $d[8];
-						$new['donedatetime'] = $d[9];
-						$new['jumper_uid'] = $d[10];
-						$new['p_fanli'] = $new['p_yongjin'] * C('config', 'RATE');
-						$new['p_rate'] = C('config', 'RATE');
-						$new['buydate'] = date('Y-m-d', strtotime($new['buydatetime']));
-						$new['donedate'] = date('Y-m-d', strtotime($new['donedatetime']));
-						//去除内部卖家
-						if (in_array($new['p_seller'], C('config', 'HOLD_SELLER'))) {
-							continue;
-						}
-						if (intval($new['did']) < 1 || intval($new['p_id']) < 1) {
-							continue;
-						}
+					if (!isset($d[9]) || (!@$d[7] && !@$d[11])) {
+						$message = 'file format error!<br />';
+					} else {
 
-						//关联jump记录
-						$date_start = date('Y-m-d', strtotime($new['buydatetime']) - 24 * 3600);
-						$date_end = date('Y-m-d', strtotime($new['buydatetime']) + 24 * 3600);
-						$hit = $this->StatJump->find("p_id = {$new['p_id']} AND created>'{$date_start}' AND created<'{$date_end}'");
+						$shop = $d[12];
+						if($shop == 's_id')continue;
 
-						if (!$hit) {
-							$hit = $this->StatJump->find("p_seller = '{$new['p_seller']}' AND created>'{$date_start}' AND created<'{$date_end}'");
+						if($shop == 712){
+
+							$new = array();
+							$new['did'] = $d[0];
+							$new['p_id'] = $d[1];
+							$new['status'] = $d[2];
+							$new['ordernum'] = $d[3];
+							$new['p_title'] = $d[4];
+							$new['p_price'] = $d[5];
+							$new['p_seller'] = $d[6];
+							$new['p_yongjin'] = $d[7];
+							$new['buydatetime'] = $d[8];
+							$new['donedatetime'] = $d[9];
+							$new['jumper_uid'] = $d[10];
+							$new['p_fanli'] = $new['p_yongjin'] * C('config', 'RATE');
+							$new['p_rate'] = C('config', 'RATE');
+							$new['buydate'] = date('Y-m-d', strtotime($new['buydatetime']));
+							$new['donedate'] = date('Y-m-d', strtotime($new['donedatetime']));
+
+
+							//去除内部卖家
+							if (in_array($new['p_seller'], C('config', 'HOLD_SELLER'))) {
+								continue;
+							}
+							if (intval($new['did']) < 1 || intval($new['p_id']) < 1) {
+								continue;
+							}
+
+							//关联jump记录
+							$date_start = date('Y-m-d', strtotime($new['buydatetime']) - 24 * 3600);
+							$date_end = date('Y-m-d', strtotime($new['buydatetime']) + 24 * 3600);
+							$hit = $this->StatJump->find("p_id = {$new['p_id']} AND created>'{$date_start}' AND created<'{$date_end}'");
+
+							if (!$hit) {
+								$hit = $this->StatJump->find("p_seller = '{$new['p_seller']}' AND created>'{$date_start}' AND created<'{$date_end}'");
+							}
+
+							if ($hit) {
+								clearTableName($hit);
+								$global[$new['ordernum']] = $hit['outcode'];
+								$global_jumper[$new['jumper_uid']][$new['p_seller']] = $hit['outcode'];
+								$source[$new['ordernum']] = $hit['source'];
+								$source_jumper[$new['jumper_uid']][$new['p_seller']] = $hit['source'];
+							}
+
+						}else{
+
+							$new = array();
+							$new['did'] = $d[0];
+							$new['p_id'] = $d[1];
+							$new['status'] = $d[2];
+							$new['ordernum'] = $d[3];
+							$new['p_title'] = $d[4];
+							$new['p_price'] = $d[5];
+							$new['p_seller'] = $d[6];
+
+							if(!$d[7]){
+								$new['p_yongjin'] = $d[11];
+							}else{
+								$new['p_yongjin'] = $d[7];
+							}
+
+							$new['buydatetime'] = $d[8];
+							$new['donedatetime'] = $d[9];
+							$new['jumper_uid'] = $d[10];
+							$new['p_fanli'] = $new['p_yongjin'] * C('config', 'RATE');
+							$new['p_rate'] = C('config', 'RATE');
+							$new['buydate'] = date('Y-m-d', strtotime($new['buydatetime']));
+							$new['donedate'] = date('Y-m-d', strtotime($new['donedatetime']));
+
+							//map 商城
+							$shop_tpl = C('shop_tpl');
+							foreach($shop_tpl as $shopname => $s){
+								if($s['shopid'] == $shop){
+									$new['shop'] = $shopname;
+								}
+							}
+
+							if (intval($new['did']) < 1) {
+								continue;
+							}
+
+							//关联jump记录
+							$date_start = date('Y-m-d H:i:s', strtotime($new['buydatetime']) - C('config', 'SHOP_JUMP_DS_TIME'));
+							$date_end = date('Y-m-d H:i:s', strtotime($new['buydatetime']) + 100);
+
+							$hit = $this->StatJump->find("shop='".$new['shop']."' AND created>'{$date_start}' AND created<'{$date_end}' AND jumper_uid='{$new['jumper_uid']}'");
+
+							if ($hit) {
+								clearTableName($hit);
+								if(!$hit['outcode'])$hit['outcode'] = $hit['my_user'];
+								$global[$new['ordernum']] = $hit['outcode'];
+							}
+
 						}
-
-						if ($hit) {
-							clearTableName($hit);
-							$global[$new['ordernum']] = $hit['outcode'];
-							$global_jumper[$new['jumper_uid']][$new['p_seller']] = $hit['outcode'];
-							$source[$new['ordernum']] = $hit['source'];
-							$source_jumper[$new['jumper_uid']][$new['p_seller']] = $hit['source'];
-						}
-
 						$new2[] = $new;
 					}
 				}

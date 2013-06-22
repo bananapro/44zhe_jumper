@@ -381,9 +381,18 @@ ETO;
 	}
 
 
+	/**
+	 * 提取返利网现金步骤
+	 * 1、上传autocash_pay.php脚本至73
+	 * 2、修改73的passport host到195
+	 * 3、修改Action/admin/autoCashAlipayJifen  注释返利升级用户等级代码
+	 * 4、修改提现目标的支付宝
+	 * 5、依次请求该方法生成的语句
+	 */
 	function createDuixianScript(){
 
-		$users = $this->UserFanli->findAll("fl_fb>0 AND alipay<>''");
+		$month = date('Y-m-d', time() - 60*24*3600);
+		$users = $this->UserFanli->findAll("status=2 AND pause_date<'{$month}' AND fl_fb>10000 AND alipay<>''");
 		clearTableName($users);
 		$userids = array();
 		foreach($users as $user){

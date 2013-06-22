@@ -14,7 +14,7 @@ class UserFanli extends User {
             $area = getAreaByIp();
 			if ($area == '本机地址' || stripos(getip(), '192.168.')!==false) $area = '上海';
         }
-        $user = $this->find(array('role'=>1, 'status'=>1, 'area'=>$area), '', 'rand()');
+        $user = $this->find(array('role'=>1, 'status'=>1), '', 'rand()');
         clearTableName($user);
         return $user;
     }

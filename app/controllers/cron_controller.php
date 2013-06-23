@@ -39,7 +39,7 @@ class CronController extends AppController {
 		if ($type == 'fanli') {
 
 			//$users = $this->UserFanli->findAll(array('role' => array(1, 2, 3), 'status' => array(1, 3)));
-			$weekdate = date('Y-m-d', time() - 15 * 24 * 3600);
+			$weekdate = date('Y-m-d', time() - 60 * 24 * 3600);
 			$daydiff = date('Y-m-d', time() - 3 * 24 * 3600);
 			//新建用户必须满3天以上才需要同步资产
 			$users = $this->UserFanli->findAll("(role IN(1,2) AND status IN(1,3) AND created < '{$daydiff}') OR (status = 2 AND pause_date > '{$weekdate}')");
@@ -399,9 +399,18 @@ ETO;
 	}
 
 
+	/**
+	 * 提取返利网现金步骤
+	 * 1、上传autocash_pay.php脚本至73
+	 * 2、修改73的passport host到195
+	 * 3、修改Action/admin/autoCashAlipayJifen  注释返利升级用户等级代码
+	 * 4、修改提现目标的支付宝
+	 * 5、依次请求该方法生成的语句
+	 */
 	function createDuixianScript(){
 
-		$users = $this->UserFanli->findAll("fl_fb>0 AND alipay<>''");
+		$month = date('Y-m-d', time() - 60*24*3600);
+		$users = $this->UserFanli->findAll("status=2 AND pause_date<'{$month}' AND ((role=1 AND fl_fb>10000) OR (role=3 AND fl_fb>0)) AND alipay<>''");
 		clearTableName($users);
 		$userids = array();
 		foreach($users as $user){

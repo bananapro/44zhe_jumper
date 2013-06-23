@@ -107,12 +107,19 @@ class StatController extends AppController {
 		foreach ($datas as $data) {
 			$node_name = $data['status'];
 			switch ($data['status']) {
+				case '0':$node_name = '商城订单确认中';
+					break;
 				case '1':$node_name = '已确认结算金额(元)';
+					break;
+				case '2':$node_name = '退货订单';
 					break;
 				case '3':$node_name = '订单确认中(需10天)';
 					break;
 				case '4':$node_name = '订单确认中(需20天)';
 					break;
+				case '10':$node_name = '拒付订单';
+					break;
+
 			}
 			@$new_datas[$node_name][$data['donedate']] = $data['fanli'];
 		}
@@ -186,11 +193,17 @@ class StatController extends AppController {
 		foreach ($datas as $data) {
 			$node_name = $data['status'];
 			switch ($data['status']) {
+				case '0':$node_name = '商城订单确认中';
+					break;
 				case '1':$node_name = '已确认结算金额(元)';
+					break;
+				case '2':$node_name = '退货订单';
 					break;
 				case '3':$node_name = '订单确认中(需10天)';
 					break;
 				case '4':$node_name = '订单确认中(需20天)';
+					break;
+				case '10':$node_name = '拒付订单';
 					break;
 			}
 			@$new_datas[$node_name][$data['buydate']] = $data['fanli'];

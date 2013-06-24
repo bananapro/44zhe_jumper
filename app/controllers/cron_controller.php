@@ -42,7 +42,7 @@ class CronController extends AppController {
 			$weekdate = date('Y-m-d', time() - 60 * 24 * 3600);
 			$daydiff = date('Y-m-d', time() - 3 * 24 * 3600);
 			//新建用户必须满3天以上才需要同步资产
-			$users = $this->UserFanli->findAll("(role IN(1,2) AND status IN(1,3) AND created < '{$daydiff}') OR (status = 2 AND pause_date > '{$weekdate}')");
+			$users = $this->UserFanli->findAll("(role IN(1,2,4) AND status IN(1,3) AND created < '{$daydiff}') OR (status = 2 AND pause_date > '{$weekdate}')");
 			echo "update " . count($users) . " users";
 			br(2);
 			$userids = fieldSet($users, 'userid');

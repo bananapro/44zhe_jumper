@@ -1,0 +1,15 @@
+<br />
+<br />
+<br />
+<h2><?=date('Y-m-d H:i')?>  &nbsp; 请确认登陆米折账号： <?=$user['email']?> 任务数：<b>[<?=count($jobs)?>]</b>:</h2>
+<br />
+<br />
+<h2>跳转倒数 <span id="count">60</span></h2>
+<?php foreach($jobs as $job):?>
+<iframe id="iframe" src="/job/doMizheJumpJob/<?=$job['id']?>" style="width:700px;height:100px"></iframe>
+<?php endforeach?>
+
+<script>
+    var t = setTimeout(function(){location.reload()}, 60000);
+    var q = setInterval(function(){document.getElementById('count').innerHTML = parseInt(document.getElementById('count').innerHTML) - 1;}, 1000);
+</script>

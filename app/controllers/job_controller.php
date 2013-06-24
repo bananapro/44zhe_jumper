@@ -73,11 +73,13 @@ class JobController extends AppController {
 		if(!$jumper_uid)die('empty userid');
 		$user = $this->UserMizhe->find(array('userid'=>$jumper_uid));
 		$jobs = $this->StatJump->findAll(array('jumper_type'=>'51fanli', 'followed'=>0, 'shop'=>'taobao', 'jumper_uid'=>$jumper_uid));
+		$finished_jobs = $this->StatJump->findCount(array('jumper_type'=>'51fanli', 'followed'=>1, 'shop'=>'taobao', 'jumper_uid'=>$jumper_uid));
 		clearTableName($jobs);
 		clearTableName($user);
-		
+
 		$this->set('jobs', $jobs);
 		$this->set('user', $user);
+		$this->set('finished_jobs', $finished_jobs);
 	}
 
 	function doMizheJumpJob($id){

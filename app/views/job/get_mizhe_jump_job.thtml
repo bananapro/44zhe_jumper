@@ -1,7 +1,7 @@
 <br />
 <br />
 <br />
-<h2><?=date('Y-m-d H:i')?>  &nbsp; 请确认登陆米折账号： <?=$user['email']?> 任务数：<b>[<?=count($jobs)?>]</b>:</h2>
+<h2><?=date('Y-m-d H:i')?>  &nbsp; &nbsp; 确认登陆米折账号 <a href="http://www.mizhe.com" target="_blank"><?=$user['email']?></a> &nbsp; &nbsp;  任务数：<b>[<?=count($jobs)?>]</b> &nbsp; 已完成：<b>[<?=$finished_jobs?>]</b></h2>
 <br />
 <br />
 <h2>跳转倒数 <span id="count">60</span></h2>

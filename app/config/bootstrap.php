@@ -285,4 +285,15 @@ function getProxy($p) {
 	return $proxy;
 }
 
+
+//更好的随机算法
+function hitRate($total, $curr, $rate){
+	if(!$total || !$curr || !$rate){
+		return false;
+	}
+
+	$base = $curr/$total;
+	if($rate > $base)return true;
+}
+
 ?>

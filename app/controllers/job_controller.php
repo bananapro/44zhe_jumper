@@ -89,7 +89,7 @@ class JobController extends AppController {
 
 		clearTableName($job);
 
-		$this->redirect('http://go.mizhe.com/rebate/taobao/i--'.$job['p_id'].'.html?stop=4');
+		$this->redirect('http://go.mizhe.com/rebate/taobao/i-'.urlencode($job['p_seller']).'-'.$job['p_id'].'.html?stop=0');
 		die();
 	}
 

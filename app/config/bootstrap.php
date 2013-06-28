@@ -288,7 +288,7 @@ function getProxy($p) {
 
 //更好的随机算法
 function hitRate($total, $curr, $rate){
-	if(!$total || !$curr || !$rate){
+	if(!$total || !$rate){
 		return false;
 	}
 

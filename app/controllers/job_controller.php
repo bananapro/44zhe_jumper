@@ -88,8 +88,8 @@ class JobController extends AppController {
 		$this->StatJump->save(array('id'=>$id, 'followed'=>1));
 
 		clearTableName($job);
-
-		$this->redirect('http://go.mizhe.com/rebate/taobao/i-'.urlencode($job['p_seller']).'-'.$job['p_id'].'.html?stop=0');
+		$rate = number_format($job['p_fanli']*C('config', 'MIZHE_RATE') / $job['p_price'], 2);
+		$this->redirect('http://go.mizhe.com/rebate/taobao/i-'.urlencode($job['p_seller']).'-'.$job['p_id'].'.html?stop=0&r='.$rate);
 		die();
 	}
 

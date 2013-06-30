@@ -5,7 +5,7 @@
 		<?php if($shop == 'taobao'):?>
 			$.ajax({
 			    dataType: "jsonp",
-			    url: "http://fun.51fanli.com/api/search/getItemById?pid=<?=$p_id?>&is_mobile=2&shoptype=2",
+			    url: "http://fun.51fanli.com/api/search/getItemById?pid=<?=$p_id?>&is_mobile=2&shoptype=2&track_code=a",
 			    jsonp:"jsoncallback",
 			    success: function(e){
 

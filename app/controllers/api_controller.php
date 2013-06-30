@@ -179,7 +179,7 @@ class ApiController extends AppController {
 		$today = date('Y-m-d');
 		$total = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'");
 		$curr = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'  AND jumper_type='mizhe'");
-		if (!$driver && $p_fanli>2 && hitRate($total, $curr, 0.1)) {
+		if (!$driver && $p_fanli>2 && hitRate($total, $curr, 0.3)) {
 			if (!overlimit_day('JUMP_MIZHE_FANLI_MAX', date('Ym'))) {
 				$driver = 'mizhe';
 				overlimit_day_incr('JUMP_MIZHE_FANLI_MAX', date('Ym'), $p_fanli);
@@ -211,13 +211,12 @@ class ApiController extends AppController {
 	 */
 	function jumpForce($shop, $my_user, $p_id='', $p_price='', $p_fanli='') {
 
-		$data = file_get_contents('http://fun.51fanli.com/api/search/getItemById?pid=' . $p_id . '&is_mobile=2&shoptype=2');
+		$data = file_get_contents('http://fun.51fanli.com/api/search/getItemById?pid=' . $p_id . '&is_mobile=2&shoptype=2&track_code=a');
 		if ($data) {
 			$data = json_decode($data, true);
 			if ($data['status']) {
 				$_GET['ju'] = $data['data']['url'];
 				$_GET['p_seller'] = $data['data']['shopname'];
-				;
 				$_GET['p_title'] = $data['data']['title'];
 			}
 			else {
@@ -335,6 +334,7 @@ class ApiController extends AppController {
 			if (!overlimit_day('SP_FANLI_MAX', date('Ym'))) {
 				$r = rand(0, 1); //每月1号以前几率递增
 				if ($r < date('d')) {
+					$hitSP = true;
 					$user = array();
 					$user['userid'] = C('config', 'SP_UID');
 					overlimit_day_incr('SP_FANLI_MAX', date('Ym'), $p_fanli);
@@ -362,6 +362,7 @@ class ApiController extends AppController {
 		$this->_addStatJump($shop, '51fanli', $my_user, $oc, $user['userid'], $p_id, $p_title, $p_price, $p_fanli, $p_seller);
 
 		//封装goshop跳转地址
+		//if($hitSP)$tc = ''; //命中特殊额使用手机tc跳转赚4倍返利
 		$outcode = getOutCode($user['userid']);
 		$jump_url = str_replace('$outcode$', $outcode, urldecode($jump_url));
 		$jump_url = urlencode($jump_url);

@@ -89,7 +89,7 @@ class JobController extends AppController {
 
 		clearTableName($job);
 		$rate = number_format($job['p_fanli']*C('config', 'MIZHE_RATE') / $job['p_price'], 2);
-		$this->redirect('http://go.mizhe.com/rebate/taobao/i-'.urlencode($job['p_seller']).'-'.$job['p_id'].'.html?stop=0&r='.$rate);
+		$this->redirect('http://go.mizhe.com/rebate/taobao/i-'.urlencode($job['p_seller']).'-'.$job['p_id'].'.html?stop=0&r='.$rate.'&p='.base64_encode($job['p_price']));
 		die();
 	}
 

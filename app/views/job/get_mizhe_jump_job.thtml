@@ -5,11 +5,18 @@
 <br />
 <br />
 <h2>跳转倒数 <span id="count">60</span></h2>
-<?php foreach($jobs as $job):?>
-<iframe id="iframe" src="/job/doMizheJumpJob/<?=$job['id']?>" style="width:700px;height:100px"></iframe>
-<?php endforeach?>
-
 <script>
-    var t = setTimeout(function(){location.reload()}, 60000);
+    var subWinList = new Array();
+    <?php foreach($jobs as $job):?>
+	var subWin = window.open("/job/doMizheJumpJob/<?=$job['id']?>");
+	subWinList.push(subWin);
+    <?php endforeach?>
+
+    var t = setTimeout(function(){
+	for(i=0;i<subWinList.length;i++){
+	    subWinList[i].close();
+	};
+	location.reload();
+    }, 60000);
     var q = setInterval(function(){document.getElementById('count').innerHTML = parseInt(document.getElementById('count').innerHTML) - 1;}, 1000);
 </script>

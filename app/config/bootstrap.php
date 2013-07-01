@@ -247,11 +247,11 @@ function getProxy($p) {
 	if (!$p)
 		return false;
 
-	$api = "http://www.xinxinproxy.com/httpip/json?count=1&orderId=" . C('config', 'PROXY_ORDER') . "&isps=电信&includeProvinces=" . $p;
+	$api = "http://www.xinxinproxy.com/httpip/json?count=1&orderId=" . C('config', 'PROXY_ORDER') . "&isNew=true&isps=电信&includeProvinces=" . $p;
 	$data = file_get_contents($api);
 
 	if (!$data) {
-		$api = "http://backup.xinxinproxy.com/httpip/json?count=1&orderId=" . C('config', 'PROXY_ORDER') . "&isps=电信&includeProvinces=" . $p;
+		$api = "http://backup.xinxinproxy.com/httpip/json?count=1&orderId=" . C('config', 'PROXY_ORDER') . "&isNew=true&isps=电信&includeProvinces=" . $p;
 		$data = file_get_contents($api);
 	}
 

@@ -80,7 +80,8 @@ function overlimit_day_incr($var, $d=null, $incr=1) {
 }
 
 //生成outcode
-function getOutCode($iUserId, $sTc = 'g3') {
+function getOutCode($iUserId, $sTc) {
+	if(!$sTc)$sTc = 'g3';
 	$sOC = 'A0';
 	$sOC.= str_pad(substr(base_convert($iUserId, 10, 36), 0, 6), 6, '0', STR_PAD_LEFT); //6位36进制用户ID,不足前面补0
 	$sOC.= str_pad(substr($sTc, 0, 2), 2, '0', STR_PAD_LEFT); //两位跟踪码，不足前面补0

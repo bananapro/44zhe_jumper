@@ -179,7 +179,7 @@ class ApiController extends AppController {
 		$today = date('Y-m-d');
 		$total = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'");
 		$curr = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'  AND jumper_type='mizhe'");
-		if (!$driver && $p_fanli>2 && hitRate($total, $curr, 0)) {
+		if (!$driver && $p_fanli>2 && hitRate($total, $curr, 0.2)) {
 			if (!overlimit_day('JUMP_MIZHE_FANLI_MAX', date('Ym'))) {
 				$driver = 'mizhe';
 				overlimit_day_incr('JUMP_MIZHE_FANLI_MAX', date('Ym'), $p_fanli);
@@ -362,8 +362,11 @@ class ApiController extends AppController {
 		$this->_addStatJump($shop, '51fanli', $my_user, $oc, $user['userid'], $p_id, $p_title, $p_price, $p_fanli, $p_seller);
 
 		//封装goshop跳转地址
-		//if($hitSP)$tc = ''; //命中特殊额使用手机tc跳转赚4倍返利
-		$outcode = getOutCode($user['userid']);
+		if($hitSP)
+			$tc = 'ss'; //命中特殊额使用手机tc跳转赚4倍返利
+		else
+			$tc = null;
+		$outcode = getOutCode($user['userid'], $tc);
 		$jump_url = str_replace('$outcode$', $outcode, urldecode($jump_url));
 		$jump_url = urlencode($jump_url);
 

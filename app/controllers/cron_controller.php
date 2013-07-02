@@ -402,7 +402,7 @@ ETO;
 	/**
 	 * 提取返利网现金步骤
 	 * 1、上传autocash_pay.php脚本至73
-	 * 2、修改73的passport host到195
+	 * 2、修改73的passport host到192
 	 * 3、修改Action/admin/autoCashAlipayJifen  注释返利升级用户等级代码
 	 * 4、修改提现目标的支付宝
 	 * 5、依次请求该方法生成的语句

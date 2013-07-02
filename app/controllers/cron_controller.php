@@ -407,10 +407,15 @@ ETO;
 	 * 4、修改提现目标的支付宝
 	 * 5、依次请求该方法生成的语句
 	 */
-	function createDuixianScript(){
+	function createDuixianScript($all=null){
 
 		$month = date('Y-m-d', time() - 60*24*3600);
-		$users = $this->UserFanli->findAll("status=2 AND pause_date<'{$month}' AND ((role=1 AND fl_fb>10000) OR (role=3 AND fl_fb>0)) AND alipay<>''");
+		if(!$all){
+			$users = $this->UserFanli->findAll("status=2 AND pause_date<'{$month}' AND ((role=1 AND fl_fb>10000) OR (role=3 AND fl_fb>0)) AND alipay<>''");
+		}else{
+			$users = $this->UserFanli->findAll("status=2 AND ((role=1 AND fl_fb>10000) OR (role=3 AND fl_fb>0)) AND alipay<>''");
+		}
+
 		clearTableName($users);
 		$userids = array();
 		foreach($users as $user){

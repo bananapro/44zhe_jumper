@@ -438,12 +438,12 @@ ETO;
 		echo "<br />";
 
 		$ids = join(',', $userids);
-		echo "DELETE FROM 51fanli_passport.tb_pay_account WHERE userid IN ($ids) AND pay_method=2";
+		//echo "DELETE FROM 51fanli_passport.tb_pay_account WHERE userid IN ($ids) AND pay_method=2";
 
-		echo "<br />";
-		echo "<br />";
+		//echo "<br />";
+		//echo "<br />";
 
-		echo "UPDATE  `user_fanli` SET fl_fb =0,alipay =  '' WHERE userid IN ($ids)";
+		echo "UPDATE  `user_fanli` SET fl_fb =0 WHERE userid IN ($ids)";
 		die();
 	}
 }

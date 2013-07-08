@@ -203,7 +203,7 @@ function mizheLogin($userid, $need_proxy=true, $try = 0) {
 			}
 			else {
 
-				$proxy = getProxy($user['area']);
+				$proxy = getProxy($user['area'] . ',杭州,深圳');
 				//$proxy = getProxy('上海');
 				//echo 'get new Proxy';br();
 			}
@@ -248,11 +248,12 @@ function getProxy($p) {
 	if (!$p)
 		return false;
 
-	$api = "http://www.xinxinproxy.com/httpip/json?count=1&orderId=" . C('config', 'PROXY_ORDER') . "&isNew=true&includeProvinces=" . $p;
+	$api = "http://www.xinxinproxy.com/httpip/json?count=1&orderId=" . C('config', 'PROXY_ORDER') . "&isNew=true&includeProvinces=" . $p .'&isps=电信,联通,移动,其它运营商&ports=6675,8080,80,6666,8909,其它端口';
+
 	$data = file_get_contents($api);
 
 	if (!$data) {
-		$api = "http://backup.xinxinproxy.com/httpip/json?count=1&orderId=" . C('config', 'PROXY_ORDER') . "&isNew=true&includeProvinces=" . $p;
+		$api = "http://backup.xinxinproxy.com/httpip/json?count=1&orderId=" . C('config', 'PROXY_ORDER') . "&isNew=true&includeProvinces=" . $p .'&isps=电信,联通,移动,其它运营商&ports=6675,8080,80,6666,8909,其它端口';
 		$data = file_get_contents($api);
 	}
 

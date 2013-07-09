@@ -211,6 +211,7 @@ class DefaultController extends AppController {
 
 		$total_date = date('Y-m-d', time() - 24 * 3600);
 		$total_51fanli_earn = $this->UserFanli->findSum('fl_cash');
+		$total_51fanli_earn_hist = $this->UserFanli->findSum('fl_cash_history');
 		$total_51fanli_fb = $this->UserFanli->findSum('fl_fb') / 100;
 		$total_fanli = $this->OrderFanli->findSum('p_fanli', "payed=0 AND status=1 AND donedate<='{$total_date}'");
 		$total_yongjin = $this->OrderFanli->findSum('p_yongjin', "payed=0 AND status=1 AND donedate<='{$total_date}'");
@@ -221,13 +222,13 @@ class DefaultController extends AppController {
 		//$history_51fanli_fb = $this->UserFanli->findSum('fl_fb')/100;
 		$history_mizhe_cash = $this->UserMizhe->findSum('cash_history');
 		$total_mizhe_payed = $this->OrderFanli->findSum('p_fanli', array('status' => 1, 'type' => 2));
-		$total_earn = $total_51fanli_earn + $history_mizhe_cash - $total_51fanli_fb - $total_mizhe_payed;
+		$total_earn = $total_51fanli_earn + $history_mizhe_cash + $total_51fanli_earn_hist - $total_51fanli_fb - $total_mizhe_payed;
 
 		//等待支取
-		$waiting_51fanli_fanli = $this->UserFanli->findSum('fl_cash');
+		$waiting_51fanli_cash = $this->UserFanli->findSum('fl_cash');
 		$waiting_51fanli_fb = $this->UserFanli->findSum('fl_fb') / 100;
 		$waiting_mizhe_cash = $this->UserMizhe->findSum('cash');
-		$total_waiting = number_format($waiting_51fanli_fanli + $waiting_51fanli_fb + $waiting_mizhe_cash, 2);
+		$total_waiting = number_format($waiting_51fanli_cash + $waiting_51fanli_fb + $waiting_mizhe_cash, 2);
 
 		$this->set('message', $message);
 		$this->set('total_fanli', $total_fanli);

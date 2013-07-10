@@ -137,18 +137,18 @@ class CronController extends AppController {
 
 		if (isset($_FILES['file'])) {
 			$file = file_get_contents($_FILES["file"]["tmp_name"]);
-			$userid = $_POST['userid'];
-			if(!$file || !$userid){
+			//$userid = $_POST['userid'];
+			if(!$file){
 				die('please input userid & file');
 			}
 
 			require_once MYLIBS . 'html_dom.class.php';
-			$this->updateMizheOrder($userid, null, $file);
+			$this->updateMizheOrder(null, $file);
 		}
 		die();
 	}
 
-	function updateMizheOrder($userid, $curl, $content='') {
+	function updateMizheOrder($curl, $content='') {
 
 		if ($content)
 			$i = $content;
@@ -157,6 +157,22 @@ class CronController extends AppController {
 
 		if ($i) {
 			$html = new simple_html_dom($i);
+			$user_dom = $html->find('span[class=mline] a[href=http://i.mizhe.com]', 0);
+			$email = $user_dom->text();
+			$userid = $this->UserMizhe->field('userid', array('email'=>$email));
+			if(!$userid)die($email . ' can not be match userid');
+
+			//如果匹配收入，则为个人中心首页，更新资产即退出
+			$in_hist = $html->find('span[class=price c-999] em', 0);
+			if($in_hist){
+				$in_hist =  $in_hist->text();
+				$in_left = $html->find('span[class=green-price] em', 0);
+				if($in_left)$in_left = $in_left->text();
+				$this->UserMizhe->save(array('userid'=>$userid, 'cash'=>$in_left, 'cash_history'=>$in_hist));
+				echo "userid: {$userid} {$email} &nbsp;&nbsp;cash: {$in_left}&nbsp;&nbsp; history: {$in_hist}";
+				die();
+			}
+
 			$doms = $html->find('ul[class=order-list-main] li');
 			$new = array();
 			foreach ($doms as $dom) {

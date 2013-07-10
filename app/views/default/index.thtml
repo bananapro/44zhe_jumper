@@ -55,9 +55,9 @@
 <br />
 <br />
 
-上传mizhe订单<br />
+上传mizhe订单/个人中心首页<br />
 <form action="/cron/postMizheOrder" method="post" enctype="multipart/form-data" target="_blank">
-userid:<input type="text" value="" name="userid" size="10"/>&nbsp; <input type="file" value="" name="file"/>
+<input type="file" value="" name="file"/>
 <input type="submit" value="submit" />
 </form>
 </div>

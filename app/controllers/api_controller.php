@@ -179,7 +179,7 @@ class ApiController extends AppController {
 		$today = date('Y-m-d');
 		$total = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'");
 		$curr = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'  AND jumper_type='mizhe'");
-		if (!$driver && $p_fanli>2 && hitRate($total, $curr, 0.3)) {
+		if (!$driver && $p_fanli>2 && hitRate($total, $curr, 1)) {
 			if (!overlimit_day('JUMP_MIZHE_FANLI_MAX', date('Ym'))) {
 				$driver = 'mizhe';
 				overlimit_day_incr('JUMP_MIZHE_FANLI_MAX', date('Ym'), $p_fanli);

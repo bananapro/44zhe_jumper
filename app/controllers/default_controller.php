@@ -96,10 +96,10 @@ class DefaultController extends AppController {
 							$new['p_price'] = $d[5];
 							$new['p_seller'] = $d[6];
 
-							if(!$d[7]){
+							if(!$d[7]){//没有佣金字段，直接填充返利字段
 								$new['p_yongjin'] = $d[11];
 							}else{
-								$new['p_yongjin'] = $d[7];
+								$new['p_yongjin'] = $d[7]*0.7;
 							}
 
 							$new['buydatetime'] = $d[8];

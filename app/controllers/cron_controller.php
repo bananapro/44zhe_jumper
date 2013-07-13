@@ -402,7 +402,7 @@ ETO;
 		echo $sql_shop;
 
 		//计算change status
-		$orders = $this->OrderFanli->findAll(array('status' => array(3, 4)));
+		$orders = $this->OrderFanli->findAll(array('status' => array(0, 3, 4)));
 		$dids = fieldSet($orders, 'did');
 		$dids = join($dids, ',');
 

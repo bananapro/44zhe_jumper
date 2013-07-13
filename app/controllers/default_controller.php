@@ -261,7 +261,7 @@ class DefaultController extends AppController {
 			$i++;
 		}
 
-		echo "<script>alert('payed {$i} orders {$fanli}');window.location.href='/Default/index/pub'</script>";
+		echo "<script>alert('payed {$i} orders : {$fanli}');window.location.href='/Default/index/pub'</script>";
 		die();
 	}
 

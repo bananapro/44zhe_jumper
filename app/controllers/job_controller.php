@@ -72,7 +72,7 @@ class JobController extends AppController {
 
 		if(!$jumper_uid)die('empty userid');
 		$user = $this->UserMizhe->find(array('userid'=>$jumper_uid));
-		$jobs = $this->StatJump->findAll(array('jumper_type'=>'mizhe', 'followed'=>0, 'shop'=>'taobao', 'jumper_uid'=>$jumper_uid), '', '', 2);
+		$jobs = $this->StatJump->findAll(array('jumper_type'=>'mizhe', 'followed'=>0, 'shop'=>'taobao', 'jumper_uid'=>$jumper_uid), '', '', 1);
 		$finished_jobs = $this->StatJump->findCount(array('jumper_type'=>'mizhe', 'followed'=>1, 'shop'=>'taobao', 'jumper_uid'=>$jumper_uid));
 		clearTableName($jobs);
 		clearTableName($user);

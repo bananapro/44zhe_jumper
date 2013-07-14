@@ -12,11 +12,14 @@
 	subWinList.push(subWin);
     <?php endforeach?>
 
-    var t = setTimeout(function(){
-	for(i=0;i<subWinList.length;i++){
-	    subWinList[i].close();
-	};
-	location.reload();
-    }, 60000);
-    var q = setInterval(function(){document.getElementById('count').innerHTML = parseInt(document.getElementById('count').innerHTML) - 1;}, 1000);
+    var q = setInterval(function(){
+	document.getElementById('count').innerHTML = parseInt(document.getElementById('count').innerHTML) - 1;
+	if(parseInt(document.getElementById('count').innerHTML) == 20){
+	    for(i=0;i<subWinList.length;i++){
+		subWinList[i].close();
+	    };
+	}else if(parseInt(document.getElementById('count').innerHTML) == 0){
+	    location.reload();
+	}
+    }, 1000);
 </script>

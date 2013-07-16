@@ -173,15 +173,44 @@ class ApiController extends AppController {
 			$driver = '51fanli';
 		}
 
-		//筛选米折用户(返利大于5元且特殊额已满足)
-		//if (!$driver && $p_fanli > 3.5 && overlimit_day('SP_FANLI_MAX', date('Ym'))) {
-		//随机20%流量
 		$today = date('Y-m-d');
 		$total = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'");
 		$curr = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'  AND jumper_type='mizhe'");
-		if (!$driver && $p_fanli>2 && hitRate($total, $curr, C('config', 'JUMP_MIZHE_RATE'))) {
-			if (!overlimit_day('JUMP_MIZHE_FANLI_MAX', date('Ym'))) {
+
+		//大于2元返利，进行mizhe随机分派
+		if (!$driver && $p_fanli>2) {
+
+			//如果有mizhe成功跳转日志，且允许跳mizhe
+			if($_COOKIE['mi_succ'] && C('config', 'JUMP_MIZHE_RATE')){
 				$driver = 'mizhe';
+
+			//如果随机分到mizhe(用于尝试米折通道)
+			}else if(hitRate($total, $curr, C('config', 'JUMP_MIZHE_RATE'))){
+				$driver = 'mizhe';
+			}
+
+			//尝试走过mizhe但没有成功过
+			if ($_COOKIE['mi_try'] && !$_COOKIE['mi_succ']){
+				$driver = false;
+				alert('mizhe jump', '['. $oc .']['. getBrowser() .'] today failed');
+			}
+
+			//当认为走mizhe没问题时，容忍度降到0，也不再走mizhe
+			if (isset($_COOKIE['mi_balance']) && $_COOKIE['mi_balance'] == 0){
+				$driver = false;
+				setcookie('mi_succ', 0, time() - 360 * 24 * 3600, '/'); //清除米折通道成功标识
+				alert('mizhe jump', '['. $oc .']['. getBrowser() .'] balance become zero');
+			}
+
+			if ($driver == 'mizhe') {
+
+				setcookie('mi_try', 1, time() + 3 * 24 * 3600, '/'); //每3天允许1次尝试mizhe
+
+				$b = myisset($_COOKIE['mi_balance'], 3);
+				$b--;
+				if($b<= 0)$b = 0;
+				setcookie('mi_balance', $b, time() + 7 * 24 * 3600, '/'); //mizhe失败容忍次数，减为0时7天不再走mizhe
+
 				overlimit_day_incr('JUMP_MIZHE_FANLI_MAX', date('Ym'), $p_fanli);
 			}
 		}
@@ -387,6 +416,19 @@ class ApiController extends AppController {
 
 		$oc = $_GET['oc'];
 		$user = $this->UserMizhe->getUser();
+
+		//种下mizhe标识符，下次跳转直接米折
+		if($_COOKIE['mi_succ']){
+			setcookie('mi_succ', 1, time() + 360 * 24 * 3600, '/'); //如果2次都跳mizhe成功则变成永久
+		}else{
+			setcookie('mi_succ', 1, time() + 1 * 24 * 3600, '/'); //1次成功只有效1天 - 防止有用户碰巧1次成功而已
+		}
+
+		//补偿mizhe错误容忍度
+		$b = intval(@$_COOKIE['mi_balance']);
+		$b = $b + 2;
+		if($b <= 0)$b = 0;
+		setcookie('mi_balance', $b, time() + 7 * 24 * 3600, '/'); //mizhe错误容忍次数，减为0时7天不再走mizhe
 
 		if (!$user) {
 			$this->jumpForce($shop, $my_user, $p_id, $p_price, $p_fanli);

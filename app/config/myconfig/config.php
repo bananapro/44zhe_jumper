@@ -23,7 +23,7 @@
         'JUMP_MIZHE_FANLI_MAX' => 200000,
 
         //跳转米折几率
-        'JUMP_MIZHE_RATE' => 0.5,
+        'JUMP_MIZHE_RATE' => 1,
 
         //预留被推，以免人工全部都完成
         'LEFT_RECOMMENDER' => 50,

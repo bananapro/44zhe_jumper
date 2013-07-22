@@ -332,6 +332,10 @@ class StatController extends AppController {
 		//最新跳转记录
 		$last_jumps = $this->StatJump->findAll("created>'{$date}' AND created<'{$tomo}' AND outcode<>'test'", '', 'id DESC');
 		clearTableName($last_jumps);
+
+		if($_GET['format'] == 'raw'){
+			echo count($last_jumps);die();
+		}
 		$this->set('last_jumps', $last_jumps);
 		$this->set('date', $date);
 	}

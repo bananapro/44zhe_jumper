@@ -429,7 +429,7 @@ ETO;
 		if(!$all){
 			$users = $this->UserFanli->findAll("status=2 AND pause_date<'{$month}' AND ((role=1 AND fl_fb>10000) OR (role=3 AND fl_fb>0)) AND alipay<>''");
 		}else{
-			$users = $this->UserFanli->findAll("(status=2 AND (role=1 OR (role=3 AND fl_fb>0)) AND alipay<>'')");
+			$users = $this->UserFanli->findAll("role IN (1,3) AND fl_fb>0 AND alipay<>''");
 		}
 
 		clearTableName($users);
@@ -445,7 +445,9 @@ ETO;
 		echo "<br />";
 		echo "<br />";
 
+		$alipay = array();
 		foreach($users as $user){
+			$alipay[$user['alipay']] = 1;
 			echo "/usr/local/php5/bin/php autocash_pay.php {$user['userid']}<br />";
 		}
 
@@ -460,6 +462,12 @@ ETO;
 		//echo "<br />";
 
 		echo "UPDATE  `user_fanli` SET fl_fb =0 WHERE userid IN ($ids)";
+
+		echo "<br />";
+		echo "<br />";
+		echo "<br />";
+
+		echo join(' , ', array_keys($alipay));
 		die();
 	}
 }

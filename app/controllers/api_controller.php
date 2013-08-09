@@ -68,7 +68,7 @@ class ApiController extends AppController {
 				$_SESSION['reg_username'] = $user['username'];
 				$_SESSION['reg_email'] = $user['email'];
 				$_SESSION['reg_parent'] = '';
-				$fanli_reg_url = "http://passport.51fanli.com/Reg/ajaxUserReg?jsoncallback=jQuery17203368097049601636_1363270{$rand}&useremail={$email}&username={$username}&userpassword={$password}&userpassword2={$password}&skey=&regurl=http://passport.51fanli.com/reg?action=yes&refurl=&t=" . time() . "&_=136398{$rand}";
+				$fanli_reg_url = "http://passport.51fanli.com/Reg/ajaxUserReg?useremail={$email}&username={$username}&userpassword={$password}&userpassword2={$password}&skey=&regurl=http://passport.51fanli.com/reg?action=yes&refurl=&t=" . time() . "&_=136398{$rand}";
 				$this->_success($fanli_reg_url);
 			}
 			else {
@@ -83,7 +83,7 @@ class ApiController extends AppController {
 						$_SESSION['reg_username'] = $user['username'];
 						$_SESSION['reg_email'] = $user['email'];
 						$_SESSION['reg_parent'] = $parent;
-						$fanli_reg_url = "http://passport.51fanli.com/Reg/ajaxUserReg?jsoncallback=jQuery17203368097049601636_1363270{$rand}&useremail={$email}&username={$username}&userpassword={$password}&userpassword2={$password}&skey=&recommendid2={$parent}&recommendt=4&regurl=http://passport.51fanli.com/reg?action=yes&refurl=&t=" . time() . "&_=136398{$rand}";
+						$fanli_reg_url = "http://passport.51fanli.com/Reg/ajaxUserReg?useremail={$email}&username={$username}&userpassword={$password}&userpassword2={$password}&skey=&recommendid2={$parent}&recommendt=4&regurl=http://passport.51fanli.com/reg?action=yes&refurl=&t=" . time() . "&_=136398{$rand}";
 						$this->_success($fanli_reg_url);
 					}
 					else {

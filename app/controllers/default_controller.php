@@ -250,7 +250,7 @@ class DefaultController extends AppController {
 
 	function doPay() {
 
-		$last = date('Y-m-d', time() - 31 * 24 * 3600);
+		$last = date('Y-m-d', time() - 8 * 24 * 3600);
 		$orders = $this->OrderFanli->findAll("payed=0 AND status=1 AND donedate<='{$last}'");
 		clearTableName($orders);
 		$i = 0;

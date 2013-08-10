@@ -209,7 +209,7 @@ class DefaultController extends AppController {
 
 		$this->doRestore();
 
-		$total_date = date('Y-m-d', time() - 24 * 3600);
+		$total_date = date('Y-m-d', time() - 8 * 24 * 3600);
 		$total_date_month = date('Y-m-d', time() - 31 * 24 * 3600);
 		$total_51fanli_earn = $this->UserFanli->findSum('fl_cash');
 		$total_51fanli_earn_hist = $this->UserFanli->findSum('fl_cash_history');

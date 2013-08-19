@@ -323,7 +323,7 @@ class CronController extends AppController {
 
 		$num = array();
 		foreach ($area as $a) {
-			$num[$a['area']] = floor($n * $a['nu'] / $total);
+			$num[$a['area']] = round($n * $a['nu'] / $total);
 		}
 
 		foreach ($num as $area => $n) {

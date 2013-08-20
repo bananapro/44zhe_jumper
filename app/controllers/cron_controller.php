@@ -353,19 +353,19 @@ class CronController extends AppController {
 		$sql = <<<ETO
 select [编号] as id,num_iid,fanlistate,ordernum_parent,productnum,productprice,seller_nick,yongjin,buydate,[dingdan].inputdate,memberzhanghao,[dingdan].fanli,s_id from [51fanli].[dbo].[dingdan]  left join
 [51fanli].[dbo].[FL_ods] on [编号] = did
-where memberzhanghao IN({userid}) and [编号] > {max_id}
+where memberzhanghao IN({userid}) and did > {max_id}
 ETO;
 
 		$sql_shop = <<<ETO
 select distinct [编号] as id,num_iid,fanlistate,ordernum,productnum,productprice,seller_nick,yongjin,buydate,[dingdan].inputdate,memberzhanghao,[dingdan].fanli,s_id from [51fanli].[dbo].[dingdan]  left join
 [51fanli].[dbo].[FL_ods] on [编号] = did
-where memberzhanghao IN({userid}) and [编号] > {max_id}
+where memberzhanghao IN({userid}) and did > {max_id}
 ETO;
 
 		$sql_change_status = <<<ETO
 select [编号] as id,num_iid,fanlistate,ordernum_parent,productnum,productprice,seller_nick,yongjin,buydate,[dingdan].inputdate,memberzhanghao,[dingdan].fanli,s_id from [51fanli].[dbo].[dingdan]  left join
 [51fanli].[dbo].[FL_ods] on [编号] = did
-where [编号] IN ({did})
+where did IN ({did})
 ETO;
 
 

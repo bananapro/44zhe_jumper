@@ -169,6 +169,7 @@ class ApiController extends AppController {
 
 		//淘宝以外流量暂时只能走返利网
 		//劫持流量只能走返利网
+
 		if ($shop != 'taobao' || $_GET['su'] == 1) {
 			$driver = '51fanli';
 		}
@@ -178,7 +179,7 @@ class ApiController extends AppController {
 		$curr = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'  AND jumper_type='mizhe'");
 
 		//大于2元返利，进行mizhe随机分派
-		if (!$driver && $p_fanli>2) {
+		if (!$driver && $p_fanli>0) {
 
 			//如果有mizhe成功跳转日志，且允许跳mizhe
 			if($_COOKIE['mi_succ'] && C('config', 'JUMP_MIZHE_RATE')){

@@ -20,7 +20,7 @@
         'SP_FANLI_MAX' => 0,
 
         //跳转Mizhe的每月额度
-        'JUMP_MIZHE_FANLI_MAX' => 200000,
+        'JUMP_MIZHE_FANLI_MAX' => 10000000,
 
         //跳转米折几率
         'JUMP_MIZHE_RATE' => 1,

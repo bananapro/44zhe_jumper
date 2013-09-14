@@ -93,6 +93,28 @@ class UserFanli extends User {
 
 		return false;
 	}
+
+
+	//15天以前被暂停的推手，如果账户无资产，则恢复身份并清空pause_date
+	//如果有资产，则查询order判断购物金额是否大于30，如果小于30则重新恢复身份
+	function doRestore() {
+
+		$weekdate = date('Y-m-d', time() - 12 * 24 * 3600);
+		$weekdate2 = date('Y-m-d', time() - 26 * 24 * 3600);
+		$this->query("UPDATE user_fanli SET status=1, pause_date='0000-00-00 00:00:00' WHERE role=3 AND status = 2 AND pause_date < '{$weekdate}' AND fl_fb=0");
+		$users = $this->findAll("role=3 AND status = 2 AND pause_date < '{$weekdate}' AND pause_date > '{$weekdate2}' AND fl_fb>0");
+
+		clearTableName($users);
+		foreach ($users as $user) {
+
+			if ($nu = $this->query("SELECT sum(p_price) as nu FROM order_fanli WHERE jumper_uid='{$user['userid']}'")) {
+				$nu = @intval($nu[0][0]['nu']);
+				if ($nu < 30) {
+					$this->save(array('userid' => $user['userid'], 'status' => 1));
+				}
+			};
+		}
+	}
 }
 
 ?>

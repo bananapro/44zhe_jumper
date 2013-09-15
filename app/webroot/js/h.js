@@ -12,7 +12,7 @@ function insertLoading(){
     var d= document.createElement('div');
     d.id = 'mask_id_dv';
     body.appendChild(d);
-    document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:1987; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2>跳转中，请稍等 ...</h2><img src="http://go.44zhe.com/loading.gif"></div>';
+    document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:1987; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2>跳转中，请稍等 ...</h2><img src="http://www.jumper.com/loading.gif"></div>';
 }
 
 var myhost = location.host;
@@ -49,26 +49,29 @@ if(myhost == 'fun.51fanli.com' && myhref.indexOf('goshopapi')>0){
     //document.getElementsByTagName('body')[0].style.display='none';
     //setInterval("document.getElementsByTagName('body')[0].style.display='none'",100);
     insertLoading();
+
     var i = setInterval(function(){
 
 	if(window.alimamatk_onload){
 
 	    var obj=$(".action .get-btn")[0];
-	    if(is_ie){
-		var event = document.createEventObject();
-		event.eventType = 'message';
-		obj.fireEvent('mousedown', event);
-
-	    }else{
-		var event = document.createEvent('HTMLEvents');
+	    try {
+                var event = document.createEvent('HTMLEvents');
 		event.initEvent("mousedown", true, true);
 		event.eventType = 'message';
 		obj.dispatchEvent(event);
-	    }
+
+            } catch(e) {
+                // 仅IE6/7/8不支持
+                var event = document.createEventObject();
+		event.eventType = 'message';
+		event.srcElement = obj;
+		obj.fireEvent('onmousedown', event);
+            }
 
 	    var link_origin = $(".action .get-btn").attr('href');
 	    if(link_origin.indexOf('g.click.taobao.com')!= -1){
-		loadit('http://go.44zhe.com/api/getTaskResultJs/'+args['taskid']+'/'+encodeURIComponent(link_origin)+'?debug=false');
+		loadit('http://www.jumper.com/api/getTaskResultJs/'+args['taskid']+'/'+encodeURIComponent(link_origin)+'?debug=false');
 		clearInterval(i);
 	    }
 	}

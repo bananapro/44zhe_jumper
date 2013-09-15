@@ -38,7 +38,7 @@ class ApiJumpFanliController extends ApiJumpController {
 				if($userid){
 					$jump_url = $jump_rule->getUrl($userid, $target);
 
-					$this->_addStatJump($shop, '51fanli', $my_user, $oc, $userid);
+					$this->_addStatJump($shop, 'fanli', $my_user, $oc, $userid);
 					$this->redirect('http://fun.51fanli.com/goshopapi/goout?' . time() . '&id=' . $jump_rule->ts['id'] . '&go=' . urlencode($jump_url) . '&fp=loading');
 				}else{
 					alert('shop jump', "[$shop][shop user not hit][$target]");
@@ -133,7 +133,7 @@ class ApiJumpFanliController extends ApiJumpController {
 			$this->redirect(DEFAULT_ERROR_URL);
 		}
 
-		$this->_addStatJump($shop, '51fanli', $my_user, $oc, $user['userid'], $p_id, $p_title, $p_price, $p_fanli, $p_seller);
+		$this->_addStatJump($shop, 'fanli', $my_user, $oc, $user['userid'], $p_id, $p_title, $p_price, $p_fanli, $p_seller);
 
 		//封装goshop跳转地址
 		if($hitSP)

@@ -54,8 +54,8 @@ class StatController extends AppController {
 		$this->set('s', $s);
 
 		//跳转中介统计
-		$j1 = $this->StatJump->query("SELECT count(*) as nu, jumper_uid, username, a.area, sum(p_price) price, sum(p_fanli) fanli FROM stat_jump a LEFT JOIN user_fanli ON(jumper_uid = userid) WHERE a.created>'" . $yesterday . "' AND a.created<'" . $today . "' AND outcode<>'test' AND jumper_type='51fanli' GROUP BY jumper_uid ORDER BY nu DESC");
-		$j2 = $this->StatJump->query("SELECT count(*) as nu, jumper_uid, username, a.area, sum(p_price) price, sum(p_fanli) fanli FROM stat_jump a LEFT JOIN user_fanli ON(jumper_uid = userid) WHERE a.created>'" . $today . "' AND outcode<>'test' AND jumper_type='51fanli' GROUP BY jumper_uid ORDER BY nu DESC");
+		$j1 = $this->StatJump->query("SELECT count(*) as nu, jumper_uid, username, a.area, sum(p_price) price, sum(p_fanli) fanli FROM stat_jump a LEFT JOIN user_fanli ON(jumper_uid = userid) WHERE a.created>'" . $yesterday . "' AND a.created<'" . $today . "' AND outcode<>'test' AND jumper_type='fanli' GROUP BY jumper_uid ORDER BY nu DESC");
+		$j2 = $this->StatJump->query("SELECT count(*) as nu, jumper_uid, username, a.area, sum(p_price) price, sum(p_fanli) fanli FROM stat_jump a LEFT JOIN user_fanli ON(jumper_uid = userid) WHERE a.created>'" . $today . "' AND outcode<>'test' AND jumper_type='fanli' GROUP BY jumper_uid ORDER BY nu DESC");
 		clearTableName($j1);
 		clearTableName($j2);
 		$this->set('js1', $j1);

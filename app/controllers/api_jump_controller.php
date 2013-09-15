@@ -6,12 +6,6 @@ class ApiJumpController extends AppController {
 	var $uses = array('UserFanli', 'UserMizhe', 'UserCandidate', 'StatJump', 'StatRegFailed', 'StatJump', 'OrderFanli');
 	var $layout = 'ajax';
 
-	function demo() {
-		$user = $this->UserFanli->getPoolSpan('', 2);
-		pr($user);
-		die();
-	}
-
 	function demoReg() {
 
 	}

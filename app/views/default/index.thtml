@@ -20,7 +20,7 @@
 <a href='/cron/updateBig/5' target='_blank'>Update Big Pool</a>
 <br />
 <br />
-<a href='/job/getMizheJumpJob/5803008' target='_blank'>Get Mizhe Jump Task</a>
+<a href='/job/taskWorker' target='_blank'>Start Worker</a>
 <br />
 <br />
 <a href='/stat/basic' target='_blank'>Stat Basic</a>

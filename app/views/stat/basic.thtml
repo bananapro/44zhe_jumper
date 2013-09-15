@@ -25,8 +25,8 @@
         <td class="fl"><?=$c['POOL_RECOMMENDER_REMOVE']?>/月</td>
         <td class="ec">特殊额</td>
         <td class="fl"><?=$sp?></td>
-        <td class="ec">米折额</td>
-        <td class="fl" colspan=2><?=$mizhe_fanli?>/<?=$c['JUMP_MIZHE_FANLI_MAX']?></td>
+        <td class="ec"></td>
+        <td class="fl" colspan=2></td>
         <td class="fl"></td>
     </tr>
     <tr>

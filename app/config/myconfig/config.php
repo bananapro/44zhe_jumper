@@ -19,12 +19,6 @@
         'SP_UID' => 5730909,
         'SP_FANLI_MAX' => 0,
 
-        //跳转Mizhe的每月额度
-        'JUMP_MIZHE_FANLI_MAX' => 200000,
-
-        //跳转米折几率
-        'JUMP_MIZHE_RATE' => 1,
-
         //预留被推，以免人工全部都完成
         'LEFT_RECOMMENDER' => 50,
 
@@ -44,7 +38,7 @@
 		'RATE' => 0.45,
 
 		//米折网返利折扣，用于跟单还原原始佣金
-		'MIZHE_RATE' => 55,
+		'RATE_MIZHE' => 55,
 
 		//代理提取订单号
 		'PROXY_ORDER' => '382924045081457',
@@ -54,5 +48,19 @@
 
 		//商城跳转单个用户允许最小间隔
 		'SHOP_JUMP_DS_TIME' => 3*3600,
+
+		//新绑定跳转渠道分配
+		//'JUMP_CHANNEL' => array('taofen8'=>2, 'geihui'=>1, 'bbbao'=>1, 'baobeisha'=>1, 'mizhe'=>1),
+		'JUMP_CHANNEL' => array('mizhe'=>1),
+
+		//渠道临时故障转移(网站故障)
+		'JUMP_CHANNEL_ENABLE' => array(),
+
+		//有效渠道，设置为无效时，程序自动绑定账号到新渠道
+		//'JUMP_CHANNEL_ENABLE' => array('taofen8', 'geihui', 'bbbao', 'baobeisha', 'mizhe'),
+		'JUMP_CHANNEL_ENABLE' => array('mizhe'),
+
+		//渠道会员绑定插件账号数量上限
+		'JUMP_CHANNEL_BIND_LIMIT' => 20,
     )
 ?>

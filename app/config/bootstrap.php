@@ -185,61 +185,11 @@ function alert($target, $info) {
 	return true;
 }
 
-//登陆米折
-function mizheLogin($userid, $need_proxy=true, $try = 0) {
+function decodeMizhe(){
 
-	//TODO 20分钟内用同个proxy，且如果有remember cookie则先判断i.mizhe.com是否登陆(防止重复登陆)
-	require_once MYLIBS . 'curl.class.php';
-	$curl = new CURL();
-	$curl->cookie_path = '/tmp/curl_cookie_' . $userid . '.txt';
-	@unlink($curl->cookie_path);
-	$db = new UserMizhe();
-	$user = $db->find(array('userid' => $userid));
-	if ($user) {
-		clearTableName($user);
-		if ($need_proxy) {
-			if (isset($_SESSION['mizhe_login_proxy'][$userid])) {
-				$proxy = $_SESSION['mizhe_login_proxy'][$userid];
-			}
-			else {
-
-				$proxy = getProxy($user['area']);
-				//$proxy = getProxy('上海');
-				//echo 'get new Proxy';br();
-			}
-
-			if (!$proxy){
-				return false;
-			}
-
-			$curl->proxy = $proxy;
-		}
-
-		$curl->follow = false;
-		$curl->header = true;
-		$data = array();
-		$data['done'] = 'http://i.mizhe.com/';
-		$data['email'] = $user['email'];
-		$data['passwd'] = $user['password'];
-		$data['remember-me'] = 'on';
-		$login_return = $curl->post('http://www.mizhe.com/member/login.html', $data);
-
-		if (stripos($login_return, '302 Moved Temporarily') === false) {
-			unset($_SESSION['mizhe_login_proxy'][$userid]);
-			if ($try) {
-				return mizheLogin($userid, $need_proxy, $try - 1);
-			}
-			else {
-				alert('mizhe login', $login_return);
-				return false;
-			}
-		}
-		else {
-			if (@$proxy)
-				$_SESSION['mizhe_login_proxy'][$userid] = $proxy;
-			return $curl;
-		}
-	}
+	$link = str_replace('_','/',$link);
+	$link = str_replace('-','+',$link);
+	$link = base64_decode($link);
 }
 
 //获取代理

@@ -1,54 +1,66 @@
 <?php
     if($pass):
 ?>
-    <?php if($driver == '51fanli' || !$driver):?>
-		<?php if($shop == 'taobao'):?>
-			$.ajax({
-			    dataType: "jsonp",
-			    url: "http://fun.51fanli.com/api/search/getItemById?pid=<?=$p_id?>&is_mobile=2&shoptype=2&track_code=a",
-			    jsonp:"jsoncallback",
-			    success: function(e){
+    <?php if($driver == 'fanli' || !$driver):?>
+	<?php if($p['shop'] == 'taobao'):?>
+		$.ajax({
+		    dataType: "jsonp",
+		    url: "http://fun.51fanli.com/api/search/getItemById?pid=<?=$p['p_id']?>&is_mobile=2&shoptype=2&track_code=a",
+		    jsonp:"jsoncallback",
+		    success: function(e){
 
-				if(e.status == 1){
-				    p_title = encodeURIComponent(e.data.title);
-				    p_seller = encodeURIComponent(e.data.shopname);
-				    ju = encodeURIComponent(e.data.url);
-				    if(top)
-					top.location.href = '<?=DOMAIN?>/api/jump/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?p_title='+p_title+'&ju='+ju+'&oc=<?=$oc?>&target=<?=$target?>&p_seller='+p_seller;
-				    else
-					window.location.href = '<?=DOMAIN?>/api/jump/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?p_title='+p_title+'&ju='+ju+'&oc=<?=$oc?>&target=<?=$target?>&p_seller='+p_seller;
-				}else{
-				    if(top)
-					top.location.href = '<?=DOMAIN?>/api/alert/jump/51fanli_status_error?u=<?=$default_url?>&target=<?=$target?>';
-				    else
-				        window.location.href = '<?=DOMAIN?>/api/alert/jump/51fanli_status_error?u=<?=$default_url?>&target=<?=$target?>';
-				}
+			if(e.status == 1){
+			    p_title = encodeURIComponent(e.data.title);
+			    p_seller = encodeURIComponent(e.data.shopname);
+			    ju = encodeURIComponent(e.data.url);
+			    if(top)
+				top.location.href = '<?=DOMAIN?>/apiJumpFanli/jump/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>/<?=$p['p_price']?>/<?=$p['p_fanli']?>?p_title='+p_title+'&ju='+ju+'&oc=<?=$p['oc']?>&target=<?=$p['target']?>&p_seller='+p_seller;
+			    else
+				window.location.href = '<?=DOMAIN?>/apiJumpFanli/jump/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>/<?=$p['p_price']?>/<?=$p['p_fanli']?>?p_title='+p_title+'&ju='+ju+'&oc=<?=$p['oc']?>&target=<?=$p['target']?>&p_seller='+p_seller;
+			}else{
+			    if(top)
+				top.location.href = '<?=DOMAIN?>/api/alert/jump/51fanli_status_error?u=<?=$default_url?>&target=<?=$p['target']?>';
+			    else
+				window.location.href = '<?=DOMAIN?>/api/alert/jump/51fanli_status_error?u=<?=$default_url?>&target=<?=$p['target']?>';
+			}
 
-			    },
-			    error: function(){
-				if(top)
-				    top.location.href = '<?=DOMAIN?>/api/jumpForce/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?oc=<?=$oc?>&target=<?=$target?>';
-				else
-				    window.location.href = '<?=DOMAIN?>/api/jumpForce/<?=$shop?>/<?=$my_user?>/<?=$p_id?>/<?=$p_price?>/<?=$p_fanli?>?oc=<?=$oc?>&target=<?=$target?>';
-			    }
+		    },
+		    error: function(){
+			if(top)
+			    top.location.href = '<?=DOMAIN?>/apiJump/jumpForce/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>/<?=$p['p_price']?>/<?=$p['p_fanli']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
+			else
+			    window.location.href = '<?=DOMAIN?>/apiJump/jumpForce/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>/<?=$p['p_price']?>/<?=$p['p_fanli']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
+		    }
 
-			});
-		<?php else:?>
-		    if(top)
-			top.location.href = '<?=DOMAIN?>/api/jump/<?=$shop?>/<?=$my_user?>?oc=<?=$oc?>&target=<?=$target?>';
-		    else
-			window.location.href = '<?=DOMAIN?>/api/jump/<?=$shop?>/<?=$my_user?>?oc=<?=$oc?>&target=<?=$target?>';
-		<?php endif?>
+		});
+	<?php else:?>
+	    if(top)
+		top.location.href = '<?=DOMAIN?>/apiJumpFanli/jump/<?=$p['shop']?>/<?=$p['my_user']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
+	    else
+		window.location.href = '<?=DOMAIN?>/apiJumpFanli/jump/<?=$p['shop']?>/<?=$p['my_user']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
+	<?php endif?>
 
     <?php elseif($driver == 'mizhe'):?>
-		<?php if($shop == 'taobao'):?>
-		    if(top)
-			top.location.href = 'http://go.mizhe.com/rebate/taobao/i-serene%E6%97%97%E8%88%B0%E5%BA%97-<?=$p_id?>.html?p=MTM5LjI2&target=dGJrdXJsL3Q_ZT1tJTNEMiUyNnMlM0QlMkJscGdSNEtWbTlBY1FpcEt3UXplUE9lRURyWVZWYTY0eUs4Q2NrZmY3VFZSQWRodUYxNEZNYldVVlRxSjdoZEx4cTNJaFNKTjZHVG5WZVBsS3QzdVBIeWYlMkZhMVRNR2ZWNXh6c0JGWloyeU1UelNKNlJHS1h2MiUyRlNpamRtJTJCbkZPRTN1NWxkbWo2Q1NERk9DUVJwY21LZ2wlMkJKUzRRMkJTNiZ1bmlkPTEmc3BtPTIwMTQuMTIyODc0NjUuMS4w&r=3.6&stop=0&shop=<?=$shop?>&my_user=<?=$my_user?>&p_id=<?=$p_id?>&p_price=<?=$p_price?>&p_fanli=<?=$p_fanli?>&oc=<?=$oc?>&target=<?=$target?>';
-		    else
-			window.location.href = 'http://go.mizhe.com/rebate/taobao/i-serene%E6%97%97%E8%88%B0%E5%BA%97-<?=$p_id?>.html?p=MTM5LjI2&target=dGJrdXJsL3Q_ZT1tJTNEMiUyNnMlM0QlMkJscGdSNEtWbTlBY1FpcEt3UXplUE9lRURyWVZWYTY0eUs4Q2NrZmY3VFZSQWRodUYxNEZNYldVVlRxSjdoZEx4cTNJaFNKTjZHVG5WZVBsS3QzdVBIeWYlMkZhMVRNR2ZWNXh6c0JGWloyeU1UelNKNlJHS1h2MiUyRlNpamRtJTJCbkZPRTN1NWxkbWo2Q1NERk9DUVJwY21LZ2wlMkJKUzRRMkJTNiZ1bmlkPTEmc3BtPTIwMTQuMTIyODc0NjUuMS4w&r=3.6&stop=0&shop=<?=$shop?>&my_user=<?=$my_user?>&p_id=<?=$p_id?>&p_price=<?=$p_price?>&p_fanli=<?=$p_fanli?>&oc=<?=$oc?>&target=<?=$target?>';
-		<?php else:?>
+	<?php if($p['shop'] == 'taobao'):?>
+	    var link = 'http://www.mizhe.com/search/item.html?q=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
+	    if(top)
+		top.location.href = link;
+	    else
+		window.location.href = link;
+	<?php else:?>
 
-		<?php endif;?>
+	<?php endif;?>
+
+    <?php elseif($driver == 'taofen8'):?>
+
+	<?php if($p['shop'] == 'taobao'):?>
+	    if(top)
+		top.location.href = 'http://go.mizhe.com/rebate/taobao/i-serene%E6%97%97%E8%88%B0%E5%BA%97-<?=$p['p_id']?>.html?p=MTM5LjI2&target=dGJrdXJsL3Q_ZT1tJTNEMiUyNnMlM0QlMkJscGdSNEtWbTlBY1FpcEt3UXplUE9lRURyWVZWYTY0eUs4Q2NrZmY3VFZSQWRodUYxNEZNYldVVlRxSjdoZEx4cTNJaFNKTjZHVG5WZVBsS3QzdVBIeWYlMkZhMVRNR2ZWNXh6c0JGWloyeU1UelNKNlJHS1h2MiUyRlNpamRtJTJCbkZPRTN1NWxkbWo2Q1NERk9DUVJwY21LZ2wlMkJKUzRRMkJTNiZ1bmlkPTEmc3BtPTIwMTQuMTIyODc0NjUuMS4w&r=3.6&stop=0&shop=<?=$p['shop']?>&my_user=<?=$p['my_user']?>&p_id=<?=$p['p_id']?>&p_price=<?=$p['p_price']?>&p_fanli=<?=$p['p_fanli']?>&oc=<?=$p['oc']?>&target=<?=$p['target']?>';
+	    else
+		window.location.href = 'http://go.mizhe.com/rebate/taobao/i-serene%E6%97%97%E8%88%B0%E5%BA%97-<?=$p['p_id']?>.html?p=MTM5LjI2&target=dGJrdXJsL3Q_ZT1tJTNEMiUyNnMlM0QlMkJscGdSNEtWbTlBY1FpcEt3UXplUE9lRURyWVZWYTY0eUs4Q2NrZmY3VFZSQWRodUYxNEZNYldVVlRxSjdoZEx4cTNJaFNKTjZHVG5WZVBsS3QzdVBIeWYlMkZhMVRNR2ZWNXh6c0JGWloyeU1UelNKNlJHS1h2MiUyRlNpamRtJTJCbkZPRTN1NWxkbWo2Q1NERk9DUVJwY21LZ2wlMkJKUzRRMkJTNiZ1bmlkPTEmc3BtPTIwMTQuMTIyODc0NjUuMS4w&r=3.6&stop=0&shop=<?=$p['shop']?>&my_user=<?=$p['my_user']?>&p_id=<?=$p['p_id']?>&p_price=<?=$p['p_price']?>&p_fanli=<?=$p['p_fanli']?>&oc=<?=$p['oc']?>&target=<?=$p['target']?>';
+	<?php else:?>
+
+	<?php endif;?>
     <?php endif;?>
 
 <?php else:?>

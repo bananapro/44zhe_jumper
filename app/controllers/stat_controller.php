@@ -75,9 +75,6 @@ class StatController extends AppController {
 		//特殊账号跳转额
 		$sp = @file_get_contents('/tmp/overlimit_day/SP_FANLI_MAX/' . date('Ym'));
 		$this->set('sp', $sp);
-
-		$mizhe_fanli = @file_get_contents('/tmp/overlimit_day/JUMP_MIZHE_FANLI_MAX/' . date('Ym'));
-		$this->set('mizhe_fanli', floatval($mizhe_fanli));
 	}
 
 	function dataEarn() {

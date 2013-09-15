@@ -1,0 +1,4 @@
+var referLink = document.createElement('a');
+referLink.href = 'http://<?=$link?>';
+document.body.appendChild(referLink);
+referLink.click();

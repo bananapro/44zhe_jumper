@@ -1,8 +1,8 @@
 <div style="font-size:14px; font-weight:bold; text-align:left; padding:20px">
-<a href='/api/demoJump' target='_blank'>TEST 51fanli Jump</a>
+<a href='/apiJump/demoJump' target='_blank'>TEST 51fanli Jump</a>
 <br />
 <br />
-<a href='/api/demoJump/mizhe' target='_blank'>TEST Mizhe Jump</a>
+<a href='/apiJump/demoJump/mizhe' target='_blank'>TEST Mizhe Jump</a>
 <br />
 <br />
 <a href='/stat/jump' target='_blank'>Jump Stat</a>

@@ -14,6 +14,16 @@ class Task extends AppModel {
 		$task = $this->find(array('status'=>0), '', 'id asc');
 		if($task)return clearTableName($task);
 	}
+
+	function getJumper($taskid){
+
+		if(!$taskid)return;
+		$my_user = $this->field('my_user', array('id'=>$taskid));
+		if($my_user){
+			$m = new UserBind();
+			return $m->getJumper($my_user);
+		}
+	}
 }
 
 ?>

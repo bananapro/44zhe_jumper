@@ -185,11 +185,23 @@ function alert($target, $info) {
 	return true;
 }
 
-function decodeMizhe(){
-
+//米折加密链接转换
+function decodeMizheLink($link){
 	$link = str_replace('_','/',$link);
 	$link = str_replace('-','+',$link);
 	$link = base64_decode($link);
+	return $link;
+}
+
+//米折加密链接转换
+function encodeMizheLink($link){
+	$link = str_replace('http://','',$link);
+	$link = str_replace('s.click.taobao.com/','tbkurl/',$link);
+	$link = str_replace('g.click.taobao.com/','gurl/',$link);
+	$link = str_replace('taobao.com/','tbsite/',$link);
+	$link = base64_encode($link);
+	$link = str_replace('+','-',$link);
+	return $link;
 }
 
 //获取代理

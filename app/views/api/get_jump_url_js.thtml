@@ -1,7 +1,7 @@
 <?php
     if($pass):
 ?>
-    <?php if($driver == 'fanli' || !$driver):?>
+    <?php if($type == 'fanli' || !$type):?>
 	<?php if($p['shop'] == 'taobao'):?>
 		$.ajax({
 		    dataType: "jsonp",
@@ -40,7 +40,7 @@
 		window.location.href = '<?=DOMAIN?>/apiJumpFanli/jump/<?=$p['shop']?>/<?=$p['my_user']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
 	<?php endif?>
 
-    <?php elseif($driver == 'mizhe'):?>
+    <?php elseif($type == 'mizhe'):?>
 	<?php if($p['shop'] == 'taobao'):?>
 	    var link = 'http://www.mizhe.com/search/item.html?q=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
 	    if(top)
@@ -51,7 +51,7 @@
 
 	<?php endif;?>
 
-    <?php elseif($driver == 'taofen8'):?>
+    <?php elseif($type == 'taofen8'):?>
 
 	<?php if($p['shop'] == 'taobao'):?>
 	    if(top)

@@ -15,7 +15,7 @@ class UserBind extends AppModel {
 				$jumper = $m->find(array('userid'=>$user['jumper_uid']));
 				clearTableName($jumper);
 				if($jumper['status'] == 1){
-					$jumper['jumper_type'] = $user['jumper_type'];
+					$jumper['type'] = $user['jumper_type'];
 					return $jumper;
 				}else{
 					//解绑用户
@@ -75,7 +75,7 @@ class UserBind extends AppModel {
 		}
 
 		$this->updateBindCount($channel, $selected['userid']);
-		$selected['jumper_type'] = $channel;
+		$selected['type'] = $channel;
 
 		LogInfo("{$my_user} bind to [{$selected['jumper_type']}][{$selected['userid']}]");
 
@@ -101,7 +101,7 @@ class UserBind extends AppModel {
 		$a = C('config', 'JUMP_CHANNEL_ENABLE');
 		$channel = $a[$channel];
 		$selected = $this->getChannelUserM($channel)->find(array('allow_anon'=>1), '', 'rand()');
-		$selected['jumper_type'] = $channel;
+		$selected['type'] = $channel;
 
 		return $selected;
 	}

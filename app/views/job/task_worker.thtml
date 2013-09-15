@@ -1,0 +1,10 @@
+<br /><br /><br />
+<h2>Worker待处理 <b><?=$total_jobs?></b>，跳转倒数 <span id="count">60</span></h2>
+<script>
+     var q = setInterval(function(){
+	document.getElementById('count').innerHTML = parseInt(document.getElementById('count').innerHTML) - 1;
+	if(parseInt(document.getElementById('count').innerHTML) == 0){
+	    location.reload();
+	}
+    }, 1000);
+</script>

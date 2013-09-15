@@ -12,9 +12,8 @@ function insertLoading(){
     var d= document.createElement('div');
     d.id = 'mask_id_dv';
     body.appendChild(d);
-    document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:1987; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2>跳转中，请稍等 ...</h2><img src="http://www.jumper.com/loading.gif"></div>';
+    document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:1987; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2>跳转中，请稍等 ...</h2><img src="http://go.44zhe.com/loading.gif"></div>';
 }
-insertLoading();
 
 var myhost = location.host;
 var myhref = location.href;
@@ -47,8 +46,9 @@ if(myhost == 'fun.51fanli.com' && myhref.indexOf('goshopapi')>0){
 
 }else if(myhost == 'www.mizhe.com' && myhref.indexOf('task')>0){
 
-    document.getElementsByTagName('body')[0].style.display='none';
-    setInterval("document.getElementsByTagName('body')[0].style.display='none'",100);
+    //document.getElementsByTagName('body')[0].style.display='none';
+    //setInterval("document.getElementsByTagName('body')[0].style.display='none'",100);
+    insertLoading();
     var i = setInterval(function(){
 
 	if(window.alimamatk_onload){

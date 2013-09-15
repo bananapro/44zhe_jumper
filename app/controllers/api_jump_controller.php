@@ -31,37 +31,6 @@ class ApiJumpController extends AppController {
 		}
 	}
 
-	/*
-	 * 记录跳转日志
-	 */
-	function _addStatJump($shop, $jumper_type, $my_user, $outcode, $userid, $p_id='', $p_title='', $p_price='', $p_fanli='', $p_seller=''){
-		//记录跳转日志
-		$stat = array();
-		$stat['p_id'] = $p_id;
-		$stat['p_title'] = $p_title;
-		$stat['p_price'] = $p_price;
-		$stat['p_fanli'] = $p_fanli;
-		$stat['p_seller'] = $p_seller;
-		$stat['ip'] = getip();
-		$stat['area'] = getAreaByIp();
-		$stat['shop'] = $shop;
-		$stat['jumper_uid'] = $userid;
-		$stat['jumper_type'] = $jumper_type;
-		$stat['my_user'] = urldecode($my_user);
-		$stat['outcode'] = $outcode;
-		$stat['target'] = $_GET['target'];
-		$stat['client'] = getBrowser();
-		$stat['source'] = $_SESSION['source'];
-
-		foreach ($stat as $k => $v) {
-			if (!$v)
-				unset($stat[$k]);
-		}
-
-		$this->StatJump->create();
-		$this->StatJump->save($stat);
-	}
-
 	/**
 	 * 客户端请求返利网接口出错时，强制进行s2s端的跳转
 	 *

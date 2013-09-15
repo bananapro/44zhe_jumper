@@ -3,7 +3,7 @@
 class JobController extends AppController {
 
 	var $name = 'Job';
-	var $uses = array('UserFanli', 'StatJump', 'OrderFanli', 'UserMizhe');
+	var $uses = array('UserFanli', 'StatJump', 'OrderFanli', 'UserMizhe', 'Task');
 
 	function beforeRender() {
 		parent::beforeRender();
@@ -91,6 +91,21 @@ class JobController extends AppController {
 		$rate = number_format($job['p_fanli']*C('config', 'MIZHE_RATE') / $job['p_price'], 2);
 		$this->redirect('http://go.mizhe.com/rebate/taobao/i-'.urlencode($job['p_seller']).'-'.$job['p_id'].'.html?stop=0&r='.$rate.'&p='.base64_encode($job['p_price']));
 		die();
+	}
+
+	function taskWorker(){
+
+		$t_info = $this->Task->find(array('status'=>0), '', 'id asc');
+		clearTableName($t_info);
+		if($t_info){
+			require_once MYLIBS . 'jumper' . DS . "jtask_{$t_info['jumper_type']}.class.php";
+			$obj_name = 'Jtask'.ucfirst($t_info['jumper_type']);
+			$task = new $obj_name($t_info['id']);
+			$task->workConvertLink();
+		}
+
+		$total_jobs = $this->Task->findCount(array('status'=>0));
+		$this->set('total_jobs', $total_jobs);
 	}
 
 }

@@ -143,14 +143,17 @@ class ApiController extends AppController {
 
 		$default_url = $_GET['u'];
 		$param['oc'] = $_GET['oc'];
-		$param['target'] = @$_GET['target']?$_GET['target']:'';
+		if(@$_GET['target'])
+			$param['target'] = $_GET['target'];
 		$param['shop'] = $shop;
 		$param['my_user'] = $my_user;
 		$param['p_id'] = $p_id;
 		$param['p_price'] = $p_price;
 		$param['p_fanli'] = $p_fanli;
-		$driver = '';
-		if(@$_GET['su'])$_SESSION['source'] = $_GET['su'];
+
+		$type = '';
+		if(@$_GET['su'])
+			$_SESSION['source'] = $_GET['su'];
 
 		//判断是否允许运作
 		if ($shop && $my_user && C('config', 'ENABLE_JUMP')) {
@@ -164,49 +167,52 @@ class ApiController extends AppController {
 		//劫持流量只能走返利网
 
 		if ($shop != 'taobao' || @$_GET['su'] == 1) {
-			$driver = 'fanli';
+			$type = 'fanli';
 		}
 
-		if(!$driver){
+		if(!$type){
 
 			$j = $this->UserBind->getJumper($my_user);
 			//TODO 支持临时渠道切换
 			//TODO 支持指定渠道用户跳转，用于测试
 
-			$driver = $j['jumper_type'];
+			$type = $j['type'];
 
 			//尝试走过mizhe但没有成功过
-			if (@$_COOKIE["{$driver}_try"] && !@$_COOKIE["{$driver}_succ"]){
-				alert("{$driver} jump", '['. $param['oc'] .']['. getBrowser() .'] today failed');
-				$driver = false;
+			if (@$_COOKIE["{$type}_try"] && !@$_COOKIE["{$type}_succ"]){
+				alert("{$type} jump", '['. $param['oc'] .']['. getBrowser() .'] today failed');
+				$type = false;
 			}
 
 			//当认为走渠道没问题时，但容忍度降到0，也不再走mizhe
-			if (isset($_COOKIE["{$driver}_balance"]) && $_COOKIE["{$driver}_balance"] == 0){
+			if (isset($_COOKIE["{$type}_balance"]) && $_COOKIE["{$type}_balance"] == 0){
 
-				setcookie("{$driver}_succ", 0, time() - 360 * 24 * 3600, '/'); //清除米折通道成功标识
-				alert("{$driver} jump", '['. $param['oc'] .']['. getBrowser() .'] balance become zero');
-				$driver = false;
+				setcookie("{$type}_succ", 0, time() - 360 * 24 * 3600, '/'); //清除米折通道成功标识
+				alert("{$type} jump", '['. $param['oc'] .']['. getBrowser() .'] balance become zero');
+				$type = false;
 			}
 
-			if ($driver != 'fanli' && $driver) {
+			if ($type != 'fanli' && $type) {
 
-				setcookie("{$driver}_try", 1, time() + 3 * 24 * 3600, '/'); //每3天允许1次尝试渠道
-				$b = myisset(@$_COOKIE["{$driver}_balance"], 3);
+				setcookie("{$type}_try", 1, time() + 3 * 24 * 3600, '/'); //每3天允许1次尝试渠道
+				$b = myisset(@$_COOKIE["{$type}_balance"], 3);
 				$b--;
 				if($b<= 0)$b = 0;
-				setcookie("{$driver}_balance", $b, time() + 7 * 24 * 3600, '/'); //渠道失败容忍次数，减为0时7天不再走渠道
+				setcookie("{$type}_balance", $b, time() + 7 * 24 * 3600, '/'); //渠道失败容忍次数，减为0时7天不再走渠道
 			}
 		}
-		if(!$driver) $driver = 'fanli';
+		if(!$type) $type = 'fanli';
 
 		//TODO 返利网也需要用任务模式，先跳转到默认的中转页面
-		if($driver != 'fanli'){
+		if($type != 'fanli'){
+			$param['jumper_uid'] = $j['userid'];
+			$param['jumper_type'] = $type;
+			$this->Task->create();
 			$this->Task->save($param);
 			$this->set('taskid', $this->Task->getLastInsertID());
 		}
 
-		$this->set('driver', $driver);
+		$this->set('type', $type);
 		$this->set('default_url', $default_url);
 		$this->set('p', $param);
 	}
@@ -222,20 +228,29 @@ class ApiController extends AppController {
 
 		if($taskid){
 			$t_info = $this->Task->find(array('id'=>$taskid));
-
-			clearTableName($t_info);
 			if($t_info){
-				$jumper = $this->UserBind->getJumper($t_info['my_user']);
-				require_once MYLIBS . 'jumper' . DS . "jtask_{$jumper['jumper_type']}.class.php";
-				$obj_name = 'Jtask'.ucfirst($jumper['jumper_type']);
-				$task = new $obj_name();
-				$link = $task->getLink($t_info, urldecode($link_origin));
+				clearTableName($t_info);
+				require_once MYLIBS . 'jumper' . DS . "jtask_{$t_info['jumper_type']}.class.php";
+				$obj_name = 'Jtask'.ucfirst($t_info['jumper_type']);
+				$task = new $obj_name($taskid);
+				$link = $task->getLink(urldecode($link_origin));
 				$link = str_replace('http://', '', $link);
 			}
-		}
-		if(!$link)$link = 'www.taobao.com';
 
-		$this->set('link', $link);
+			if(!$link)$link = 'www.taobao.com';
+			$this->set('link', $link);
+
+			//TODO 用自己的key来获取
+			$data = file_get_contents('http://fun.51fanli.com/api/search/getItemById?pid=' . $t_info['p_id'] . '&is_mobile=2&shoptype=2');
+			if ($data) {
+				$data = json_decode($data, true);
+				$p_title = @$data['data']['title'];
+				$p_seller = @$data['data']['shopname'];
+			}
+
+			$this->Task->save(array('id'=>$taskid, 'p_seller'=>$p_seller));
+			$this->_addStatJump($t_info['shop'], $t_info['jumper_type'], $t_info['my_user'], $t_info['oc'], $t_info['jumper_uid'], $t_info['p_id'], $p_title, $t_info['p_price'], $t_info['p_fanli'], $p_seller);
+		}
 	}
 }
 

@@ -41,7 +41,6 @@
 <a href="/default/doPay">马上结算</a>
 <br />
 <br />
-<br />
 <?=@$message?>
 <br />
 <br />
@@ -55,11 +54,22 @@
 
 <br />
 <br />
-<br />
 
 上传mizhe订单/个人中心首页<br />
 <form action="/order/postMizheOrder" method="post" enctype="multipart/form-data" target="_blank">
 <input type="file" value="" name="file"/>
 <input type="submit" value="submit" />
 </form>
+
+<br />
+<br />
+当前环境:
+<?php
+	if(MY_ENV == 'DEV'){
+		echo '<font color=red>DEV</font>';
+	}else{
+		echo '<font color=blue>'.MY_ENV.'</font>';
+	}
+?>
+
 </div>

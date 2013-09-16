@@ -12,13 +12,13 @@ function insertLoading(){
     var d= document.createElement('div');
     d.id = 'mask_id_dv';
     body.appendChild(d);
-    document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:1987; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2>跳转中，请稍等 ...</h2><img src="http://www.jumper.com/loading.gif"></div>';
+    document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:1987; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2>跳转中，请稍等 ...</h2><img src="http://go.44zhe.com/loading.gif"></div>';
 }
 
 var myhost = location.host;
 var myhref = location.href;
 
-var args = new Object( );
+var args = new Object();
 var query = location.search.substring(1);      // Get query string
 var pairs = query.split("&");                  // Break at ampersand
 for(var i = 0; i < pairs.length; i++) {
@@ -56,23 +56,23 @@ if(myhost == 'fun.51fanli.com' && myhref.indexOf('goshopapi')>0){
 
 	    var obj=$(".action .get-btn")[0];
 	    try {
-                var event = document.createEvent('HTMLEvents');
-		event.initEvent("mousedown", true, true);
-		event.eventType = 'message';
-		obj.dispatchEvent(event);
+            var event = document.createEvent('HTMLEvents');
+            event.initEvent("mousedown", true, true);
+            event.eventType = 'message';
+            obj.dispatchEvent(event);
 
-            } catch(e) {
-                // 仅IE6/7/8不支持
-                var event = document.createEventObject();
-		event.eventType = 'message';
-		event.srcElement = obj;
-		obj.fireEvent('onmousedown', event);
-            }
+        }catch(e) {
+            // 仅IE6/7/8不支持
+            var event = document.createEventObject();
+            event.eventType = 'message';
+            event.srcElement = obj;
+            obj.fireEvent('onmousedown', event);
+        }
 
 	    var link_origin = $(".action .get-btn").attr('href');
 	    if(link_origin.indexOf('g.click.taobao.com')!= -1){
-		loadit('http://www.jumper.com/api/getTaskResultJs/'+args['taskid']+'/'+encodeURIComponent(link_origin)+'?debug=false');
-		clearInterval(i);
+            loadit('http://go.44zhe.com/api/getTaskResultJs/'+args['taskid']+'/'+encodeURIComponent(link_origin)+'?debug=false');
+            clearInterval(i);
 	    }
 	}
 

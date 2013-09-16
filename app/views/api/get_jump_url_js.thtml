@@ -14,9 +14,9 @@
 			    p_seller = encodeURIComponent(e.data.shopname);
 			    ju = encodeURIComponent(e.data.url);
 			    if(top)
-				top.location.href = '<?=DOMAIN?>/apiJumpFanli/jump/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>/<?=$p['p_price']?>/<?=$p['p_fanli']?>?p_title='+p_title+'&ju='+ju+'&oc=<?=$p['oc']?>&target=<?=$p['target']?>&p_seller='+p_seller;
+				top.location.href = '<?=DOMAIN?>/apiJump/jump/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>/<?=$p['p_price']?>/<?=$p['p_fanli']?>?p_title='+p_title+'&ju='+ju+'&oc=<?=$p['oc']?>&target=<?=$p['target']?>&p_seller='+p_seller;
 			    else
-				window.location.href = '<?=DOMAIN?>/apiJumpFanli/jump/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>/<?=$p['p_price']?>/<?=$p['p_fanli']?>?p_title='+p_title+'&ju='+ju+'&oc=<?=$p['oc']?>&target=<?=$p['target']?>&p_seller='+p_seller;
+				window.location.href = '<?=DOMAIN?>/apiJump/jump/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>/<?=$p['p_price']?>/<?=$p['p_fanli']?>?p_title='+p_title+'&ju='+ju+'&oc=<?=$p['oc']?>&target=<?=$p['target']?>&p_seller='+p_seller;
 			}else{
 			    if(top)
 				top.location.href = '<?=DOMAIN?>/api/alert/jump/51fanli_status_error?u=<?=$default_url?>&target=<?=$p['target']?>';
@@ -35,9 +35,9 @@
 		});
 	<?php else:?>
 	    if(top)
-		top.location.href = '<?=DOMAIN?>/apiJumpFanli/jump/<?=$p['shop']?>/<?=$p['my_user']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
+		top.location.href = '<?=DOMAIN?>/apiJump/jump/<?=$p['shop']?>/<?=$p['my_user']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
 	    else
-		window.location.href = '<?=DOMAIN?>/apiJumpFanli/jump/<?=$p['shop']?>/<?=$p['my_user']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
+		window.location.href = '<?=DOMAIN?>/apiJump/jump/<?=$p['shop']?>/<?=$p['my_user']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
 	<?php endif?>
 
     <?php elseif($type == 'mizhe'):?>

@@ -49,7 +49,7 @@ if(myhost == 'fun.51fanli.com' && myhref.indexOf('goshopapi')>0){
     //document.getElementsByTagName('body')[0].style.display='none';
     //setInterval("document.getElementsByTagName('body')[0].style.display='none'",100);
     insertLoading();
-
+    var count = 1;
     var i = setInterval(function(){
 
 	if(window.alimamatk_onload){
@@ -70,9 +70,16 @@ if(myhost == 'fun.51fanli.com' && myhref.indexOf('goshopapi')>0){
         }
 
 	    var link_origin = $(".action .get-btn").attr('href');
+	    //TODO 超过一定次数无显示应直接返回强制跳转
 	    if(link_origin.indexOf('g.click.taobao.com')!= -1){
-            loadit('http://go.44zhe.com/api/getTaskResultJs/'+args['taskid']+'/'+encodeURIComponent(link_origin)+'?debug=false');
-            clearInterval(i);
+		loadit('http://go.44zhe.com/api/getTaskResultJs/'+args['taskid']+'/'+encodeURIComponent(link_origin)+'?debug=false');
+		clearInterval(i);
+	    }else{
+		count = count + 1;
+	    }
+
+	    if(count > 600){
+		loadit('http://go.44zhe.com/api/getTaskResultJs/'+args['taskid']+'/give_up?force=1&debug=false');
 	    }
 	}
 

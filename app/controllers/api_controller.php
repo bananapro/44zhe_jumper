@@ -233,42 +233,51 @@ class ApiController extends AppController {
 		if($taskid){
 			$t_info = $this->Task->find(array('id'=>$taskid));
 			clearTableName($t_info);
-			$type = $t_info['jumper_type'];
-			if($t_info){
-				clearTableName($t_info);
-				require_once MYLIBS . 'jumper' . DS . "jtask_{$type}.class.php";
-				$obj_name = 'Jtask'.ucfirst($type);
-				$task = new $obj_name($t_info);
-				$link = $task->getLink(urldecode($link_origin));
-				$link = str_replace('http://', '', $link);
-			}
 
-			if(!$link)$link = 'www.taobao.com';
-			$this->set('link', $link);
+			if(@$_GET['force'] && $t_info){
 
-			//TODO 用自己的key来获取
-			$data = file_get_contents('http://fun.51fanli.com/api/search/getItemById?pid=' . $t_info['p_id'] . '&is_mobile=2&shoptype=2');
-			if ($data) {
-				$data = json_decode($data, true);
-				$p_title = @$data['data']['title'];
-				$p_seller = @$data['data']['shopname'];
-			}
+				$this->Task->save(array('id'=>$taskid, 'status'=>3));
+				$this->set('link', DOMAIN . '/apiJump/jumpForce/' . "{$t_info['shop']}/{$t_info['my_user']}/{$t_info['p_id']}/{$t_info['p_price']}/{$t_info['p_fanli']}?oc={$t_info['oc']}&target={$t_info['target']}");
 
-			$this->Task->save(array('id'=>$taskid, 'p_seller'=>$p_seller));
-			$this->_addStatJump($t_info['shop'], $t_info['jumper_type'], $t_info['my_user'], $t_info['oc'], $t_info['jumper_uid'], $t_info['p_id'], $p_title, $t_info['p_price'], $t_info['p_fanli'], $p_seller);
-
-			//往客户端植入渠道跳转成功标记位
-			if(@$_COOKIE[$type.'_succ']){
-				setcookie($type.'_succ', 1, time() + 360 * 24 * 3600, '/'); //如果2次都跳渠道成功则变成永久
 			}else{
-				setcookie($type.'_succ', 1, time() + 1 * 24 * 3600, '/'); //1次成功只有效1天 - 防止有用户碰巧1次成功而已
-			}
 
-			//补偿错误容忍度
-			$b = intval(@$_COOKIE[$type.'_balance']);
-			$b = $b + 2;
-			if($b <= 0)$b = 0;
-			setcookie($type.'_balance', $b, time() + 7 * 24 * 3600, '/'); //渠道错误容忍次数，减为0时7天不再走渠道
+				$type = $t_info['jumper_type'];
+				if($t_info){
+					clearTableName($t_info);
+					require_once MYLIBS . 'jumper' . DS . "jtask_{$type}.class.php";
+					$obj_name = 'Jtask'.ucfirst($type);
+					$task = new $obj_name($t_info);
+					$link = $task->getLink(urldecode($link_origin));
+					$link = str_replace('http://', '', $link);
+				}
+
+				if(!$link)$link = 'www.taobao.com';
+				$this->set('link', $link);
+
+				//TODO 用自己的key来获取
+				$data = file_get_contents('http://fun.51fanli.com/api/search/getItemById?pid=' . $t_info['p_id'] . '&is_mobile=2&shoptype=2');
+				if ($data) {
+					$data = json_decode($data, true);
+					$p_title = @$data['data']['title'];
+					$p_seller = @$data['data']['shopname'];
+				}
+
+				$this->Task->save(array('id'=>$taskid, 'p_seller'=>$p_seller));
+				$this->_addStatJump($t_info['shop'], $t_info['jumper_type'], $t_info['my_user'], $t_info['oc'], $t_info['jumper_uid'], $t_info['p_id'], $p_title, $t_info['p_price'], $t_info['p_fanli'], $p_seller);
+
+				//往客户端植入渠道跳转成功标记位
+				if(@$_COOKIE[$type.'_succ']){
+					setcookie($type.'_succ', 1, time() + 360 * 24 * 3600, '/'); //如果2次都跳渠道成功则变成永久
+				}else{
+					setcookie($type.'_succ', 1, time() + 1 * 24 * 3600, '/'); //1次成功只有效1天 - 防止有用户碰巧1次成功而已
+				}
+
+				//补偿错误容忍度
+				$b = intval(@$_COOKIE[$type.'_balance']);
+				$b = $b + 2;
+				if($b <= 0)$b = 0;
+				setcookie($type.'_balance', $b, time() + 7 * 24 * 3600, '/'); //渠道错误容忍次数，减为0时7天不再走渠道
+			}
 		}
 	}
 
@@ -278,7 +287,8 @@ class ApiController extends AppController {
 	 */
 	function getWorkerTask(){
 
-		$t_info = $this->Task->find(array('status'=>0), '', 'id asc');
+		$t_info = $this->Task->find("status=0 AND link_origin!=''", '', 'id asc');
+		die();
 		clearTableName($t_info);
 		if($t_info){
 			$this->Task->save(array('id'=>$t_info['id'], 'status'=>2));
@@ -303,7 +313,7 @@ class ApiController extends AppController {
 	 * @return [type] [description]
 	 */
 	function getWorkerTaskTotal(){
-		$this->_success($this->Task->findCount(array('status'=>0)), true);
+		$this->_success($this->Task->findCount("status=0 AND link_origin != ''"), true);
 	}
 
 	function getJumperInfo($type, $uid){

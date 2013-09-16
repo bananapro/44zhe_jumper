@@ -143,6 +143,7 @@ class ApiController extends AppController {
 
 		$default_url = $_GET['u'];
 		$param['oc'] = $_GET['oc'];
+		$my_user = low(urldecode($my_user));
 		if(isset($_GET['target']))
 			$param['target'] = $_GET['target'];
 		else
@@ -312,7 +313,7 @@ class ApiController extends AppController {
 		$info = $obj->find(array('userid'=>$uid));
 		if($info){
 			clearTableName($info);
-			$this->_success($info);
+			$this->_success($info, true);
 		}else{
 			$this->_error('user do not exist');
 		}

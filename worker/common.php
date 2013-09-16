@@ -37,7 +37,6 @@
 	}
 
 	function getJumperInfo($type, $uid){
-		echo 'getJumperInfo/'.$type.'/'.$uid;die();
 		return requestApi('getJumperInfo/'.$type.'/'.$uid);
 	}
 

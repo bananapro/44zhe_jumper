@@ -66,12 +66,12 @@ class AppController extends Controller {
             return false;
     }
 
-    function _success($message = '') {
+    function _success($message = '', $force_api = false) {
 
         if ($message === '')
             $message = '操作成功!';
         if (!DEBUG) {
-            if ($this->isAjax() || $this->isJsonp()) {
+            if ($this->isAjax() || $this->isJsonp() || $force_api) {
 
                 if ($this->isJsonp()) {
                     $this->_jsonpReturn($message, 1);

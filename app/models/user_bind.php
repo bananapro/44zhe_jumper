@@ -77,7 +77,7 @@ class UserBind extends AppModel {
 		$this->updateBindCount($channel, $selected['userid']);
 		$selected['type'] = $channel;
 
-		LogInfo("{$my_user} bind to [{$selected['jumper_type']}][{$selected['userid']}]");
+		LogInfo("{$my_user} bind to [{$selected['type']}][{$selected['userid']}]");
 
 		return $selected;
 	}

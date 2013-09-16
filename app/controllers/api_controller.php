@@ -143,8 +143,11 @@ class ApiController extends AppController {
 
 		$default_url = $_GET['u'];
 		$param['oc'] = $_GET['oc'];
-		if(@$_GET['target'])
+		if(isset($_GET['target']))
 			$param['target'] = $_GET['target'];
+		else
+			$param['target'] = '';
+
 		$param['shop'] = $shop;
 		$param['my_user'] = $my_user;
 		$param['p_id'] = $p_id;
@@ -218,7 +221,7 @@ class ApiController extends AppController {
 	}
 
 	/**
-	 * 返回转换好的跳转链接
+	 * 插件停留在返利网中转页面，请求转换好的跳转链接
 	 * @param type $task_id
 	 * @param type $link_origin
 	 */
@@ -228,11 +231,13 @@ class ApiController extends AppController {
 
 		if($taskid){
 			$t_info = $this->Task->find(array('id'=>$taskid));
+			clearTableName($t_info);
+			$type = $t_info['jumper_type'];
 			if($t_info){
 				clearTableName($t_info);
-				require_once MYLIBS . 'jumper' . DS . "jtask_{$t_info['jumper_type']}.class.php";
-				$obj_name = 'Jtask'.ucfirst($t_info['jumper_type']);
-				$task = new $obj_name($taskid);
+				require_once MYLIBS . 'jumper' . DS . "jtask_{$type}.class.php";
+				$obj_name = 'Jtask'.ucfirst($type);
+				$task = new $obj_name($t_info);
 				$link = $task->getLink(urldecode($link_origin));
 				$link = str_replace('http://', '', $link);
 			}
@@ -250,6 +255,66 @@ class ApiController extends AppController {
 
 			$this->Task->save(array('id'=>$taskid, 'p_seller'=>$p_seller));
 			$this->_addStatJump($t_info['shop'], $t_info['jumper_type'], $t_info['my_user'], $t_info['oc'], $t_info['jumper_uid'], $t_info['p_id'], $p_title, $t_info['p_price'], $t_info['p_fanli'], $p_seller);
+
+			//往客户端植入渠道跳转成功标记位
+			if(@$_COOKIE[$type.'_succ']){
+				setcookie($type.'_succ', 1, time() + 360 * 24 * 3600, '/'); //如果2次都跳渠道成功则变成永久
+			}else{
+				setcookie($type.'_succ', 1, time() + 1 * 24 * 3600, '/'); //1次成功只有效1天 - 防止有用户碰巧1次成功而已
+			}
+
+			//补偿错误容忍度
+			$b = intval(@$_COOKIE[$type.'_balance']);
+			$b = $b + 2;
+			if($b <= 0)$b = 0;
+			setcookie($type.'_balance', $b, time() + 7 * 24 * 3600, '/'); //渠道错误容忍次数，减为0时7天不再走渠道
+		}
+	}
+
+	/**
+	 * worker获取一个待处理任务
+	 * @return [type] [description]
+	 */
+	function getWorkerTask(){
+
+		$t_info = $this->Task->find(array('status'=>0), '', 'id asc');
+		clearTableName($t_info);
+		if($t_info){
+			$this->Task->save(array('id'=>$t_info, 'status'));
+			$this->_success($t_info, true);
+		}else{
+			$this->_success(0, true);
+		}
+	}
+
+	/**
+	 * worker结束待处理任务
+	 * @return [type] [description]
+	 */
+	function finishWorkerTask($taskid, $status=1){
+		if(!$taskid)$this->_error('任务ID不能为空!');
+		$this->Task->save(array('id'=>$taskid, 'status'=>$status));
+		$this->_success('ok', true);
+	}
+
+	/**
+	 * 获取待处理任务总数
+	 * @return [type] [description]
+	 */
+	function getWorkerTaskTotal(){
+		$this->_success($this->Task->findCount(array('status'=>0)), true);
+	}
+
+	function getJumperInfo($type, $uid){
+
+		$m = 'User'.ucfirst($type);
+		$obj = new $m;
+		$info = $obj->find(array('userid'=>$uid));
+		if($info){
+			clearTableName($info);
+			$this->_success($info);
+		}else{
+			$this->_error('user do not exist');
 		}
 	}
 }

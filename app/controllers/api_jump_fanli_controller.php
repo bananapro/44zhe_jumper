@@ -117,15 +117,7 @@ class ApiJumpFanliController extends ApiJumpController {
 		}
 
 		if (!@$user) {
-			$user = $this->UserFanli->getPoolBig();
-		}
-
-		//没有跳转源
-		if (!$user) {
-			//使用辽宁用户做备胎并报警，此处是应缺少有关地区的大池用户
-			$user = $this->UserFanli->getPoolBig('辽宁');
-			//报警，找不到相应地区的大池用户
-			//alert('Big pool', '[' . getAreaByIp() . '] can not found');
+			$user = $this->UserFanli->getPoolBig($my_user);
 		}
 
 		if (!$user) {

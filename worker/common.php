@@ -13,6 +13,7 @@
 	$CURL = new CURL();
 
 	function requestApi($api){
+
 		$data = file_get_contents(API . $api .'?debug=false');
 		if($data){
 			$data = json_decode($data, true);
@@ -20,7 +21,6 @@
 				return $data['message'];
 			}
 		}
-
 		return false;
 	}
 

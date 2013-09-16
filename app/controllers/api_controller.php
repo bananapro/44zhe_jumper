@@ -280,7 +280,7 @@ class ApiController extends AppController {
 		$t_info = $this->Task->find(array('status'=>0), '', 'id asc');
 		clearTableName($t_info);
 		if($t_info){
-			$this->Task->save(array('id'=>$t_info, 'status'));
+			$this->Task->save(array('id'=>$t_info['id'], 'status'=>2));
 			$this->_success($t_info, true);
 		}else{
 			$this->_success(0, true);

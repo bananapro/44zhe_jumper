@@ -2,7 +2,12 @@
 
 
 	define('ROOT', dirname(__FILE__) . '/');
-	define('API', 'http://go.44zhe.com/api/');
+	if(@$_GET['debug']){
+		define('API_TEST', 'http://www.jumper.com/api/');
+	}else{
+		define('API', 'http://go.44zhe.com/api/');
+	}
+
 	define('DS', '/');
 
 	require ROOT . 'common_env.php';

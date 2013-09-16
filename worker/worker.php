@@ -5,6 +5,8 @@ require './common.php';
 $total_jobs = getTaskTotal();
 $page =<<<EOT
 <html>
+<title>Work任务自动处理</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <body>
 <div style="text-align:center;width:100%">
 <br /><br /><br /><br /><br /><br /><br />

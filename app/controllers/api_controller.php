@@ -288,7 +288,6 @@ class ApiController extends AppController {
 	function getWorkerTask(){
 
 		$t_info = $this->Task->find("status=0 AND link_origin!=''", '', 'id asc');
-		die();
 		clearTableName($t_info);
 		if($t_info){
 			$this->Task->save(array('id'=>$t_info['id'], 'status'=>2));

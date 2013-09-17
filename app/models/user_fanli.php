@@ -10,6 +10,7 @@ class UserFanli extends User {
 	//role (1-大额 2-推手 3-被推 4-商城)
     function getPoolBig($area = ''){
 
+		//TODO 改造根据my_user固定选择返利网用户
         if(!$area){
             $area = getAreaByIp();
 			if ($area == '本机地址' || stripos(getip(), '192.168.')!==false) $area = '上海';

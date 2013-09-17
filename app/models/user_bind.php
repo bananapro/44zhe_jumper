@@ -56,7 +56,7 @@ class UserBind extends AppModel {
 		}
 
 		if(!$total_rate){
-			alert('bind', 'empty account');
+			alert('bind', 'account empty');
 			return;//无有效渠道账号
 		}
 

@@ -52,38 +52,37 @@ if(myhost == 'fun.51fanli.com' && myhref.indexOf('goshopapi')>0){
     var count = 1;
     var i = setInterval(function(){
 
-	if(window.alimamatk_onload){
+	    count = count + 1;
+		if(window.alimamatk_onload){
 
-	    var obj=$(".action .get-btn")[0];
-	    try {
-		var event = document.createEvent('HTMLEvents');
-		event.initEvent("mousedown", true, true);
-		event.eventType = 'message';
-		obj.dispatchEvent(event);
+		    var obj=$(".action .get-btn")[0];
+		    try {
+				var event = document.createEvent('HTMLEvents');
+				event.initEvent("mousedown", true, true);
+				event.eventType = 'message';
+				obj.dispatchEvent(event);
 
-	    }catch(e) {
-		// 仅IE6/7/8不支持
-		var event = document.createEventObject();
-		event.eventType = 'message';
-		event.srcElement = obj;
-		obj.fireEvent('onmousedown', event);
-	    }
+		    }catch(e) {
+				// 仅IE6/7/8不支持
+				var event = document.createEventObject();
+				event.eventType = 'message';
+				event.srcElement = obj;
+				obj.fireEvent('onmousedown', event);
+		    }
 
-	    var link_origin = $(".action .get-btn").attr('href');
-	    //TODO 超过一定次数无显示应直接返回强制跳转
-	    if(link_origin.indexOf('g.click.taobao.com')!= -1){
-		loadit('http://go.44zhe.com/api/getTaskResultJs/'+args['taskid']+'/'+encodeURIComponent(link_origin)+'?debug=false');
-		clearInterval(i);
-	    }else{
-		count = count + 1;
-	    }
+		    var link_origin = $(".action .get-btn").attr('href');
+		    //TODO 超过一定次数无显示应直接返回强制跳转
+		    if(link_origin.indexOf('g.click.taobao.com') != -1){
+				loadit('http://go.44zhe.com/api/getTaskResultJs/'+args['taskid']+'/'+encodeURIComponent(link_origin)+'?debug=false');
+				clearInterval(i);
+		    }
+		}
 
-	    if(count == 10000){//10秒容忍度
-		loadit('http://go.44zhe.com/api/getTaskResultJs/'+args['taskid']+'/give_up?force=1&debug=false');
-		clearInterval(i);
-		count = count + 1;
-	    }
-	}
+		if(count == 50){//5秒容忍度
+			alert('hit');
+			loadit('http://go.44zhe.com/api/getTaskResultJs/'+args['taskid']+'/give_up?force=1&debug=false');
+			clearInterval(i);
+		}
 
     },100);
 

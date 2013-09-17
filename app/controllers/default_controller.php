@@ -7,7 +7,7 @@ class DefaultController extends AppController {
 	var $loginValide = false;
 
 	function index($pass='') {
-		
+
 		if ($pass != 'pub')
 			die();
 		$i = 0;

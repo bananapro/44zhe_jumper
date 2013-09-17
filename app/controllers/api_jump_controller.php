@@ -28,7 +28,7 @@ class ApiJumpController extends AppController {
 	/**
 	 * 客户端请求返利网接口出错时，强制进行s2s端的跳转
 	 *
-	 * http://go.44zhe.com/api/jumpForce/taobao/bluecone@163.com/18484876328/0.11/0.01
+	 * http://go.44zhe.com/apiJump/jumpForce/taobao/bluecone@163.com/18484876328/0.11/0.01
 	 * @param type $shop
 	 * @param type $my_user
 	 * @param type $p_id
@@ -36,6 +36,8 @@ class ApiJumpController extends AppController {
 	 * @param type $p_fanli
 	 */
 	function jumpForce($shop, $my_user, $p_id='', $p_price='', $p_fanli='') {
+
+		//TODO 返利网改成正常登陆跳转模式
 
 		$data = file_get_contents('http://fun.51fanli.com/api/search/getItemById?pid=' . $p_id . '&is_mobile=2&shoptype=2&track_code=a');
 		if ($data) {

@@ -47,7 +47,7 @@ class UserBind extends AppModel {
 
 			$m = $this->getChannelUserM($channel);
 			//跳过无账号的渠道
-			if(!$m->find(array('bind_count'=>'< '.C('config','JUMP_CHANNEL_BIND_LIMIT'))))continue;
+			if(!$m->find(array('bind_count'=>'< '.C('config','JUMP_CHANNEL_BIND_LIMIT'), 'status'=>1)))continue;
 			$total_rate += $rate;
 			for($i=0; $i<$rate;$i++){
 				$channel_rebin[] = $channel;
@@ -56,7 +56,7 @@ class UserBind extends AppModel {
 		}
 
 		if(!$total_rate){
-			alert('bind', 'empty account!');
+			alert('bind', 'empty account');
 			return;//无有效渠道账号
 		}
 

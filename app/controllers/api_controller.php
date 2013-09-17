@@ -6,6 +6,11 @@ class ApiController extends AppController {
 	var $uses = array('UserFanli', 'UserMizhe', 'UserBind', 'UserCandidate', 'StatJump', 'StatRegFailed', 'StatJump', 'OrderFanli', 'UserBind', 'Task');
 	var $layout = 'ajax';
 
+	/**
+	 * url方式调用警告
+	 * @param type $target
+	 * @param type $info
+	 */
 	function alert($target, $info) {
 
 		alert($target, $info);
@@ -18,7 +23,7 @@ class ApiController extends AppController {
 	}
 
 	/**
-	 * 判断是否有注册任务，如果有，则返回注册url
+	 * 插件注册页面：判断是否有注册任务，如果有，则返回注册url
 	 */
 	function redirectRegUrl() {
 
@@ -139,8 +144,6 @@ class ApiController extends AppController {
 	 */
 	function getJumpUrlJs($shop, $my_user, $p_id='', $p_price='', $p_fanli='') {
 
-		//TODO取代接口形式获取
-
 		$default_url = $_GET['u'];
 		$param['oc'] = $_GET['oc'];
 		$my_user = low(urldecode($my_user));
@@ -179,33 +182,34 @@ class ApiController extends AppController {
 			$j = $this->UserBind->getJumper($my_user);
 			//TODO 支持临时渠道切换
 			//TODO 支持指定渠道用户跳转，用于测试
+			if($j){
 
-			$type = $j['type'];
+				$type = $j['type'];
+				//尝试走过mizhe但没有成功过
+				if (@$_COOKIE["{$type}_try"] && !@$_COOKIE["{$type}_succ"]){
+					alert("{$type} jump", '['. $param['oc'] .']['. getBrowser() .'] today failed');
+					$type = false;
+				}
 
-			//尝试走过mizhe但没有成功过
-			if (@$_COOKIE["{$type}_try"] && !@$_COOKIE["{$type}_succ"]){
-				alert("{$type} jump", '['. $param['oc'] .']['. getBrowser() .'] today failed');
-				$type = false;
-			}
+				//当认为走渠道没问题时，但容忍度降到0，也不再走mizhe
+				if (isset($_COOKIE["{$type}_balance"]) && $_COOKIE["{$type}_balance"] == 0){
 
-			//当认为走渠道没问题时，但容忍度降到0，也不再走mizhe
-			if (isset($_COOKIE["{$type}_balance"]) && $_COOKIE["{$type}_balance"] == 0){
+					setcookie("{$type}_succ", 0, time() - 360 * 24 * 3600, '/'); //清除米折通道成功标识
+					alert("{$type} jump", '['. $param['oc'] .']['. getBrowser() .'] balance become zero');
+					$type = false;
+				}
 
-				setcookie("{$type}_succ", 0, time() - 360 * 24 * 3600, '/'); //清除米折通道成功标识
-				alert("{$type} jump", '['. $param['oc'] .']['. getBrowser() .'] balance become zero');
-				$type = false;
-			}
+				if ($type != 'fanli' && $type) {
 
-			if ($type != 'fanli' && $type) {
-
-				setcookie("{$type}_try", 1, time() + 3 * 24 * 3600, '/'); //每3天允许1次尝试渠道
-				$b = myisset(@$_COOKIE["{$type}_balance"], 3);
-				$b--;
-				if($b<= 0)$b = 0;
-				setcookie("{$type}_balance", $b, time() + 7 * 24 * 3600, '/'); //渠道失败容忍次数，减为0时7天不再走渠道
+					setcookie("{$type}_try", 1, time() + 3 * 24 * 3600, '/'); //每3天允许1次尝试渠道
+					$b = myisset(@$_COOKIE["{$type}_balance"], 3);
+					$b--;
+					if($b<= 0)$b = 0;
+					setcookie("{$type}_balance", $b, time() + 7 * 24 * 3600, '/'); //渠道失败容忍次数，减为0时7天不再走渠道
+				}
 			}
 		}
-		
+
 		if(!$type) $type = 'fanli';
 
 		//TODO 返利网也需要用任务模式，先跳转到默认的中转页面
@@ -310,13 +314,18 @@ class ApiController extends AppController {
 	}
 
 	/**
-	 * 获取待处理任务总数
+	 * worker获取待处理任务总数
 	 * @return [type] [description]
 	 */
 	function getWorkerTaskTotal(){
 		$this->_success($this->Task->findCount("status=0 AND link_origin != ''"), true);
 	}
 
+	/**
+	 * worker获取跳转用户信息
+	 * @param type $type
+	 * @param type $uid
+	 */
 	function getJumperInfo($type, $uid){
 
 		$m = 'User'.ucfirst($type);

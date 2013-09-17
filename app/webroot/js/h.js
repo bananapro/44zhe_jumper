@@ -1,4 +1,5 @@
-function loadit(src){
+var zheDomain = 'http://www.jumper.com';
+function zheLoadit(src){
     var head= document.getElementsByTagName('head')[0];
     var script= document.createElement('script');
     script.type= 'text/javascript';
@@ -6,31 +7,31 @@ function loadit(src){
     head.appendChild(script);
 }
 
-function insertLoading(){
+function zheInsertLoading(){
 
     var body= document.getElementsByTagName('body')[0];
     var d= document.createElement('div');
     d.id = 'mask_id_dv';
     body.appendChild(d);
-    document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:1987; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2>跳转中，请稍等 ...</h2><img src="http://go.44zhe.com/loading.gif"></div>';
+    document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:1987; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2>跳转中，请稍等 ...</h2><img src="'+zheDomain+'/loading.gif"></div>';
 }
 
-var myhost = location.host;
-var myhref = location.href;
+var zheHost = location.host;
+var zheHref = location.href;
 
-var args = new Object();
-var query = location.search.substring(1);      // Get query string
-var pairs = query.split("&");                  // Break at ampersand
-for(var i = 0; i < pairs.length; i++) {
-    var pos = pairs[i].indexOf('=');           // Look for "name=value"
+var zheArgs = new Object();
+var zheQuery = location.search.substring(1);      // Get zheQuery string
+var zhePairs = zheQuery.split("&");                  // Break at ampersand
+for(var i = 0; i < zhePairs.length; i++) {
+    var pos = zhePairs[i].indexOf('=');           // Look for "name=value"
     if (pos == -1) continue;                   // If not found, skip
-    var argname = pairs[i].substring(0,pos); // Extract the name
-    var value = pairs[i].substring(pos+1);     // Extract the value
+    var argname = zhePairs[i].substring(0,pos); // Extract the name
+    var value = zhePairs[i].substring(pos+1);     // Extract the value
     value = decodeURIComponent(value);         // Decode it, if needed
     if(value && value != 'undefined'){
-	args[argname] = value;                     // Store as a property
+	zheArgs[argname] = value;                     // Store as a property
     }else{
-	args[argname] = 0;                     // Store as a property
+	zheArgs[argname] = 0;                     // Store as a property
     }
 }
 
@@ -39,16 +40,16 @@ if(navigator.userAgent.indexOf("MSIE")>0)
 else
     is_ie = false;
 
-if(myhost == 'fun.51fanli.com' && myhref.indexOf('goshopapi')>0){
+if(zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi')>0){
 
     document.getElementsByTagName('div')[0].style.display='none';
     document.getElementsByTagName('div')[1].style.display='none';
 
-}else if(myhost == 'www.mizhe.com' && myhref.indexOf('task')>0){
+}else if(zheHost == 'www.mizhe.com' && zheHref.indexOf('task')>0){
 
     //document.getElementsByTagName('body')[0].style.display='none';
     //setInterval("document.getElementsByTagName('body')[0].style.display='none'",100);
-    insertLoading();
+    zheInsertLoading();
     var count = 1;
     var i = setInterval(function(){
 
@@ -73,14 +74,13 @@ if(myhost == 'fun.51fanli.com' && myhref.indexOf('goshopapi')>0){
 		    var link_origin = $(".action .get-btn").attr('href');
 		    //TODO 超过一定次数无显示应直接返回强制跳转
 		    if(link_origin.indexOf('g.click.taobao.com') != -1){
-				loadit('http://go.44zhe.com/api/getTaskResultJs/'+args['taskid']+'/'+encodeURIComponent(link_origin)+'?debug=false');
+				zheLoadit('http://go.44zhe.com/api/getTaskResultJs/'+zheArgs['taskid']+'/'+encodeURIComponent(link_origin)+'?debug=false');
 				clearInterval(i);
 		    }
 		}
 
 		if(count == 50){//5秒容忍度
-			alert('hit');
-			loadit('http://go.44zhe.com/api/getTaskResultJs/'+args['taskid']+'/give_up?force=1&debug=false');
+			zheLoadit(zheDomain+'/api/getTaskResultJs/'+zheArgs['taskid']+'/give_up?force=1&debug=false');
 			clearInterval(i);
 		}
 

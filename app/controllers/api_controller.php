@@ -205,6 +205,7 @@ class ApiController extends AppController {
 				setcookie("{$type}_balance", $b, time() + 7 * 24 * 3600, '/'); //渠道失败容忍次数，减为0时7天不再走渠道
 			}
 		}
+		
 		if(!$type) $type = 'fanli';
 
 		//TODO 返利网也需要用任务模式，先跳转到默认的中转页面

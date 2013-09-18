@@ -237,7 +237,7 @@ class ApiController extends AppController {
 			//但客户端插件悬停过久(例如获取不到淘点金链接)，返回强制跳转链接
 			if(@$_GET['force'] && $t_info){
 
-				$this->Task->save(array('id'=>$taskid, 'status'=>3, 'target' =>urldecode($link_origin)));
+				$this->Task->save(array('id'=>$taskid, 'status'=>3, 'link_origin' =>urldecode($link_origin)));
 				$link = str_replace('http://', '', DOMAIN . '/apiJump/jumpForce/' . "{$t_info['shop']}/{$t_info['my_user']}/{$t_info['p_id']}/{$t_info['p_price']}/{$t_info['p_fanli']}?oc={$t_info['oc']}&target={$t_info['target']}");
 				$this->set('link', $link);
 

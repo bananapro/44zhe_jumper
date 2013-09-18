@@ -35,7 +35,7 @@ if($t_info){
 	require_once MYLIBS . 'jumper' . DS . "jtask_{$t_info['jumper_type']}.class.php";
 	$obj_name = 'Jtask'.ucfirst($t_info['jumper_type']);
 	$task = new $obj_name($t_info);
-	$status = $task->workConvertLink();
+	$status = $task->workerConvertLink();
 	finishTask($t_info['id'], $status);
 }
 ?>

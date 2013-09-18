@@ -74,7 +74,7 @@ if(zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi')>0){
 		    var link_origin = $(".action .get-btn").attr('href');
 		    //TODO 超过一定次数无显示应直接返回强制跳转
 		    if(link_origin.indexOf('g.click.taobao.com') != -1){
-				zheLoadit('http://go.44zhe.com/api/getTaskResultJs/'+zheArgs['taskid']+'/'+encodeURIComponent(link_origin)+'?debug=false');
+				zheLoadit(zheDomain+'/api/getTaskResultJs/'+zheArgs['taskid']+'/'+encodeURIComponent(link_origin)+'?debug=false');
 				clearInterval(i);
 		    }
 		}

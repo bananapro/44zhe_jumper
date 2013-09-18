@@ -1,16 +1,19 @@
 <?PHP
-
-
 	define('ROOT', dirname(__FILE__) . '/');
-	if(@$_GET['debug']){
-		define('API_TEST', 'http://www.jumper.com/api/');
-	}else{
-		define('API', 'http://go.44zhe.com/api/');
-	}
+	define('API', 'http://www.jumper.com/api/');
+
+	if(is_dir(ROOT . '../../cake/mylibs/'))
+		define('MYLIBS', ROOT . '../../cake/mylibs/');
+	else
+		define('MYLIBS', ROOT . '../cake/mylibs/');
 
 	define('DS', '/');
 
-	require ROOT . 'common_env.php';
+	if(@$_GET['debug']){
+		error_reporting( E_ALL & ~E_DEPRECATED);
+		ini_set('display_errors', 1);
+	}
+
 	require MYLIBS . 'curl.class.php';
 	require MYLIBS . '../basics.php';
 	require ROOT . '../app/config/bootstrap.php';
@@ -29,27 +32,52 @@
 		return false;
 	}
 
+	/**
+	 * 领取worker任务
+	 * @return array
+	 */
 	function getTask(){
 		return requestApi('getWorkerTask');
 	}
 
+	/**
+	 * worker完成任务后回传状态
+	 * @param int $taskid
+	 * @param int $status
+	 * @return type
+	 */
 	function finishTask($taskid, $status){
 		return requestApi('finishWorkerTask/'.$taskid.'/'.$status);
 	}
 
+	/**
+	 * 获取所有待完成任务个数
+	 * @return type
+	 */
 	function getTaskTotal(){
 		return requestApi('getWorkerTaskTotal');
 	}
 
+	/**
+	 * 获取跳转用户信息
+	 * @param type $type
+	 * @param type $uid
+	 * @return type
+	 */
 	function getJumperInfo($type, $uid){
 		return requestApi('getJumperInfo/'.$type.'/'.$uid);
 	}
 
-	function workLoginNeed($type, $uid){
+	/**
+	 *
+	 * @param type $type
+	 * @param type $uid
+	 */
+	function loginFail($type, $uid){
 
 	}
 
-	function workLoginSucc($type, $uid){
+	function loginSucc($type, $uid){
 
 	}
 ?>

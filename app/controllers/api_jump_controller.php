@@ -28,7 +28,7 @@ class ApiJumpController extends AppController {
 	/**
 	 * 客户端请求返利网接口出错时，强制进行s2s端的跳转
 	 *
-	 * http://go.44zhe.com/apiJump/jumpForce/taobao/bluecone@163.com/18484876328/0.11/0.01
+	 * http://www.jumper.com/apiJump/jumpForce/taobao/bluecone@163.com/18484876328/0.11/0.01
 	 * @param type $shop
 	 * @param type $my_user
 	 * @param type $p_id

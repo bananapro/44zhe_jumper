@@ -144,19 +144,16 @@ class ApiController extends AppController {
 	 */
 	function getJumpUrlJs($shop, $my_user, $p_id='', $p_price='', $p_fanli='') {
 
+		$my_user = low(urldecode($my_user));
 		$default_url = $_GET['u'];
 		$param['oc'] = $_GET['oc'];
-		$my_user = low(urldecode($my_user));
-		if(isset($_GET['target']))
-			$param['target'] = $_GET['target'];
-		else
-			$param['target'] = '';
-
 		$param['shop'] = $shop;
 		$param['my_user'] = $my_user;
 		$param['p_id'] = $p_id;
 		$param['p_price'] = $p_price;
 		$param['p_fanli'] = $p_fanli;
+		$param['target'] = '';
+		if(isset($_GET['target']))$param['target'] = $_GET['target'];
 
 		$type = '';
 		if(@$_GET['su'])
@@ -173,9 +170,7 @@ class ApiController extends AppController {
 		//淘宝以外流量暂时只能走返利网
 		//劫持流量只能走返利网
 
-		if ($shop != 'taobao' || @$_GET['su'] == 1) {
-			$type = 'fanli';
-		}
+		if ($shop != 'taobao' || @$_GET['su'] == 1) $type = 'fanli';
 
 		if(!$type){
 
@@ -260,7 +255,7 @@ class ApiController extends AppController {
 				if(!$link)$link = 'www.taobao.com';
 				$this->set('link', $link);
 
-				//TODO 用自己的key来获取
+				//TODO 用自己的key来获取，补充卖家信息
 				$data = file_get_contents('http://fun.51fanli.com/api/search/getItemById?pid=' . $t_info['p_id'] . '&is_mobile=2&shoptype=2');
 				if ($data) {
 					$data = json_decode($data, true);
@@ -289,7 +284,7 @@ class ApiController extends AppController {
 
 	/**
 	 * worker获取一个待处理任务
-	 * @return [type] [description]
+	 * @return [json] [任务详情]
 	 */
 	function getWorkerTask(){
 
@@ -305,7 +300,7 @@ class ApiController extends AppController {
 
 	/**
 	 * worker结束待处理任务
-	 * @return [type] [description]
+	 * @return [json] [处理结果]
 	 */
 	function finishWorkerTask($taskid, $status=1){
 		if(!$taskid)$this->_error('任务ID不能为空!');
@@ -315,7 +310,7 @@ class ApiController extends AppController {
 
 	/**
 	 * worker获取待处理任务总数
-	 * @return [type] [description]
+	 * @return [json] [任务数]
 	 */
 	function getWorkerTaskTotal(){
 		$this->_success($this->Task->findCount("status=0 AND link_origin != ''"), true);
@@ -323,8 +318,8 @@ class ApiController extends AppController {
 
 	/**
 	 * worker获取跳转用户信息
-	 * @param type $type
-	 * @param type $uid
+	 * @param string $type
+	 * @param int $uid
 	 */
 	function getJumperInfo($type, $uid){
 

@@ -63,7 +63,7 @@ class StatController extends AppController {
 
 
 		//最新跳转记录
-		$last_jumps = $this->StatJump->findAll('', '', 'id DESC', 15);
+		$last_jumps = $this->StatJump->findAll('', '', 'created DESC', 15);
 		clearTableName($last_jumps);
 		$this->set('last_jumps', $last_jumps);
 

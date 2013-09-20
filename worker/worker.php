@@ -1,4 +1,5 @@
 <?PHP
+
 //领取任务
 require './common.php';
 
@@ -36,6 +37,6 @@ if($t_info){
 	$obj_name = 'Jtask'.ucfirst($t_info['jumper_type']);
 	$task = new $obj_name($t_info);
 	$status = $task->workerConvertLink();
-	finishTask($t_info['id'], $status);
+	finishTask($t_info['id'], $status, $task->error_msg);
 }
 ?>

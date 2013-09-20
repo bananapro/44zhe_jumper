@@ -288,7 +288,9 @@ class ApiController extends AppController {
 	 */
 	function getWorkerTask(){
 
-		$t_info = $this->Task->find("status=0 AND link_origin!=''", '', 'id asc');
+		//$delay_time = date('Y-m-d H:i:s', strtotime("-1 second")); //1秒前的延迟登陆尝试
+		$delay_time = date('Y-m-d H:i:s', strtotime("-1 hour")); //1小时前的延迟登陆尝试
+		$t_info = $this->Task->find("(status=0 AND link_origin!='') OR (status=5 AND ts < '{$delay_time}')", '', 'id asc');
 		clearTableName($t_info);
 		if($t_info){
 			$this->Task->save(array('id'=>$t_info['id'], 'status'=>2));
@@ -304,7 +306,8 @@ class ApiController extends AppController {
 	 */
 	function finishWorkerTask($taskid, $status=1){
 		if(!$taskid)$this->_error('任务ID不能为空!');
-		$this->Task->save(array('id'=>$taskid, 'status'=>$status));
+		if(!@$_GET['error_msg'])$_GET['error_msg'] = '';
+		$this->Task->save(array('id'=>$taskid, 'status'=>$status, 'error_msg'=>$_GET['error_msg']));
 		$this->_success('ok', true);
 	}
 

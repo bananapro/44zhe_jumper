@@ -1,13 +1,16 @@
 <?PHP
-	define('ROOT', dirname(__FILE__) . '/');
+
+	define('DS', '/');
+	define('ROOT', dirname(__FILE__) . DS);
 	define('API', 'http://www.jumper.com/api/');
+	define('DATA', ROOT . 'data' . DS );
 
 	if(is_dir(ROOT . '../../cake/mylibs/'))
 		define('MYLIBS', ROOT . '../../cake/mylibs/');
 	else
 		define('MYLIBS', ROOT . '../cake/mylibs/');
 
-	define('DS', '/');
+
 
 	if(@$_GET['debug']){
 		error_reporting( E_ALL & ~E_DEPRECATED);
@@ -22,7 +25,12 @@
 
 	function requestApi($api){
 
-		$data = file_get_contents(API . $api .'?debug=false');
+		if(stripos($api, '?')!=false){
+			$data = file_get_contents(API . $api .'&debug=false');
+		}else{
+			$data = file_get_contents(API . $api .'?debug=false');
+		}
+
 		if($data){
 			$data = json_decode($data, true);
 			if($data['status'] == 1){
@@ -46,8 +54,8 @@
 	 * @param int $status
 	 * @return type
 	 */
-	function finishTask($taskid, $status){
-		return requestApi('finishWorkerTask/'.$taskid.'/'.$status);
+	function finishTask($taskid, $status, $error_msg=''){
+		return requestApi('finishWorkerTask/'.$taskid.'/'.$status.'?error_msg='.  urlencode($error_msg));
 	}
 
 	/**
@@ -69,7 +77,7 @@
 	}
 
 	/**
-	 *
+	 * 登陆失败时做记录
 	 * @param type $type
 	 * @param type $uid
 	 */
@@ -77,6 +85,11 @@
 
 	}
 
+	/**
+	 * 登陆成功时清除失败标记
+	 * @param type $type
+	 * @param type $uid
+	 */
 	function loginSucc($type, $uid){
 
 	}

@@ -289,8 +289,8 @@ class ApiController extends AppController {
 	function getWorkerTask(){
 
 		//$delay_time = date('Y-m-d H:i:s', strtotime("-1 second")); //1秒前的延迟登陆尝试
-		$delay_time = date('Y-m-d H:i:s', strtotime("-1 hour")); //1小时前的延迟登陆尝试
-		$t_info = $this->Task->find("(status=0 AND link_origin!='') OR (status=5 AND ts < '{$delay_time}')", '', 'id asc');
+		$delay_time = date('Y-m-d H:i:s', strtotime("-1 hour")); //1小时前，延迟登陆尝试/处理中的任务
+		$t_info = $this->Task->find("(status=0 AND link_origin!='') OR (status IN(2,5) AND ts < '{$delay_time}')", '', 'id asc');
 		clearTableName($t_info);
 		if($t_info){
 			$this->Task->save(array('id'=>$t_info['id'], 'status'=>2));

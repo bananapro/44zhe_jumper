@@ -46,7 +46,7 @@
         <td class="ec">今日注册数</td>
         <td class="fl"><?=$s['t_reg_num']?></td>
         <td class="ec">今日跳转量</td>
-        <td class="fl"><?=$s['t_jump_num']?>/<?=$s['t_mizhe_jump_num']?></td>
+        <td class="fl"><?=$s['t_jump_num']?>/<?=$s['t_mizhe_jump_num']?>/<?=$s['t_geihui_jump_num']?></td>
         <td class="ec">今日总单价</td>
         <td class="fl"><?=$s['t_price_num']?></td>
         <td class="ec">今日总佣金</td>

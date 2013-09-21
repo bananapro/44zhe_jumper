@@ -36,6 +36,9 @@ class StatController extends AppController {
 		$s['y_mizhe_jump_num'] = $this->StatJump->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND outcode<>'test' AND jumper_type='mizhe'");
 		$s['t_mizhe_jump_num'] = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'  AND jumper_type='mizhe'");
 
+		$s['y_geihui_jump_num'] = $this->StatJump->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND outcode<>'test' AND jumper_type='geihui'");
+		$s['t_geihui_jump_num'] = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'  AND jumper_type='geihui'");
+
 		$s['y_price_num'] = $this->StatJump->findSum('p_price', "created>'" . $yesterday . "' AND created<'" . $today . "'");
 		$s['t_price_num'] = $this->StatJump->findSum('p_price', "created>'" . $today . "'");
 

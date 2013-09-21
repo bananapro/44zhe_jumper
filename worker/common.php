@@ -107,6 +107,10 @@ function loginSucc($type, $uid, $cookies = '') {
 			foreach ($lines as $l) {
 				if (trim($l)) {
 					$tmp = explode("\t", $l);
+					if($tmp[6] == 'deleted')continue;
+					$tmp[0] = ".{$type}.com";
+					$tmp[1] = "TRUE";
+					$tmp[2] = "/";
 					$tmp[4] = $expires;
 					$e[] = join("\t", $tmp);
 				}

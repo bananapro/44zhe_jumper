@@ -251,6 +251,7 @@ class ApiController extends AppController {
 					$task = new $obj_name($t_info);
 					$link = $task->getLink($link_origin);
 					if(!$link){//转换失败强制转换
+						$this->Task->save(array('id'=>$taskid, 'status'=>3, 'link_origin' =>$link_origin));
 						$link = DOMAIN . '/apiJump/jumpForce/' . "{$t_info['shop']}/{$t_info['my_user']}/{$t_info['p_id']}/{$t_info['p_price']}/{$t_info['p_fanli']}?oc={$t_info['oc']}&target={$t_info['target']}";
 					}
 					$link = str_replace('http://', '', $link);

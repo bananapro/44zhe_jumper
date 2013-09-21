@@ -51,14 +51,14 @@
 
 		//新绑定跳转渠道分配
 		//'JUMP_CHANNEL' => array('taofen8'=>2, 'geihui'=>1, 'bbbao'=>1, 'baobeisha'=>1, 'mizhe'=>1),
-		'JUMP_CHANNEL' => array('geihui'=>2, 'mizhe'=>1),
+		'JUMP_CHANNEL' => array('geihui'=>2, 'mizhe'=>1, 'baobeisha'=>1),
 
 		//渠道临时故障转移(网站故障)
 		'JUMP_CHANNEL_ENABLE' => array(),
 
 		//有效渠道，设置为无效时，程序自动绑定账号到新渠道
 		//'JUMP_CHANNEL_ENABLE' => array('taofen8', 'geihui', 'bbbao', 'baobeisha', 'mizhe'),
-		'JUMP_CHANNEL_ENABLE' => array('geihui','mizhe'),
+		'JUMP_CHANNEL_ENABLE' => array('geihui', 'mizhe', 'baobeisha'),
 
 		//渠道会员绑定插件账号数量上限
 		'JUMP_CHANNEL_BIND_LIMIT' => 20,

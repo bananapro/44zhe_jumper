@@ -283,7 +283,7 @@ class StatController extends AppController {
 		}
 
 		if ($senior) {
-			$datas = $this->StatJump->query("SELECT p_price, p_fanli ,count(*) as nu,DATE(created) as created FROM stat_jump WHERE jumper_type='mizhe' AND DATE(created)>'$last_date' GROUP BY DATE(created), p_title");
+			$datas = $this->StatJump->query("SELECT p_price, p_fanli ,count(*) as nu,DATE(created) as created FROM stat_jump WHERE jumper_type <> 'fanli' AND DATE(created)>'$last_date' GROUP BY DATE(created), p_title");
 			clearTableName($datas);
 			foreach ($datas as $data) {
 				@$new_datas['Mi佣金(元)'][$data['created']] += intval($data['p_fanli']);

@@ -106,4 +106,24 @@ if(zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi')>0){
 	}
 
     },100);
+
+}else if(zheHost == 'www.baobeisha.com' && zheHref.indexOf('task')>0){
+    zheInsertLoading();
+    var count = 1;
+    var i = setInterval(function(){
+
+	count = count + 1;
+
+	var link_origin = $('#clickUrl').attr('href');
+	if(link_origin.indexOf('url=') != -1){
+	    zheLoadit(zheDomain+'/api/getTaskResultJs/'+zheArgs['taskid']+'?link_origin='+encodeURIComponent(link_origin)+'&debug=false');
+	    clearInterval(i);
+	}
+
+	if(count == 50){//5秒容忍度
+	    zheLoadit(zheDomain+'/api/getTaskResultJs/'+zheArgs['taskid']+'?link_origin=give_up&force=1&debug=false');
+	    clearInterval(i);
+	}
+
+    },100);
 }

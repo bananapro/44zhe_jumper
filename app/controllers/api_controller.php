@@ -226,9 +226,10 @@ class ApiController extends AppController {
 	 * @param type $task_id
 	 * @param type $link_origin
 	 */
-	function getTaskResultJs($taskid, $link_origin=''){
+	function getTaskResultJs($taskid){
 
 		$link = false;
+		$link_origin = $_GET['link_origin'];
 
 		if($taskid){
 			$t_info = $this->Task->find(array('id'=>$taskid));
@@ -237,7 +238,7 @@ class ApiController extends AppController {
 			//但客户端插件悬停过久(例如获取不到淘点金链接)，返回强制跳转链接
 			if(@$_GET['force'] && $t_info){
 
-				$this->Task->save(array('id'=>$taskid, 'status'=>3, 'link_origin' =>urldecode($link_origin)));
+				$this->Task->save(array('id'=>$taskid, 'status'=>3, 'link_origin' =>$link_origin));
 				$link = str_replace('http://', '', DOMAIN . '/apiJump/jumpForce/' . "{$t_info['shop']}/{$t_info['my_user']}/{$t_info['p_id']}/{$t_info['p_price']}/{$t_info['p_fanli']}?oc={$t_info['oc']}&target={$t_info['target']}");
 				$this->set('link', $link);
 
@@ -248,7 +249,10 @@ class ApiController extends AppController {
 					require_once MYLIBS . 'jumper' . DS . "jtask_{$type}.class.php";
 					$obj_name = 'Jtask'.ucfirst($type);
 					$task = new $obj_name($t_info);
-					$link = $task->getLink(urldecode($link_origin));
+					$link = $task->getLink($link_origin);
+					if(!$link){//转换失败强制转换
+						$link = DOMAIN . '/apiJump/jumpForce/' . "{$t_info['shop']}/{$t_info['my_user']}/{$t_info['p_id']}/{$t_info['p_price']}/{$t_info['p_fanli']}?oc={$t_info['oc']}&target={$t_info['target']}";
+					}
 					$link = str_replace('http://', '', $link);
 				}
 

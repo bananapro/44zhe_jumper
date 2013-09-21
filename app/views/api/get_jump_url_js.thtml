@@ -35,10 +35,10 @@ if(top)zheLocation = top.location;
 	    zheLocation.href = 'http://www.mizhe.com/search/item.html?q=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
 	<?php endif;?>
 
-    <?php elseif($type == 'taofen8'):?>
+    <?php elseif($type == 'geihui'):?>
 
 	<?php if($p['shop'] == 'taobao'):?>
-
+	    zheLocation.href = 'http://taobao.geihui.com/t/search_goods?q=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
 	<?php endif;?>
     <?php endif;?>
 

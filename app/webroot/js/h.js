@@ -13,7 +13,7 @@ function zheInsertLoading(){
     var d= document.createElement('div');
     d.id = 'mask_id_dv';
     body.appendChild(d);
-    document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:1987; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2>跳转中，请稍等 ...</h2><img src="'+zheDomain+'/loading.gif"></div>';
+    document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:10000; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2 style="height:30px">跳转中，请稍等 ...</h2><img src="'+zheDomain+'/loading.gif"></div>';
 }
 
 var zheHost = location.host;
@@ -53,37 +53,55 @@ if(zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi')>0){
     var count = 1;
     var i = setInterval(function(){
 
-	    count = count + 1;
-		if(window.alimamatk_onload){
+	count = count + 1;
+	if(window.alimamatk_onload){
 
-		    var obj=$(".action .get-btn")[0];
-		    try {
-				var event = document.createEvent('HTMLEvents');
-				event.initEvent("mousedown", true, true);
-				event.eventType = 'message';
-				obj.dispatchEvent(event);
+	    var obj=$(".action .get-btn")[0];
+	    try {
+		var event = document.createEvent('HTMLEvents');
+		event.initEvent("mousedown", true, true);
+		event.eventType = 'message';
+		obj.dispatchEvent(event);
 
-		    }catch(e) {
-				// 仅IE6/7/8不支持
-				var event = document.createEventObject();
-				event.eventType = 'message';
-				event.srcElement = obj;
-				obj.fireEvent('onmousedown', event);
-		    }
+	    }catch(e) {
+		// 仅IE6/7/8不支持
+		var event = document.createEventObject();
+		event.eventType = 'message';
+		event.srcElement = obj;
+		obj.fireEvent('onmousedown', event);
+	    }
 
-		    var link_origin = $(".action .get-btn").attr('href');
-		    //TODO 超过一定次数无显示应直接返回强制跳转
-		    if(link_origin.indexOf('g.click.taobao.com') != -1){
-				zheLoadit(zheDomain+'/api/getTaskResultJs/'+zheArgs['taskid']+'/'+encodeURIComponent(link_origin)+'?debug=false');
-				clearInterval(i);
-		    }
-		}
+	    var link_origin = $(".action .get-btn").attr('href');
+	    if(link_origin.indexOf('g.click.taobao.com') != -1){
+		zheLoadit(zheDomain+'/api/getTaskResultJs/'+zheArgs['taskid']+'?link_origin='+encodeURIComponent(link_origin)+'&debug=false');
+		clearInterval(i);
+	    }
+	}
 
-		if(count == 50){//5秒容忍度
-			zheLoadit(zheDomain+'/api/getTaskResultJs/'+zheArgs['taskid']+'/give_up?force=1&debug=false');
-			clearInterval(i);
-		}
+	if(count == 50){//5秒容忍度
+	    zheLoadit(zheDomain+'/api/getTaskResultJs/'+zheArgs['taskid']+'?link_origin=give_up&force=1&debug=false');
+	    clearInterval(i);
+	}
 
     },100);
 
+}else if(zheHost == 'taobao.geihui.com' && zheHref.indexOf('task')>0){
+    zheInsertLoading();
+    var count = 1;
+    var i = setInterval(function(){
+
+	count = count + 1;
+
+	var link_origin = $('.red_link').attr('href');
+	if(link_origin.indexOf('s.click.taobao.com') != -1){
+	    zheLoadit(zheDomain+'/api/getTaskResultJs/'+zheArgs['taskid']+'?link_origin='+encodeURIComponent(link_origin)+'&debug=false');
+	    clearInterval(i);
+	}
+
+	if(count == 50){//5秒容忍度
+	    zheLoadit(zheDomain+'/api/getTaskResultJs/'+zheArgs['taskid']+'?link_origin=give_up&force=1&debug=false');
+	    clearInterval(i);
+	}
+
+    },100);
 }

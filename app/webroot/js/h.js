@@ -45,6 +45,8 @@ if(zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi')>0){
     document.getElementsByTagName('div')[0].style.display='none';
     document.getElementsByTagName('div')[1].style.display='none';
 
+    zheInsertLoading();
+
 }else if(zheHost == 'www.mizhe.com' && zheHref.indexOf('task')>0){
 
     //document.getElementsByTagName('body')[0].style.display='none';

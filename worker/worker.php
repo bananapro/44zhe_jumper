@@ -4,7 +4,7 @@
 require './common.php';
 
 $total_jobs = getTaskTotal();
-$page =<<<EOT
+$page = <<<EOT
 <html>
 <title>Work任务自动处理</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -32,9 +32,9 @@ ignore_user_abort(1);
 fastcgi_finish_request();
 
 $t_info = getTask();
-if($t_info){
+if ($t_info) {
 	require_once MYLIBS . 'jumper' . DS . "jtask_{$t_info['jumper_type']}.class.php";
-	$obj_name = 'Jtask'.ucfirst($t_info['jumper_type']);
+	$obj_name = 'Jtask' . ucfirst($t_info['jumper_type']);
 	$task = new $obj_name($t_info);
 	$status = $task->workerConvertLink();
 	finishTask($t_info['id'], $status, $task->error_msg);

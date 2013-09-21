@@ -117,9 +117,17 @@ function loginSucc($type, $uid, $cookies = '') {
 	else {
 		$cookie_str = '';
 		$e = '';
+		$cookie_name = array();
 		foreach ($cookies as $c) {
-			$e .= "{$c['domain']}\tTRUE\t{$c['path']}\tFALSE\t{$expires}\t{$c['name']}\t{$c['value']}\n";
+			if($c['value'] == 'deleted')continue;
+			$e .= ".{$type}.com\tTRUE\t/\tFALSE\t{$expires}\t{$c['name']}\t{$c['value']}\n";
+			$cookie_name[$c['name']] = 1;
 		}
+		foreach($_COOKIE as $key => $value){
+			if(isset($cookie_name[$key]))continue;
+			$e .= ".{$type}.com\tTRUE\t/\tFALSE\t{$expires}\t{$key}\t{$value}\n";
+		}
+		//合并当前COOKIE，防止第一步浏览器得到了session，save时遗漏
 	}
 
 	$e = trim($e);
@@ -209,7 +217,8 @@ function proxyGetMission() {
 		foreach ($_COOKIE as $k => $v) {
 			if ($k != 'carry_mission') {
 				unset($_COOKIE[$k]);
-				setcookie($k, '', 0, '/');
+				setcookie($k, '', -1000000, '/', ".{$e['jumper_type']}.com");
+				setcookie($k, '', -1000000, '/', "www.{$e['jumper_type']}.com");
 			}
 		}
 	}

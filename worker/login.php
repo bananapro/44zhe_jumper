@@ -20,6 +20,11 @@ if (@$_GET['mission_begin']) {
 				case 'mizhe':
 					$login_url = 'http://www.mizhe.com/member/login.html?carry_mission=login:'.$type.':'.$uid;
 					break;
+
+				case 'geihui':
+					$login_url = 'http://www.geihui.com/shop.html?carry_mission=login:'.$type.':'.$uid;
+					break;
+				
 				default:
 					die('无法处理该渠道登陆任务：' . $type);
 			}

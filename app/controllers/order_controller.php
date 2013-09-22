@@ -280,7 +280,7 @@ class OrderController extends AppController {
 
 							$p_yongjin = $dom->find('div[class=rebate] em', 0);
 							$p_yongjin = $p_yongjin->text();
-							$order['p_yongjin'] = $p_yongjin * 100 / C('config', 'MIZHE_RATE'); //米折网折扣
+							$order['p_yongjin'] = $p_yongjin * 100 / C('config', 'RATE_MIZHE'); //米折网折扣
 							$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
 
 							$order['p_rate'] = C('config', 'RATE');

@@ -3,7 +3,7 @@
 class OrderController extends AppController {
 
 	var $name = 'Order';
-	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe');
+	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe', 'StatJump');
 
 
 	/**
@@ -133,6 +133,7 @@ class OrderController extends AppController {
 				}
 
 				$dd = array();
+				$fanli = 0;
 				foreach ($new2 as $n) {
 
 					if (isset($global[$n['ordernum']])) {

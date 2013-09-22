@@ -51,7 +51,7 @@
 
 		//新绑定跳转渠道分配
 		//'JUMP_CHANNEL' => array('taofen8'=>2, 'geihui'=>1, 'bbbao'=>1, 'baobeisha'=>1, 'mizhe'=>1),
-		'JUMP_CHANNEL' => array('geihui'=>2, 'mizhe'=>1, 'baobeisha'=>1),
+		'JUMP_CHANNEL' => array('geihui'=>2, 'mizhe'=>1, 'baobeisha'=>2),
 
 		//渠道临时故障转移(网站故障)
 		'JUMP_CHANNEL_ENABLE' => array(),

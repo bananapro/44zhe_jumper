@@ -107,13 +107,12 @@ if(zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi')>0){
 
     },100);
 
-}else if(zheHost == 'www.baobeisha.com' && zheHref.indexOf('task')>0){
+}else if((zheHost == 'www.baobeisha.com' || zheHost == 'www.jsfanli.com') && zheHref.indexOf('task')>0){
     zheInsertLoading();
     var count = 1;
     var i = setInterval(function(){
 
 	count = count + 1;
-
 	var link_origin = $('#clickUrl').attr('href');
 	if(link_origin.indexOf('url=') != -1){
 	    zheLoadit(zheDomain+'/api/getTaskResultJs/'+zheArgs['taskid']+'?link_origin='+encodeURIComponent(link_origin)+'&debug=false');

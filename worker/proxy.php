@@ -68,7 +68,7 @@ if (@$mission['mission_type'] == 'login') {
 		//end mizhe login mission
 	}
 
-	if ($mission['jumper_type'] == 'baobeisha') {
+	if ($mission['jumper_type'] == 'baobeisha' || $mission['jumper_type'] == 'jsfanli') {
 
 		//step 1: 请求登陆页面
 		if ($path == '/index.php' && $_GET['act']=='login' && $_SERVER['REQUEST_METHOD'] == 'GET') {

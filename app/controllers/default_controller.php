@@ -34,13 +34,13 @@ class DefaultController extends AppController {
 		$total_yongjin_month = $this->OrderFanli->findSum('p_yongjin', "payed=0 AND status=1 AND donedate<='{$total_date_month}'");
 		$total_fanli_orders_month = $this->OrderFanli->findCount("payed=0 AND status=1 AND donedate<='{$total_date_month}'");
 
-		//总利润 = 返利网推荐现金 + 米折网总历史现金 - 返利网FB(还没提出) - 已结算
+		//总利润 = 返利网推荐现金 + 米折网总历史现金 - 米折网所有订单阿雄返利 - 米折已冻结*25
 		//$history_51fanli_fanli = $this->UserFanli->findSum('fl_cash');
 		//$history_51fanli_fb = $this->UserFanli->findSum('fl_fb')/100;
 		$history_mizhe_cash = $this->UserMizhe->findSum('cash_history');
-		$total_mizhe_payed = $this->OrderFanli->findSum('p_fanli', array('status' => 1, 'type' => 2));
+		$total_mizhe_p_fanli = $this->OrderFanli->findSum('p_fanli', array('status' => 1, 'type' => 2));
 		$total_mizhe_cash_error = $this->UserMizhe->findSum('cash_error');
-		$total_earn = $total_51fanli_earn + $total_51fanli_earn_b2c*0.5 + $history_mizhe_cash  - $total_mizhe_payed - $total_mizhe_cash_error * 0.35;
+		$total_earn = $total_51fanli_earn + $total_51fanli_earn_b2c*0.5 + $history_mizhe_cash  - $total_mizhe_p_fanli - $total_mizhe_cash_error * 0.25;
 
 		//等待支取
 		$waiting_51fanli_cash = $this->UserFanli->findSum('fl_cash');

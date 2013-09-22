@@ -24,9 +24,8 @@ class DefaultController extends AppController {
 
 		$total_date = date('Y-m-d', time() - 8 * 24 * 3600);
 		$total_date_month = date('Y-m-d', time() - 31 * 24 * 3600);
-		$total_51fanli_earn = $this->UserFanli->findSum('fl_cash');
-		$total_51fanli_earn_hist = $this->UserFanli->findSum('fl_cash_history');
-		$total_51fanli_fb = $this->UserFanli->findSum('fl_fb') / 100;
+		$total_51fanli_earn = $this->UserFanli->findSum('fl_cash', array('role'=>2)) + $this->UserFanli->findSum('fl_cash_history', array('role'=>2));
+		$total_51fanli_earn_b2c = $this->UserFanli->findSum('fl_cash', array('role'=>4)) + $this->UserFanli->findSum('fl_cash_history', array('role'=>4));
 		$total_fanli = $this->OrderFanli->findSum('p_fanli', "payed=0 AND status=1 AND donedate<='{$total_date}'");
 		$total_yongjin = $this->OrderFanli->findSum('p_yongjin', "payed=0 AND status=1 AND donedate<='{$total_date}'");
 		$total_fanli_orders = $this->OrderFanli->findCount("payed=0 AND status=1 AND donedate<='{$total_date}'");
@@ -40,7 +39,8 @@ class DefaultController extends AppController {
 		//$history_51fanli_fb = $this->UserFanli->findSum('fl_fb')/100;
 		$history_mizhe_cash = $this->UserMizhe->findSum('cash_history');
 		$total_mizhe_payed = $this->OrderFanli->findSum('p_fanli', array('status' => 1, 'type' => 2));
-		$total_earn = $total_51fanli_earn + $history_mizhe_cash + $total_51fanli_earn_hist - $total_mizhe_payed;
+		$total_mizhe_cash_error = $this->UserMizhe->findSum('cash_error');
+		$total_earn = $total_51fanli_earn + $total_51fanli_earn_b2c*0.5 + $history_mizhe_cash  - $total_mizhe_payed - $total_mizhe_cash_error * 0.35;
 
 		//等待支取
 		$waiting_51fanli_cash = $this->UserFanli->findSum('fl_cash');

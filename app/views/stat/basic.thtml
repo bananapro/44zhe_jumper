@@ -36,37 +36,52 @@
         <td class="ec">昨日注册数</td>
         <td class="fl"><?=$s['y_reg_num']?></td>
         <td class="ec">昨日跳转量</td>
-        <td class="fl"><?=$s['y_jump_num']?>/<?=$s['y_mizhe_jump_num']?></td>
+        <td class="fl" colspan="3">total:<?=$s['y_jump_num']?> mi:<?=$s['y_mizhe_jump_num']?> g:<?=$s['y_geihui_jump_num']?> bao:<?=$s['y_baobeisha_jump_num']?></td>
         <td class="ec">昨日总价</td>
         <td class="fl"><?=$s['y_price_num']?></td>
-        <td class="ec">昨日总佣金</td>
-        <td class="fl"><?=$s['y_fanli_num']?></td>
     </tr>
     <tr>
         <td class="ec">今日注册数</td>
         <td class="fl"><?=$s['t_reg_num']?></td>
         <td class="ec">今日跳转量</td>
-        <td class="fl"><?=$s['t_jump_num']?>/<?=$s['t_mizhe_jump_num']?>/<?=$s['t_geihui_jump_num']?></td>
+        <td class="fl" colspan="3">total:<?=$s['t_jump_num']?> mi:<?=$s['t_mizhe_jump_num']?> g:<?=$s['t_geihui_jump_num']?> bao:<?=$s['t_baobeisha_jump_num']?></td>
         <td class="ec">今日总单价</td>
         <td class="fl"><?=$s['t_price_num']?></td>
-        <td class="ec">今日总佣金</td>
-        <td class="fl"><?=$s['t_fanli_num']?></td>
     </tr>
     <tr>
         <td class="ec">昨日小单数</td>
         <td class="fl"><?=$s['y_r_num']?></td>
+        <td class="ec">昨日绑定量</td>
+        <td class="fl" colspan="3">mi:<?=$s['y_mizhe_bind_num']?> g:<?=$s['y_geihui_bind_num']?> bao:<?=$s['y_baobeisha_bind_num']?></td>
+        <td class="ec">昨日总佣金</td>
+        <td class="fl"><?=$s['y_fanli_num']?></td>
+    </tr>
+    <tr>
         <td class="ec">今日小单数</td>
         <td class="fl"><?=$s['t_r_num']?></td>
-        <td class="ec">当前余额</td>
-        <td class="fl"><?=$s['total_cash']?></td>
-        <td class="ec">当前FB</td>
-        <td class="fl"><?=$s['total_fb']?></td>
+        <td class="ec">今日绑定量</td>
+        <td class="fl" colspan="3">mi:<?=$s['t_mizhe_bind_num']?> g:<?=$s['t_geihui_bind_num']?> bao:<?=$s['t_baobeisha_bind_num']?></td>
+        <td class="ec">今日总佣金</td>
+        <td class="fl"><?=$s['t_fanli_num']?></td>
+    </tr>
+    <tr>
+        <td class="head2" colspan="8">渠道计数器</td>
     </tr>
     <tr>
         <td class="ec">米折现金</td>
         <td class="fl"><?=$s['total_mizhe_cash']?></td>
         <td class="ec">历史现金</td>
         <td class="fl"><?=($s['total_mizhe_history_cash'] - $s['total_mizhe_cash'])?></td>
+        <td class="ec"></td>
+        <td class="fl"></td>
+        <td class="ec"></td>
+        <td class="fl"></td>
+    </tr>
+    <tr>
+        <td class="ec">返利网现金</td>
+        <td class="fl"><?=$s['total_cash']?></td>
+        <td class="ec">当前FB</td>
+        <td class="fl"><?=$s['total_fb']?></td>
         <td class="ec"></td>
         <td class="fl"></td>
         <td class="ec"></td>

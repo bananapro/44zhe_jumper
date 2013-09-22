@@ -3,7 +3,7 @@
 class StatController extends AppController {
 
 	var $name = 'Stat';
-	var $uses = array('UserFanli', 'StatJump', 'UserCandidate', 'Alert', 'OrderFanli', 'UserMizhe');
+	var $uses = array('UserFanli', 'StatJump', 'UserCandidate', 'Alert', 'OrderFanli', 'UserMizhe', 'UserBind');
 
 	function beforeRender() {
 		parent::beforeRender();
@@ -38,6 +38,15 @@ class StatController extends AppController {
 
 		$s['y_geihui_jump_num'] = $this->StatJump->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND outcode<>'test' AND jumper_type='geihui'");
 		$s['t_geihui_jump_num'] = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'  AND jumper_type='geihui'");
+
+		$s['y_baobeisha_jump_num'] = $this->StatJump->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND outcode<>'test' AND jumper_type='baobeisha'");
+		$s['t_baobeisha_jump_num'] = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'  AND jumper_type='baobeisha'");
+
+		foreach(C('config', 'JUMP_CHANNEL') as $type => $v){
+			$s['y_'.$type.'_bind_num'] = $this->UserBind->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND jumper_type = '{$type}'");
+			$s['t_'.$type.'_bind_num'] = $this->UserBind->findCount("created>'" . $today . "' AND jumper_type = '{$type}'");
+		}
+
 
 		$s['y_price_num'] = $this->StatJump->findSum('p_price', "created>'" . $yesterday . "' AND created<'" . $today . "'");
 		$s['t_price_num'] = $this->StatJump->findSum('p_price', "created>'" . $today . "'");

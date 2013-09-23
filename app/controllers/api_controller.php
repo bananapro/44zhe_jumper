@@ -242,20 +242,19 @@ class ApiController extends AppController {
 				$link = str_replace('http://', '', DOMAIN . '/apiJump/jumpForce/' . "{$t_info['shop']}/{$t_info['my_user']}/{$t_info['p_id']}/{$t_info['p_price']}/{$t_info['p_fanli']}?oc={$t_info['oc']}&target={$t_info['target']}");
 				$this->set('link', $link);
 
-			}else{
+			}else if($t_info){
 
 				$type = $t_info['jumper_type'];
-				if($t_info){
-					require_once MYLIBS . 'jumper' . DS . "jtask_{$type}.class.php";
-					$obj_name = 'Jtask'.ucfirst($type);
-					$task = new $obj_name($t_info);
-					$link = $task->getLink($link_origin);
-					if(!$link){//转换失败强制转换
-						$this->Task->save(array('id'=>$taskid, 'status'=>3, 'link_origin' =>$link_origin));
-						$link = DOMAIN . '/apiJump/jumpForce/' . "{$t_info['shop']}/{$t_info['my_user']}/{$t_info['p_id']}/{$t_info['p_price']}/{$t_info['p_fanli']}?oc={$t_info['oc']}&target={$t_info['target']}";
-					}
-					$link = str_replace('http://', '', $link);
+				require_once MYLIBS . 'jumper' . DS . "jtask_{$type}.class.php";
+
+				$obj_name = 'Jtask'.ucfirst($type);
+				$task = new $obj_name($t_info);
+				$link = $task->getLink($link_origin);
+				if(!$link){//转换失败强制转换
+					$this->Task->save(array('id'=>$taskid, 'status'=>3, 'link_origin' =>$link_origin));
+					$link = DOMAIN . '/apiJump/jumpForce/' . "{$t_info['shop']}/{$t_info['my_user']}/{$t_info['p_id']}/{$t_info['p_price']}/{$t_info['p_fanli']}?oc={$t_info['oc']}&target={$t_info['target']}";
 				}
+				$link = str_replace('http://', '', $link);
 
 				if(!$link)$link = 'www.taobao.com';
 				$this->set('link', $link);
@@ -283,6 +282,9 @@ class ApiController extends AppController {
 				$b = $b + 2;
 				if($b <= 0)$b = 0;
 				setcookie($type.'_balance', $b, time() + 7 * 24 * 3600, '/'); //渠道错误容忍次数，减为0时7天不再走渠道
+
+			}else{
+				$this->set('link', 'www.taobao.com');
 			}
 		}
 	}

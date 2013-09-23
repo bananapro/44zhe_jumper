@@ -33,18 +33,12 @@ class StatController extends AppController {
 		$s['y_jump_num'] = $this->StatJump->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND outcode<>'test'");
 		$s['t_jump_num'] = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'");
 
-		$s['y_mizhe_jump_num'] = $this->StatJump->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND outcode<>'test' AND jumper_type='mizhe'");
-		$s['t_mizhe_jump_num'] = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'  AND jumper_type='mizhe'");
-
-		$s['y_geihui_jump_num'] = $this->StatJump->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND outcode<>'test' AND jumper_type='geihui'");
-		$s['t_geihui_jump_num'] = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'  AND jumper_type='geihui'");
-
-		$s['y_baobeisha_jump_num'] = $this->StatJump->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND outcode<>'test' AND jumper_type='baobeisha'");
-		$s['t_baobeisha_jump_num'] = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'  AND jumper_type='baobeisha'");
-
 		foreach(C('config', 'JUMP_CHANNEL') as $type => $v){
 			$s['y_'.$type.'_bind_num'] = $this->UserBind->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND jumper_type = '{$type}'");
 			$s['t_'.$type.'_bind_num'] = $this->UserBind->findCount("created>'" . $today . "' AND jumper_type = '{$type}'");
+
+			$s['y_baobeisha_jump_num'] = $this->StatJump->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND outcode<>'test' AND jumper_type='{$type}'");
+			$s['t_baobeisha_jump_num'] = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'  AND jumper_type='{$type}'");
 		}
 
 

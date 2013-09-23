@@ -35,7 +35,7 @@
 <!--
 至<?=$total_date_month?> :<br />总佣金: <?=intval($total_yongjin_month)?> 元 &nbsp; 扣除渠道(<?=C('config', 'RATE')*100?>%): <?=intval($total_fanli_month)?> 元 &nbsp;订单数：<?=intval($total_fanli_orders_month)?> &nbsp; <br /><br />
 -->
-<a href="/default/doPay">马上结算</a>
+<a href="/Order/doPay">马上结算</a>
 <br />
 <br />
 <?=@$message?>

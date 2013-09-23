@@ -83,15 +83,17 @@ else
 
 var zheCount = 1;
 var zheHasRequesResult = false;
-zheInsertLoading();
+
 
 if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 
+	zheInsertLoading();
 	document.getElementsByTagName('div')[0].style.display = 'none';
 	document.getElementsByTagName('div')[1].style.display = 'none';
 
 } else if (zheHost == 'www.mizhe.com' && zheHref.indexOf('task') > 0) {
 
+	zheInsertLoading();
 	//document.getElementsByTagName('body')[0].style.display='none';
 	//setInterval("document.getElementsByTagName('body')[0].style.display='none'",100);
 	var i = setInterval(function() {
@@ -130,6 +132,8 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 	}, 100);
 
 } else if (zheHost == 'taobao.geihui.com' && zheHref.indexOf('task') > 0) {
+
+	zheInsertLoading();
 	var i = setInterval(function() {
 
 		zheCount = zheCount + 1;
@@ -149,6 +153,8 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 	}, 100);
 
 } else if ((zheHost == 'www.baobeisha.com' || zheHost == 'www.jsfanli.com') && zheHref.indexOf('task') > 0) {
+
+	zheInsertLoading();
 	var i = setInterval(function() {
 
 		zheCount = zheCount + 1;
@@ -167,6 +173,8 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 	}, 100);
 
 } else if (zheHost == 'www.flk123.com' && zheHref.indexOf('task') > 0) {
+
+	zheInsertLoading();
 	var i = setInterval(function() {
 
 		zheCount = zheCount + 1;

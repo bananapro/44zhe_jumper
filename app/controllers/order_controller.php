@@ -352,7 +352,7 @@ class OrderController extends AppController {
 
 
 	/**
-	 * 清除
+	 * 进行结算
 	 */
 	function doPay() {
 

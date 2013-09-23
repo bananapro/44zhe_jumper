@@ -1,4 +1,5 @@
 var referLink = document.createElement('a');
 referLink.href = 'http://<?=$link?>';
+referLink.target = '_self';
 document.body.appendChild(referLink);
 referLink.click();

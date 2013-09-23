@@ -49,7 +49,6 @@ function zheGetConvert(iid) {
 }
 
 function zheGetConvertCB(slink) {
-
 	zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=' + encodeURIComponent(slink) + '&debug=false');
 }
 
@@ -177,7 +176,7 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 			zheHasRequesResult = true;
 		}
 
-		if (zheCount == 50) { //5秒容忍度
+		if (zheCount == 100) { //10秒容忍度
 			loadForceJump();
 			clearInterval(i);
 		}

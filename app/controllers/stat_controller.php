@@ -37,8 +37,8 @@ class StatController extends AppController {
 			$s['y_'.$type.'_bind_num'] = $this->UserBind->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND jumper_type = '{$type}'");
 			$s['t_'.$type.'_bind_num'] = $this->UserBind->findCount("created>'" . $today . "' AND jumper_type = '{$type}'");
 
-			$s['y_baobeisha_jump_num'] = $this->StatJump->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND outcode<>'test' AND jumper_type='{$type}'");
-			$s['t_baobeisha_jump_num'] = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'  AND jumper_type='{$type}'");
+			$s['y_'.$type.'_jump_num'] = $this->StatJump->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND outcode<>'test' AND jumper_type='{$type}'");
+			$s['t_'.$type.'_jump_num'] = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'  AND jumper_type='{$type}'");
 		}
 
 

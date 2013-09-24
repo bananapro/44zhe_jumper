@@ -42,20 +42,20 @@ class StatController extends AppController {
 		}
 
 
-		$s['y_price_num'] = $this->StatJump->findSum('p_price', "created>'" . $yesterday . "' AND created<'" . $today . "'");
-		$s['t_price_num'] = $this->StatJump->findSum('p_price', "created>'" . $today . "'");
+		$s['y_price_num'] = intval($this->StatJump->findSum('p_price', "created>'" . $yesterday . "' AND created<'" . $today . "'"));
+		$s['t_price_num'] = intval($this->StatJump->findSum('p_price', "created>'" . $today . "'"));
 
-		$s['y_fanli_num'] = $this->StatJump->findSum('p_fanli', "created>'" . $yesterday . "' AND created<'" . $today . "'");
-		$s['t_fanli_num'] = $this->StatJump->findSum('p_fanli', "created>'" . $today . "'");
+		$s['y_fanli_num'] = intval($this->StatJump->findSum('p_fanli', "created>'" . $yesterday . "' AND created<'" . $today . "'"));
+		$s['t_fanli_num'] = intval($this->StatJump->findSum('p_fanli', "created>'" . $today . "'"));
 
 		$s['y_r_num'] = $this->UserFanli->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND status=2 AND role=3");
 		$s['t_r_num'] = $this->UserFanli->findCount("created>'" . $today . "' AND status=2 AND role=3");
 
-		$s['total_cash'] = $this->UserFanli->findSum('fl_cash');
-		$s['total_fb'] = $this->UserFanli->findSum('fl_fb');
+		$s['total_cash'] = intval($this->UserFanli->findSum('fl_cash'));
+		$s['total_fb'] = intval($this->UserFanli->findSum('fl_fb'));
 
-		$s['total_mizhe_cash'] = $this->UserMizhe->findSum('cash');
-		$s['total_mizhe_history_cash'] = $this->UserMizhe->findSum('cash_history');
+		$s['total_mizhe_cash'] = intval($this->UserMizhe->findSum('cash'));
+		$s['total_mizhe_history_cash'] = intval($this->UserMizhe->findSum('cash_history'));
 
 		$this->set('s', $s);
 

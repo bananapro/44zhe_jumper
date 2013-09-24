@@ -6,7 +6,6 @@ define('API', 'http://www.jumper.com/api/');
 define('CACHE', ROOT . 'tmp' . DS);
 define('COOKIE', CACHE . 'login' . DS); //登陆login保存路径
 
-
 if (is_dir(ROOT . '../../cake/mylibs/'))
 	define('MYLIBS', ROOT . '../../cake/mylibs/');
 else
@@ -57,8 +56,8 @@ function getTask() {
  * @param int $status
  * @return type
  */
-function finishTask($taskid, $status, $error_msg='') {
-	return requestApi('finishWorkerTask/' . $taskid . '/' . $status . '?error_msg=' . urlencode($error_msg));
+function finishTask($taskid, $status, $msg='') {
+	return requestApi('finishWorkerTask/' . $taskid . '/' . $status . '?msg=' . urlencode($msg));
 }
 
 /**

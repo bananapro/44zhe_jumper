@@ -313,8 +313,14 @@ class ApiController extends AppController {
 	 */
 	function finishWorkerTask($taskid, $status=1){
 		if(!$taskid)$this->_error('任务ID不能为空!');
-		if(!@$_GET['error_msg'])$_GET['error_msg'] = '';
-		$this->Task->save(array('id'=>$taskid, 'status'=>$status, 'error_msg'=>$_GET['error_msg']));
+
+		if(!@$_GET['msg'])$_GET['msg'] = '';
+		if($status != 1){
+			$this->Task->save(array('id'=>$taskid, 'status'=>$status, 'error_msg'=>$_GET['msg']));
+		}else{
+			$this->Task->save(array('id'=>$taskid, 'status'=>$status, 'target'=>$_GET['msg']));
+		}
+
 		$this->_success('ok', true);
 	}
 

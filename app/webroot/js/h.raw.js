@@ -14,7 +14,21 @@ function zheInsertLoading() {
 	var d = document.createElement('div');
 	d.id = 'mask_id_dv';
 	body.appendChild(d);
-	document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:10000; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2 style="height:30px">跳转中，请稍等 ...</h2><img src="' + zheDomain + '/loading.gif"></div>';
+	var characterSet = 'utf8';
+	if(navigator.appName=="Netscape"){
+		if(document.characterSet!="UTF-8"){
+			characterSet = 'gbk';
+		}
+	}else{
+	    if(document.charset.toUpperCase()!="UTF-8"){
+	     	characterSet = 'gbk';
+	    }
+	}
+	if(characterSet == 'utf8'){
+		document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:10000; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2 style="height:30px">跳转中，请稍等 ...</h2><img src="' + zheDomain + '/loading.gif"></div>';
+	}else{
+		document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:10000; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2 style="height:30px">Loading ...</h2><img src="' + zheDomain + '/loading.gif"></div>';
+	}
 }
 
 function zheGetConvert(iid) {
@@ -56,25 +70,36 @@ function loadForceJump() {
 	zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=give_up&force=1&debug=false');
 }
 
+function zhePasteUrl(url){
+
+	var p_zheArgs = new Object();
+	if(!url)
+		var p_zheQuery = location.search.substring(1); // Get url string
+	else
+		var p_zheQuery = url.substring(url.indexOf('?')+1);
+
+	var p_zhePairs = p_zheQuery.split("&"); // Break at ampersand
+
+	for (var i = 0; i < p_zhePairs.length; i++) {
+		var pos = p_zhePairs[i].indexOf('='); // Look for "name=value"
+		if (pos == -1) continue; // If not found, skip
+		var argname = p_zhePairs[i].substring(0, pos); // Extract the name
+		var value = p_zhePairs[i].substring(pos + 1); // Extract the value
+		value = decodeURIComponent(value); // Decode it, if needed
+		if (value && value != 'undefined') {
+			p_zheArgs[argname] = value; // Store as a property
+		} else {
+			p_zheArgs[argname] = 0; // Store as a property
+		}
+	}
+
+	return p_zheArgs;
+}
+
 var zheHost = location.host;
 var zheHref = location.href;
+var zheArgs = zhePasteUrl('');
 
-var zheArgs = new Object();
-var zheQuery = location.search.substring(1); // Get zheQuery string
-var zhePairs = zheQuery.split("&"); // Break at ampersand
-
-for (var i = 0; i < zhePairs.length; i++) {
-	var pos = zhePairs[i].indexOf('='); // Look for "name=value"
-	if (pos == -1) continue; // If not found, skip
-	var argname = zhePairs[i].substring(0, pos); // Extract the name
-	var value = zhePairs[i].substring(pos + 1); // Extract the value
-	value = decodeURIComponent(value); // Decode it, if needed
-	if (value && value != 'undefined') {
-		zheArgs[argname] = value; // Store as a property
-	} else {
-		zheArgs[argname] = 0; // Store as a property
-	}
-}
 
 if (navigator.userAgent.indexOf("MSIE") > 0)
 	is_ie = true;
@@ -172,14 +197,23 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 
 	}, 100);
 
-} else if (zheHost == 'www.flk123.com' && zheHref.indexOf('task') > 0) {
+} else if ((zheHost == 'www.flk123.com' || zheHost == 'www.fanxian.com' ) && zheHref.indexOf('task') > 0) {
 
 	zheInsertLoading();
+
+	if (zheHost == 'www.flk123.com'){
+		var itemid = curitem;
+	}else{
+
+		var item_p = zhePasteUrl(decodeURIComponent(zheArgs['k']));
+		var itemid = item_p['id'];
+	}
+
 	var i = setInterval(function() {
 
 		zheCount = zheCount + 1;
 		if (TOP && zheHasRequesResult == false) {
-			zheGetConvert(curitem);
+			zheGetConvert(itemid);
 			clearInterval(i);
 			zheHasRequesResult = true;
 		}

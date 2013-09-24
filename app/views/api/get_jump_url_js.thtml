@@ -22,7 +22,7 @@ if(top)zheLocation = top.location;
 
 		    },
 		    error: function(){
-			zheLocation.href = '<?=DOMAIN?>/apiJump/jumpForce/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>/<?=$p['p_price']?>/<?=$p['p_fanli']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
+				zheLocation.href = '<?=DOMAIN?>/apiJump/jumpForce/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>/<?=$p['p_price']?>/<?=$p['p_fanli']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
 		    }
 
 		});
@@ -38,6 +38,8 @@ if(top)zheLocation = top.location;
 	    zheLocation.href = 'http://www.<?=$type?>.com/index.php?mod=tao&act=view&q=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&search=1&taskid=<?=$taskid?>';
 	<?php elseif($type == 'flk123'):?>
 	    zheLocation.href = 'http://www.flk123.com/rebate/items/<?=$p['p_id']?>.html?taskid=<?=$taskid?>';
+    <?php elseif($type == 'fanxian'):?>
+	    zheLocation.href = 'http://www.fanxian.com/?ct=taobao&ac=search&k=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
     <?php endif;?>
 
 <?php else:?>

@@ -11,7 +11,7 @@ $page = <<<EOT
 <body>
 <div style="text-align:center;width:100%">
 <br /><br /><br /><br /><br /><br /><br />
-<h2><span id="title">Worker待处理任务数<b>{$total_jobs}</b> ，计时：<span id="count">30</span>s</span></h2>
+<h2><span id="title">Worker待处理任务数<b>{$total_jobs}</b> ，计时：<span id="count">30</span>s</span>，<a href="javascript:void(0)" onclick="clearInterval(q)">暂停</a></h2>
 </div>
 </body></html>
 <script>

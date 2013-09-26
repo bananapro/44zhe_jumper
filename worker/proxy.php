@@ -10,6 +10,7 @@ $mission = proxyGetMission();
 $path = $_GET['path'];
 unset($_GET['path']);
 $uri = $_SERVER["HTTP_HOST"] . $path . '?' . http_build_query($_GET);
+$uri = trim($uri, '?');
 $page = '';
 
 //进行穿透任务解析
@@ -93,10 +94,36 @@ if (@$mission['mission_type'] == 'login') {
 		}
 		//end mizhe login mission
 	}
+
+	if ($mission['jumper_type'] == 'taofen8') {
+
+		//step 1: 请求登陆页面
+		if ($path == '/index.php' && $_GET['act']=='login' && $_SERVER['REQUEST_METHOD'] == 'GET') {
+			$page = getCacheStatic($uri);
+			$page .= "<script>$('#username').val('{$mission['email']}');$('#password').val('{$mission['password']}');$('#remember').attr('checked', true);"; //挂入用户名密码
+			header('Content-Length: ' . strlen($page)); //修正页面大小
+		}
+
+		//step 2: 提交登陆申请
+		if ($path == '/index.php' && $_GET['act']=='login' && $_SERVER['REQUEST_METHOD'] == 'POST') {
+
+			$proxy->enable_follow = false;
+			$page = $proxy->request($uri);
+
+			if (stripos($page, 'window.location.href')) {
+				$return = loginSucc($mission['jumper_type'], $mission['jumper_uid'], $proxy->response_cookies);
+				if ($return) {
+					setcookie('carry_mission', '', 0, '/'); //清除任务标识
+					$page = '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><body><div style="text-align:center;width:100%"><br /><br /><br /><br /><h2><b>该登陆任务处理完毕，请重新领取!</b></h2></div></body></html><script>setTimeout(function(){window.close()}, 3000);</script>';
+				}
+			}
+		}
+		//end mizhe login mission
+	}
 }
 
 if(!$page)
-	$page = getCacheStatic($_SERVER["HTTP_HOST"] . $path . '?' . http_build_query($_GET));
+	$page = getCacheStatic($uri);
 
 echo $page;
 ?>

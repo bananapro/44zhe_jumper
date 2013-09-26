@@ -158,7 +158,7 @@ function getCacheStatic($url) {
 			$static_cache = substr($static_cache, 3);
 		}
 		$is_static = false;
-		if (preg_match('/(.jpg|.gif|.bmp|.png|.js|.css|.ico)$/i', $url)) {
+		if (preg_match('/(.jpg|.gif|.bmp|.png|.js|.css|.ico)/i', $url)) {
 			$_SESSION['shutdown_debug'] = true;
 			$is_static = true;
 		}

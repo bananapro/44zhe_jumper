@@ -117,7 +117,7 @@ if (@$mission['mission_type'] == 'login') {
 			if ($return) {
 				setcookie('carry_mission', '', 0, '/'); //清除任务标识
 				//登出淘宝防止记录登陆状态
-				$page = '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><body><div style="text-align:center;width:100%"><script src="https://login.taobao.com/member/logout.jhtml?f=top&out=true&redirectURL=http://www.worker.com/login.php"></script><script src="https://login.taobao.com/member/logout.jhtml?f=top&out=true&redirectURL=http://www.taofen8.com/logout"></script><br /><br /><br /><br /><h2><b>该登陆任务处理完毕，请重新领取!</b></h2></div></body></html><script>setTimeout(function(){window.close()}, 3000);</script>';
+				$page = '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><body><div style="text-align:center;width:100%"><script src="https://login.taobao.com/member/logout.jhtml?f=top&out=true&redirectURL=http://www.worker.com/login.php"></script><script src="https://login.taobao.com/member/logout.jhtml?f=top&out=true"></script><script src="https://login.taobao.com/member/login.jhtml?sub=true&style=mini_top&need_sign=top&full_redirect=true&from=mini_top&from_encoding=utf-8#"></script><br /><br /><br /><br /><h2><b>该登陆任务处理完毕，请重新领取!</b></h2></div></body></html><script>setTimeout(function(){window.close()}, 3000);</script>';
 			}
 		}
 		//end mizhe login mission

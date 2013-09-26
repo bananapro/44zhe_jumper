@@ -221,7 +221,7 @@ function proxyGetMission() {
 			if ($k != 'carry_mission') {
 				unset($_COOKIE[$k]);
 				setcookie($k, '', -1000000, '/', ".{$e['jumper_type']}.com");
-				setcookie($k, '', -1000000, '/', "www.{$e['jumper_type']}.com");
+				//setcookie($k, '', -1000000, '/', "www.{$e['jumper_type']}.com"); 防止header过大，页面502
 			}
 		}
 	}

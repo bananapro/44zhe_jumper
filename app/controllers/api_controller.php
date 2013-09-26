@@ -206,7 +206,6 @@ class ApiController extends AppController {
 		}
 
 		if(!$type) $type = 'fanli';
-		if($type == 'geihui') $type = 'fanli'; //临时取消给惠网(由于有实名限制，必须换一批)
 
 		//TODO 返利网也需要用任务模式，先跳转到默认的中转页面
 		if($type != 'fanli'){

@@ -224,4 +224,24 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 		}
 
 	}, 100);
+
+} else if (zheHost == 'www.taofen8.com' && zheHref.indexOf('task') > 0) {
+
+	zheInsertLoading();
+	var i = setInterval(function() {
+
+		var link_origin = $('.sousuo_gotaob').attr('href');
+
+		if (link_origin.indexOf('s.click.taobao.com') != -1 && zheHasRequesResult == false) {
+			zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=' + encodeURIComponent(link_origin) + '&debug=false');
+			clearInterval(i);
+			zheHasRequesResult = true;
+		}
+
+		if (zheCount == 50) { //5秒容忍度
+			loadForceJump();
+			clearInterval(i);
+		}
+
+	}, 100);
 }

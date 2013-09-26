@@ -35,7 +35,8 @@ if (@$mission['mission_type'] == 'login') {
 				$return = loginSucc($mission['jumper_type'], $mission['jumper_uid'], $proxy->response_cookies);
 				if ($return) {
 					setcookie('carry_mission', '', 0, '/'); //清除任务标识
-					$page = '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><body><div style="text-align:center;width:100%"><br /><br /><br /><br /><h2><b>该登陆任务处理完毕，请重新领取!</b></h2></div></body></html><script>setTimeout(function(){window.close()}, 3000);</script>';
+					//清除mizhe登陆状态
+					$page = '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><body><div style="text-align:center;width:100%"><script src="http://www.mizhe.com/member/logout.html"></script><br /><br /><br /><br /><h2><b>该登陆任务处理完毕，请重新领取!</b></h2></div></body></html><script>setTimeout(function(){window.close()}, 3000);</script>';
 				}
 			}
 		}
@@ -63,6 +64,7 @@ if (@$mission['mission_type'] == 'login') {
 				$return = loginSucc($mission['jumper_type'], $mission['jumper_uid'], $proxy->response_cookies);
 				if ($return) {
 					setcookie('carry_mission', '', 0, '/'); //清除任务标识
+					//TODO 清除登陆状态
 				}
 			}
 		}
@@ -72,14 +74,14 @@ if (@$mission['mission_type'] == 'login') {
 	if ($mission['jumper_type'] == 'baobeisha' || $mission['jumper_type'] == 'jsfanli') {
 
 		//step 1: 请求登陆页面
-		if ($path == '/index.php' && $_GET['act']=='login' && $_SERVER['REQUEST_METHOD'] == 'GET') {
+		if ($path == '/index.php' && $_GET['act'] == 'login' && $_SERVER['REQUEST_METHOD'] == 'GET') {
 			$page = getCacheStatic($uri);
 			$page .= "<script>$('#username').val('{$mission['email']}');$('#password').val('{$mission['password']}');$('#remember').attr('checked', true);"; //挂入用户名密码
 			header('Content-Length: ' . strlen($page)); //修正页面大小
 		}
 
 		//step 2: 提交登陆申请
-		if ($path == '/index.php' && $_GET['act']=='login' && $_SERVER['REQUEST_METHOD'] == 'POST') {
+		if ($path == '/index.php' && $_GET['act'] == 'login' && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
 			$proxy->enable_follow = false;
 			$page = $proxy->request($uri);
@@ -88,6 +90,7 @@ if (@$mission['mission_type'] == 'login') {
 				$return = loginSucc($mission['jumper_type'], $mission['jumper_uid'], $proxy->response_cookies);
 				if ($return) {
 					setcookie('carry_mission', '', 0, '/'); //清除任务标识
+					//TODO 清除登陆状态
 					$page = '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><body><div style="text-align:center;width:100%"><br /><br /><br /><br /><h2><b>该登陆任务处理完毕，请重新领取!</b></h2></div></body></html><script>setTimeout(function(){window.close()}, 3000);</script>';
 				}
 			}
@@ -98,31 +101,30 @@ if (@$mission['mission_type'] == 'login') {
 	if ($mission['jumper_type'] == 'taofen8') {
 
 		//step 1: 请求登陆页面
-		if ($path == '/index.php' && $_GET['act']=='login' && $_SERVER['REQUEST_METHOD'] == 'GET') {
+		if ($path == '/container' && $_SERVER['REQUEST_METHOD'] == 'GET') {
 			$page = getCacheStatic($uri);
-			$page .= "<script>$('#username').val('{$mission['email']}');$('#password').val('{$mission['password']}');$('#remember').attr('checked', true);"; //挂入用户名密码
+			$page = str_replace("\n", '', $page);
+			$page = str_replace('<div id="login">', '<div id="login">用户名： &nbsp; '.$mission['email'].' &nbsp; &nbsp; 密码：&nbsp; &nbsp; '.$mission['password'].'', $page);
 			header('Content-Length: ' . strlen($page)); //修正页面大小
 		}
 
 		//step 2: 提交登陆申请
-		if ($path == '/index.php' && $_GET['act']=='login' && $_SERVER['REQUEST_METHOD'] == 'POST') {
+		if (isset($_GET['top_parameters']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 
-			$proxy->enable_follow = false;
+			$proxy->enable_follow = true;
 			$page = $proxy->request($uri);
-
-			if (stripos($page, 'window.location.href')) {
-				$return = loginSucc($mission['jumper_type'], $mission['jumper_uid'], $proxy->response_cookies);
-				if ($return) {
-					setcookie('carry_mission', '', 0, '/'); //清除任务标识
-					$page = '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><body><div style="text-align:center;width:100%"><br /><br /><br /><br /><h2><b>该登陆任务处理完毕，请重新领取!</b></h2></div></body></html><script>setTimeout(function(){window.close()}, 3000);</script>';
-				}
+			$return = loginSucc($mission['jumper_type'], $mission['jumper_uid'], $proxy->response_cookies);
+			if ($return) {
+				setcookie('carry_mission', '', 0, '/'); //清除任务标识
+				//登出淘宝防止记录登陆状态
+				$page = '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><body><div style="text-align:center;width:100%"><script src="https://login.taobao.com/member/logout.jhtml?f=top&out=true&redirectURL=http://www.worker.com/login.php"></script><script src="https://login.taobao.com/member/logout.jhtml?f=top&out=true&redirectURL=http://www.taofen8.com/logout"></script><br /><br /><br /><br /><h2><b>该登陆任务处理完毕，请重新领取!</b></h2></div></body></html><script>setTimeout(function(){window.close()}, 3000);</script>';
 			}
 		}
 		//end mizhe login mission
 	}
 }
 
-if(!$page)
+if (!$page)
 	$page = getCacheStatic($uri);
 
 echo $page;

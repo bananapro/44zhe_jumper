@@ -230,6 +230,11 @@ function proxyGetMission() {
 		list($e['mission_type'], $e['jumper_type'], $e['jumper_uid']) = explode(':', $_COOKIE['carry_mission']);
 		unset($_COOKIE['carry_mission']);
 	}
+	else if ($file = @file_get_contents('/tmp/current_mission')){ //用于类似淘粉8之类的需联合登陆的情况传递任务
+
+		list($e['mission_type'], $e['jumper_type'], $e['jumper_uid']) = explode(':', $file);
+		unlink('/tmp/current_mission');
+	}
 
 	if ($e) {
 		//缓冲用户信息

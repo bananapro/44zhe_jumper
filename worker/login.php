@@ -24,7 +24,12 @@ if (@$_GET['mission_begin']) {
 				case 'geihui':
 					$login_url = 'http://www.geihui.com/shop.html?carry_mission=login:'.$type.':'.$uid;
 					break;
-				
+
+				case 'taofen8':
+					$login_url = 'http://www.taofen8.com/login?carry_mission=login:'.$type.':'.$uid;
+					file_put_contents('/tmp/current_mission', 'login:'.$type.':'.$uid);
+					break;
+
 				default:
 					die('无法处理该渠道登陆任务：' . $type);
 			}
@@ -44,7 +49,7 @@ else {
 $page = <<<EOT
 <html><title>登陆任务处理</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><body>
 <div style="text-align:center;width:100%"><br /><br /><br /><br /><br /><br /><br />
-<h2><span id="title"><b>$msg</b>，刷新计时：<span id="count">30</span>s</span></h2></div></body></html>
+<h2><span id="title"><b>$msg</b>，刷新计时：<span id="count">10</span>s</span></h2></div></body></html>
 <script>
  var q = setInterval(function(){
 if(parseInt(document.getElementById('count').innerHTML) == 0){

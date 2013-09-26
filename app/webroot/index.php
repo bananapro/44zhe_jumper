@@ -64,5 +64,5 @@ else {
 	$Dispatcher = new Dispatcher();
 	$Dispatcher->dispatch($url);
 }
-echo "<!-- " . round(getMicrotime() - $TIME_START, 4) . "s -->";
+if(DEBUG) echo "<!-- " . round(getMicrotime() - $TIME_START, 4) . "s -->";
 ?>

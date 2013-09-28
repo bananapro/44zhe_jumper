@@ -92,7 +92,7 @@ class OrderController extends AppController {
 							if(!$d[7]){//没有佣金字段，直接填充返利字段
 								$new['p_yongjin'] = $d[11];
 							}else{
-								$new['p_yongjin'] = $d[7]*0.7;
+								$new['p_yongjin'] = $d[7]*0.5;
 							}
 
 							$new['buydatetime'] = $d[8];

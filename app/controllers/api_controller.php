@@ -228,6 +228,7 @@ class ApiController extends AppController {
 	function getTaskResultJs($taskid){
 
 		$link = false;
+		$converted = true;
 		$link_origin = $_GET['link_origin'];
 
 		if($taskid){
@@ -250,6 +251,7 @@ class ApiController extends AppController {
 				$task = new $obj_name($t_info);
 				$link = $task->getLink($link_origin);
 				if(!$link){//转换失败强制转换
+					$converted = false;
 					$this->Task->save(array('id'=>$taskid, 'status'=>3, 'link_origin' =>$link_origin));
 					$link = DOMAIN . '/apiJump/jumpForce/' . "{$t_info['shop']}/{$t_info['my_user']}/{$t_info['p_id']}/{$t_info['p_price']}/{$t_info['p_fanli']}?oc={$t_info['oc']}&target={$t_info['target']}";
 				}
@@ -268,7 +270,7 @@ class ApiController extends AppController {
 
 				$this->Task->save(array('id'=>$taskid, 'p_seller'=>$p_seller));
 
-				if($link)
+				if(!$converted)
 					$this->_addStatJump($t_info['shop'], $t_info['jumper_type'], $t_info['my_user'], $t_info['oc'], $t_info['jumper_uid'], $t_info['p_id'], $p_title, $t_info['p_price'], $t_info['p_fanli'], $p_seller);
 
 				//往客户端植入渠道跳转成功标记位

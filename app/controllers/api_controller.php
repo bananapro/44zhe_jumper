@@ -252,10 +252,7 @@ class ApiController extends AppController {
 				if(!$link){//转换失败强制转换
 					$this->Task->save(array('id'=>$taskid, 'status'=>3, 'link_origin' =>$link_origin));
 					$link = DOMAIN . '/apiJump/jumpForce/' . "{$t_info['shop']}/{$t_info['my_user']}/{$t_info['p_id']}/{$t_info['p_price']}/{$t_info['p_fanli']}?oc={$t_info['oc']}&target={$t_info['target']}";
-				}else{
-					$this->_addStatJump($t_info['shop'], $t_info['jumper_type'], $t_info['my_user'], $t_info['oc'], $t_info['jumper_uid'], $t_info['p_id'], $p_title, $t_info['p_price'], $t_info['p_fanli'], $p_seller);
 				}
-
 				$link = str_replace('http://', '', $link);
 
 				if(!$link)$link = 'www.taobao.com';
@@ -270,6 +267,9 @@ class ApiController extends AppController {
 				}
 
 				$this->Task->save(array('id'=>$taskid, 'p_seller'=>$p_seller));
+
+				if($link)
+					$this->_addStatJump($t_info['shop'], $t_info['jumper_type'], $t_info['my_user'], $t_info['oc'], $t_info['jumper_uid'], $t_info['p_id'], $p_title, $t_info['p_price'], $t_info['p_fanli'], $p_seller);
 
 				//往客户端植入渠道跳转成功标记位
 				if(@$_COOKIE[$type.'_succ']){

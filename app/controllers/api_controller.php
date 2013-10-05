@@ -270,7 +270,7 @@ class ApiController extends AppController {
 
 				$this->Task->save(array('id'=>$taskid, 'p_seller'=>$p_seller));
 
-				if(!$converted)
+				if($converted)
 					$this->_addStatJump($t_info['shop'], $t_info['jumper_type'], $t_info['my_user'], $t_info['oc'], $t_info['jumper_uid'], $t_info['p_id'], $p_title, $t_info['p_price'], $t_info['p_fanli'], $p_seller);
 
 				//往客户端植入渠道跳转成功标记位

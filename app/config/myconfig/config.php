@@ -35,7 +35,7 @@
 		'HOLD_SELLER' => array('bluecone'),
 
 		//向阿雄结算费率
-		'RATE' => 0.30,
+		'RATE' => 0.35,
 
 		//米折网返利折扣，用于跟单还原原始佣金
 		'RATE_MIZHE' => 55,
@@ -61,6 +61,6 @@
 		'JUMP_CHANNEL_ENABLE' => array('geihui', 'baobeisha', 'jsfanli', 'fanxian', 'taofen8'),
 
 		//渠道会员绑定插件账号数量上限
-		'JUMP_CHANNEL_BIND_LIMIT' => 25,
+		'JUMP_CHANNEL_BIND_LIMIT' => 20,
     )
 ?>

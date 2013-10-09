@@ -37,8 +37,18 @@
 		//向阿雄结算费率
 		'RATE' => 0.35,
 
-		//米折网返利折扣，用于跟单还原原始佣金
-		'RATE_MIZHE' => 55,
+        //米折网返利比例，用于跟单还原原始佣金
+        'RATE_MIZHE' => 36,
+        //给惠网返利比例，用于跟单还原原始佣金
+        'RATE_GEIHUI' => 50,
+        //宝贝杀返利比例，用于跟单还原原始佣金
+        'RATE_BAOBEISHA' => 68,
+        //金沙返利比例，用于跟单还原原始佣金
+        'RATE_JSFANLI' => 66,
+        //返现网返利比例，用于跟单还原原始佣金
+        'RATE_FANXIAN' => 80,
+        //返利客123返利比例，用于跟单还原原始佣金
+        'RATE_FLK123' => 70,
 
 		//代理提取订单号
 		'PROXY_ORDER' => '382924045081457',
@@ -51,14 +61,14 @@
 
 		//新绑定跳转渠道分配
 		//'JUMP_CHANNEL' => array('geihui'=>1, 'mizhe'=>1, 'baobeisha'=>1, 'jsfanli'=>1, 'flk123'=>1, 'fanxian'=>2, 'taofen8'=>2),
-		'JUMP_CHANNEL' => array('geihui'=>1, 'mizhe'=>1, 'baobeisha'=>1, 'jsfanli'=>1, 'fanxian'=>2, 'taofen8'=>2),
+		'JUMP_CHANNEL' => array('geihui'=>1, 'mizhe'=>1, 'baobeisha'=>1, 'jsfanli'=>1, 'fanxian'=>2, 'flk123'=>2),
 
 		//渠道临时故障转移(网站故障)
 		'JUMP_CHANNEL_ENABLE' => array(),
 
 		//有效渠道，设置为无效时，程序自动绑定账号到新渠道
 		//'JUMP_CHANNEL_ENABLE' => array('geihui', 'mizhe', 'baobeisha', 'jsfanli', 'flk123', 'fanxian', 'taofen8'),
-		'JUMP_CHANNEL_ENABLE' => array('geihui', 'baobeisha', 'jsfanli', 'fanxian', 'taofen8'),
+		'JUMP_CHANNEL_ENABLE' => array('geihui', 'baobeisha', 'jsfanli', 'fanxian', 'flk123'),
 
 		//渠道会员绑定插件账号数量上限
 		'JUMP_CHANNEL_BIND_LIMIT' => 20,

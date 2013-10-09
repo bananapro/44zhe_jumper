@@ -261,4 +261,21 @@ function hitRate($total, $curr, $rate){
 	if($rate > $base)return true;
 }
 
+function taobaoItemDetail($id){
+
+	//TODO 用自己的key来获取，补充卖家信息
+	$info = array();
+	$data = file_get_contents('http://fun.51fanli.com/api/search/getItemById?pid=' . $id . '&is_mobile=2&shoptype=2');
+	if ($data) {
+		$data = json_decode($data, true);
+		if ($data['status']) {
+			$info['p_title'] = @$data['data']['title'];
+			$info['p_seller'] = @$data['data']['shopname'];
+			$info['p_url'] = @$data['data']['url'];
+		}
+	}
+
+	return $info;
+}
+
 ?>

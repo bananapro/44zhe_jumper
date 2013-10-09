@@ -260,18 +260,13 @@ class ApiController extends AppController {
 				if(!$link)$link = 'www.taobao.com';
 				$this->set('link', $link);
 
-				//TODO 用自己的key来获取，补充卖家信息
-				$data = file_get_contents('http://fun.51fanli.com/api/search/getItemById?pid=' . $t_info['p_id'] . '&is_mobile=2&shoptype=2');
-				if ($data) {
-					$data = json_decode($data, true);
-					$p_title = @$data['data']['title'];
-					$p_seller = @$data['data']['shopname'];
-				}
+				$item_info = taobaoItemDetail($t_info['p_id']);
 
-				$this->Task->save(array('id'=>$taskid, 'p_seller'=>$p_seller));
+				if($item_info)
+					$this->Task->save(array('id'=>$taskid, 'p_seller'=>$item_info['p_seller']));
 
 				if($converted)
-					$this->_addStatJump($t_info['shop'], $t_info['jumper_type'], $t_info['my_user'], $t_info['oc'], $t_info['jumper_uid'], $t_info['p_id'], $p_title, $t_info['p_price'], $t_info['p_fanli'], $p_seller);
+					$this->_addStatJump($t_info['shop'], $t_info['jumper_type'], $t_info['my_user'], $t_info['oc'], $t_info['jumper_uid'], $t_info['p_id'], $item_info['p_title'], $t_info['p_price'], $t_info['p_fanli'], $item_info['p_seller']);
 
 				//往客户端植入渠道跳转成功标记位
 				if(@$_COOKIE[$type.'_succ']){

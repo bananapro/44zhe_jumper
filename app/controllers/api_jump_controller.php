@@ -37,20 +37,13 @@ class ApiJumpController extends AppController {
 	 */
 	function jumpForce($shop, $my_user, $p_id='', $p_price='', $p_fanli='') {
 
-		//TODO 返利网改成正常登陆跳转模式
 
-		$data = file_get_contents('http://fun.51fanli.com/api/search/getItemById?pid=' . $p_id . '&is_mobile=2&shoptype=2&track_code=a');
+		$data = taobaoItemDetail($p_id);
 		if ($data) {
-			$data = json_decode($data, true);
-			if ($data['status']) {
-				$_GET['ju'] = $data['data']['url'];
-				$_GET['p_seller'] = $data['data']['shopname'];
-				$_GET['p_title'] = $data['data']['title'];
-			}
-			else {
-				alert('jumpForce', 'status error');
-				$this->redirect(DEFAULT_ERROR_URL);
-			}
+
+			$_GET['ju'] = $data['p_url'];
+			$_GET['p_seller'] = $data['p_seller'];
+			$_GET['p_title'] = $data['p_title'];
 		}
 		else {
 			alert('jumpForce', 'can not fetch data');

@@ -4,11 +4,16 @@ class OrderController extends AppController {
 
 	var $name = 'Order';
 	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe', 'StatJump');
+	const TYPE_FANLI = 1;
+	const TYPE_MIZHE = 2;
+	const TYPE_GEIHUI = 3;
+	const TYPE_BAOBEISHA = 4;
+	const TYPE_JSFANLI = 5;
+	const TYPE_FANXIAN = 6;
+	const TYPE_FLK123 = 7;
 
 
-	/**
-	 * 提交返利网订单数据
-	 */
+	//提交返利网订单数据
 	function postFanliOrder(){
 
 		//提交了订单入库
@@ -150,11 +155,6 @@ class OrderController extends AppController {
 					if ($n['outcode'] == 'test')
 						continue;
 
-					if (($n['source'] == 1 || !$n['outcode']) && $n['p_fanli']>1 && rand(0,9)<2 && !$this->OrderFanli->find(array('did'=>$n['did']))){
-						$dd[] = $n;
-						continue;
-					}
-
 					if (!$this->OrderFanli->find(array('did' => $n['did'], 'status' => $n['status']))) {
 
 						if ($id = $this->OrderFanli->field('id', array('did' => $n['did']))) {
@@ -168,14 +168,9 @@ class OrderController extends AppController {
 					}
 				}
 
-				foreach($dd as $d){
-					$df += number_format($d['p_fanli'], 2);
-					$do .= ','.$d['ordernum'];
-				}
-
 
 				$fanli = floatval($fanli);
-				$message .= "p_fanli: {$df}<br />p_order: {$do} <br /><br /><br />orders: {$i} fanli: {$fanli}  rate: " . C('config', 'RATE') * 100 . "%";
+				$message .= "orders: {$i} fanli: {$fanli}  rate: " . C('config', 'RATE') * 100 . "%";
 
 				//优化推手，利益最大化
 				//15天以前被暂停的推手，如果账户无资产，则恢复身份并清空pause_date
@@ -206,9 +201,7 @@ class OrderController extends AppController {
 	}
 
 
-	/**
-	 * 提交米折网订单列表页面
-	 */
+	//提交米折网订单列表页面
 	function postMizheOrder(){
 
 		if (isset($_FILES['file'])) {
@@ -290,7 +283,7 @@ class OrderController extends AppController {
 								continue;
 							}
 
-							$order['type'] = 2;
+							$order['type'] = self::TYPE_MIZHE;
 
 							//如果能正常访问到页面，但解析错误，报警
 							if ($order['p_price'] < 1 || !$order['p_title']) {
@@ -317,32 +310,11 @@ class OrderController extends AppController {
 					}
 				}
 
-				$fanli = 0;
-				$i = 0;
-				foreach ($new as $n) {
+				$return = $this->_saveOrder($new, $global, $global_jumper);
 
-					if (isset($global[$n['ordernum']])) {
-						$n['outcode'] = $global[$n['ordernum']];
-					}
-					else {
-						if (isset($global_jumper[$n['jumper_uid']][$n['p_seller']])) {
-							$n['outcode'] = $global_jumper[$n['jumper_uid']][$n['p_seller']];
-						}
-					}
-
-					if (@$n['outcode'] == 'test')
-						continue;
-
-					if ($this->OrderFanli->find(array('did' => $n['did'])))
-						continue;
-
-					$this->OrderFanli->create();
-					$this->OrderFanli->save($n);
-					$fanli += $n['p_fanli'];
-					$i++;
-				}
-				$fanli = intval($fanli);
-				$message = "{$userid} orders: {$i} fanli: {$fanli} rate: " . C('config', 'RATE') * 100 . "%";
+				$fanli = intval($return['fanli']);
+				$order = intval($return['order']);
+				$message = "{$userid} orders: {$order} fanli: {$fanli} rate: " . C('config', 'RATE') * 100 . "%";
 				echo $message;
 				br();
 			}
@@ -350,6 +322,163 @@ class OrderController extends AppController {
 		die();
 	}
 
+
+	//提交给惠网订单列表页面
+	function postGeihuiOrder(){
+
+		if (isset($_FILES['file'])) {
+			$file = file_get_contents($_FILES["file"]["tmp_name"]);
+			//$userid = $_POST['userid'];
+			if(!$file){
+				die('please input userid & file');
+			}
+
+			require_once MYLIBS . 'html_dom.class.php';
+
+			$i = $file;
+
+			if ($i) {
+				$html = new simple_html_dom($i);
+				$doms = $html->find('tr[class=list_mrow]');
+				$new = array();
+				foreach ($doms as $dom) {
+					$cell = $dom->find('td');
+					$single = array();
+					foreach($cell as $c){
+
+						$single[] = trim(strip_tags($c));
+					}
+
+					pr($single);continue;
+
+					$order = array();
+					$order['p_id'] = $matches[1];
+					$p_title = $dom->find('div[class=title] a', 0);
+					$order['p_title'] = $p_title->text();
+
+					$num = $dom->find('div[class=title] p', 0);
+					if (preg_match('/([0-9]+)件/i', $num->text(), $matches)) {
+						$order['num'] = intval($matches[1]); //可能存在同一订单多个
+					}
+
+					$seller = $dom->find('div[class=title] p[class=clearfix] a', 0);
+					$order['p_seller'] = $seller->text();
+
+					$ordernum = $dom->find('div[class=date] b', 0);
+					$order['ordernum'] = $ordernum->text();
+
+					$donedate = $dom->find('div[class=date] p', 1);
+					$order['donedate'] = $donedate->text();
+					$order['donedatetime'] = $donedate->text();
+
+					//下单日期反推10天
+					$order['buydate'] = date('Y-m-d', strtotime($order['donedate']) - 10 * 24 * 3600);
+					$order['buydatetime'] = date('Y-m-d H:i:s', strtotime($order['donedatetime']) - 10 * 24 * 3600);
+
+					$y = md5($order['p_title']);
+					$order['did'] = '10' . strtotime($order['donedatetime']) . hexdec($y[1] . $y[2]);
+
+					$p_price = $dom->find('div[class=price] em', 0);
+					$order['p_price'] = $p_price->text();
+
+					$p_yongjin = $dom->find('div[class=rebate] em', 0);
+					$p_yongjin = $p_yongjin->text();
+					$order['p_yongjin'] = $p_yongjin * 100 / C('config', 'RATE_MIZHE'); //米折网折扣
+					$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
+
+					$order['p_rate'] = C('config', 'RATE');
+					$order['jumper_uid'] = $userid;
+					//去除内部卖家
+					if (in_array($order['p_seller'], C('config', 'HOLD_SELLER'))) {
+						continue;
+					}
+
+					$order['type'] = self::TYPE_GEIHUI;
+
+					//如果能正常访问到页面，但解析错误，报警
+					if ($order['p_price'] < 1 || !$order['p_title']) {
+						alert('rsync mizhe order', 'userid : ' . $userid . ' error');
+						continue;
+					}
+
+					//关联jump记录
+					$date_start = date('Y-m-d', strtotime($order['donedatetime']) - 12 * 24 * 3600);
+					$hit = $this->StatJump->find("p_id = {$order['p_id']} AND created>'{$date_start}'");
+
+					if (!$hit) {
+						$hit = $this->StatJump->find("p_seller = '{$order['p_seller']}' AND created>'{$date_start}'");
+					}
+
+					if ($hit) {
+						clearTableName($hit);
+						$global[$order['ordernum']] = $hit['outcode'];
+						$global_jumper[$hit['jumper_uid']][$order['p_seller']] = $hit['outcode'];
+					}
+
+					$new[] = $order;
+				}
+
+				$return = $this->_saveOrder($new, $global, $global_jumper);
+
+				$fanli = intval($return['fanli']);
+				$order = intval($return['order']);
+				$message = "{$userid} orders: {$order} fanli: {$fanli} rate: " . C('config', 'RATE') * 100 . "%";
+				echo $message;
+				br();
+			}
+		}
+		die();
+	}
+
+	//提交宝贝杀订单列表页面
+	function postBaobeishaOrder(){
+
+	}
+
+	//提交金沙返利订单列表页面
+	function postJsfanliOrder(){
+
+	}
+
+	//提交返现网订单列表页面
+	function postFanxianOrder(){
+
+	}
+
+	//提交返利客123订单列表页面
+	function postFlk123Order(){
+
+	}
+
+	function _saveOrder($new, $global, $global_jumper){
+
+		$i = 0;
+		$fanli = 0;
+		foreach ($new as $n) {
+
+			if (isset($global[$n['ordernum']])) {
+				$n['outcode'] = $global[$n['ordernum']];
+			}
+			else {
+				if (isset($global_jumper[$n['jumper_uid']][$n['p_seller']])) {
+					$n['outcode'] = $global_jumper[$n['jumper_uid']][$n['p_seller']];
+				}
+			}
+
+			if (@$n['outcode'] == 'test')
+				continue;
+
+			if ($this->OrderFanli->find(array('did' => $n['did'])))
+				continue;
+
+			$this->OrderFanli->create();
+			$this->OrderFanli->save($n);
+			$fanli += $n['p_fanli'];
+			$i++;
+		}
+
+		return array('order'=>$i, 'fanli'=>$fanli);
+	}
 
 	/**
 	 * 进行结算

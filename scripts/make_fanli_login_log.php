@@ -23,7 +23,16 @@ $curl->cookie_path = '/tmp/cookie';
 $log_dir = './logs/';
 mkdirs($log_dir. 'login_succ.log');
 
+<<<<<<< HEAD
 $file = file_get_contents('./make_fanli_login_usernames.txt');
+=======
+$file = @file_get_contents('./make_fanli_login_usernames.txt');
+
+if(!$file){
+    echo "make_fanli_login_usernames.txt  not found!\n";
+    die();
+}
+>>>>>>> fanli
 
 $lines = explode("\n", $file);
 
@@ -54,6 +63,7 @@ foreach ($lines as $username) {
 
         @unlink($curl->cookie_path);
 
+<<<<<<< HEAD
         $proxy = p();
         if(!$proxy){
             echo "[".date('Y-m-d H:i')."][proxy_get_empty]";
@@ -69,6 +79,29 @@ foreach ($lines as $username) {
                 continue;
             }
         }
+=======
+        while(1){
+
+            $proxy = p();
+            if(!$proxy){
+                echo "[".date('Y-m-d H:i')."][proxy_get_empty]\n";
+                sleep(2);
+                continue;
+
+            }else{
+                list($curl->proxy['address'], $curl->proxy['port']) = explode(':', $proxy);
+                $test = $curl->get('http://go.44zhe.com/hello.html');
+                if(trim($test) != 'hello'){
+                    echo "[".date('Y-m-d H:i')."][proxy_bad]\n";
+                    sleep(2);
+                    continue;
+                }else{
+                    break;
+                }
+            }
+        }
+
+>>>>>>> fanli
         $return = $curl->get($tpl, 'http://passport.51fanli.com/login');
         if(stripos($return, '20000')!==false){
             $curl->get('http://passport.51fanli.com/center/safeuser/safecenter', 'http://www.51fanli.com/');
@@ -81,7 +114,11 @@ foreach ($lines as $username) {
         }
     }
 
+<<<<<<< HEAD
     sleep(100);
+=======
+    sleep(90);
+>>>>>>> fanli
 }
 
 

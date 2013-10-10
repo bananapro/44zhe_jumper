@@ -1,0 +1,22 @@
+<div style="font-size:14px; font-weight:bold; text-align:left; padding:20px">
+<?php $j=0?>
+<?php foreach($info as $i) :?>
+<?php if($j==0):?>
+
+<div style="color:green">
+IP : <?=$i['ip']?> <br />
+地区 : <?=$i['area']?> <br />
+信息 : <?=$i['agent']?> <br /><br /><br />
+</div>
+
+<?php else:?>
+
+IP : <?=$i['ip']?> <br />
+地区 : <?=$i['area']?> <br />
+信息 : <?=$i['agent']?> <br /><br /><br />
+
+<?php endif?>
+
+<?php $j++?>
+<?php endforeach;?>
+</div>

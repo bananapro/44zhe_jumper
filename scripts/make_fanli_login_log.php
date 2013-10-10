@@ -17,7 +17,7 @@ function p() {
     return $data;
 }
 
-$hour = date('H', time());
+
 $curl = new CURL();
 $curl->cookie_path = '/tmp/cookie';
 $log_dir = './logs/';
@@ -47,6 +47,8 @@ foreach ($lines as $line) {
         echo "[".date('Y-m-d H:i')."][skip] " . $username . "\n";
         continue;
     }
+
+    $hour = date('H', time());
 
     if($hour > 8 && $hour < 24){
 

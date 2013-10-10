@@ -47,4 +47,6 @@ if (!defined('CORE_PATH')) {
 //echo CORE_PATH;die();
 
 require CORE_PATH . 'cake' . DS . 'bootstrap.php';
+
+set_time_limit(0);
 ?>

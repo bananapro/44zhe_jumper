@@ -32,10 +32,11 @@ if(!$file){
 
 $lines = explode("\n", $file);
 
-foreach ($lines as $username) {
+foreach ($lines as $line) {
 
+    list($username, $password) = explode("\t", $line);
     $username = trim($username);
-    $password = md5($username.'0a');
+    $password = md5(trim($password));
     // $password = md5('bpro880214');
 
     if(!$username)continue;

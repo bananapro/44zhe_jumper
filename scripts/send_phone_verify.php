@@ -3,9 +3,14 @@
     //'passport:verifykey:' . session_id() . ':userid:' . $userid . ':phone:' . $sPhone . ':pos:' . $sPos;
     //pos(601,602,603,1301,802,803,903,605,604,606,906,907)
 
-    $sid = $argv[1];
-    $uid = $argv[2];
-    $phone = $argv[3];
+    $sid = @$argv[1];
+    $uid = @argv[2];
+    $phone = @$argv[3];
+
+    if(!$sid || !$uid || !$phone){
+        echo "send_phone_verify.php \$sid \$uid \$phone \n";
+        die();
+    }
 
     $redis = new Redis();
     $redis->connect('192.168.2.165', 6381, 10);

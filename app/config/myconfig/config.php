@@ -44,7 +44,7 @@
         //宝贝杀返利比例，用于跟单还原原始佣金
         'RATE_BAOBEISHA' => 68,
         //金沙返利比例，用于跟单还原原始佣金
-        'RATE_JSFANLI' => 66,
+        'RATE_JSFANLI' => 68,
         //返现网返利比例，用于跟单还原原始佣金
         'RATE_FANXIAN' => 80,
         //返利客123返利比例，用于跟单还原原始佣金
@@ -71,6 +71,6 @@
 		'JUMP_CHANNEL_ENABLE' => array('geihui', 'baobeisha', 'jsfanli', 'fanxian', 'flk123'),
 
 		//渠道会员绑定插件账号数量上限
-		'JUMP_CHANNEL_BIND_LIMIT' => 20,
+		'JUMP_CHANNEL_BIND_LIMIT' => 25,
     )
 ?>

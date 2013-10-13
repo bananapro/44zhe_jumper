@@ -3,7 +3,7 @@
 class OrderController extends AppController {
 
 	var $name = 'Order';
-	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe', 'UserBaobeisha', 'StatJump');
+	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe', 'UserBaobeisha', 'UserJsfanli', 'StatJump');
 	const TYPE_FANLI = 1;
 	const TYPE_MIZHE = 2;
 	const TYPE_GEIHUI = 3;
@@ -97,7 +97,7 @@ class OrderController extends AppController {
 							$new['p_price'] = $d[5];
 							$new['p_seller'] = $d[6];
 
-							if(!$d[7]){//没有佣金字段，直接填充返利字段
+							if(!intval($d[7])){//没有佣金字段，直接填充返利字段
 								$new['p_yongjin'] = $d[11];
 							}else{
 								$new['p_yongjin'] = $d[7]*0.5;
@@ -458,7 +458,7 @@ class OrderController extends AppController {
 				$userid = '';
 				if($name_dom){
 					$username = trim(strip_tags($name_dom));
-					$userid = $this->UserBaobeisha->field('userid', "email like '{$username}@%'");
+					$userid = $this->UserBaobeisha->field('userid', "email like '{$username}%'");
 				}
 
 				if(!$userid){
@@ -501,7 +501,7 @@ class OrderController extends AppController {
 
 					//关联jump记录
 					$date_start = date('Y-m-d', strtotime($order['donedatetime']) - 12 * 24 * 3600);
-					$hit = $this->StatJump->find("p_id = {$order['p_id']} AND created>'{$date_start}'");
+					$hit = $this->StatJump->find("p_id = {$order['p_id']} AND jumper_type = 'baobeisha' AND created>'{$date_start}'");
 
 					if ($hit) {
 						clearTableName($hit);
@@ -544,11 +544,11 @@ class OrderController extends AppController {
 				$userid = '';
 				if($name_dom){
 					$username = trim(strip_tags($name_dom));
-					$userid = $this->UserBaobeisha->field('userid', "email like '{$username}@%'");
+					$userid = $this->UserJsfanli->field('userid', "email like '{$username}%'");
 				}
 
 				if(!$userid){
-					echo 'Baobeisha user match error!';
+					echo 'Jsfanli user match error!';
 					die();
 				}
 				$doms = $html->find('tr[class=tr]');
@@ -566,7 +566,7 @@ class OrderController extends AppController {
 					$order['ordernum'] = $single[0];
 					$order['p_title'] = $single[1];
 					$order['p_price'] = $single[2];
-					$order['p_yongjin'] = intval($single[3])/100 * 100 / C('config', 'RATE_BAOBEISHA');
+					$order['p_yongjin'] = intval($single[3])/100 * 100 / C('config', 'RATE_JSFANLI');
 					$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
 					$order['donedate'] = $single[4];
 					$order['donedatetime'] = $single[4];
@@ -581,13 +581,13 @@ class OrderController extends AppController {
 
 					//如果能正常访问到页面，但解析错误，报警
 					if ($order['p_price'] < 1 || !$order['p_title']) {
-						alert('rsync baobeisha order', 'userid : ' . $userid . ' content error');
+						alert('rsync jsfanli order', 'userid : ' . $userid . ' content error');
 						continue;
 					}
 
 					//关联jump记录
 					$date_start = date('Y-m-d', strtotime($order['donedatetime']) - 12 * 24 * 3600);
-					$hit = $this->StatJump->find("p_id = {$order['p_id']} AND created>'{$date_start}'");
+					$hit = $this->StatJump->find("p_id = {$order['p_id']} AND jumper_type = 'jsfanli' AND created>'{$date_start}'");
 
 					if ($hit) {
 						clearTableName($hit);

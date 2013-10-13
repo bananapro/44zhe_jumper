@@ -3,7 +3,7 @@
 class ApiController extends AppController {
 
 	var $name = 'Api';
-	var $uses = array('UserFanli', 'UserMizhe', 'UserBind', 'UserCandidate', 'StatJump', 'StatRegFailed', 'StatJump', 'OrderFanli', 'UserBind', 'Task');
+	var $uses = array('UserFanli', 'UserMizhe', 'UserBind', 'UserCandidate', 'StatJump', 'StatRegFailed', 'StatJump', 'OrderFanli', 'UserBind', 'Task', 'SmsCode');
 	var $layout = 'ajax';
 
 	/**
@@ -346,6 +346,53 @@ class ApiController extends AppController {
 		}else{
 			$this->_error('user do not exist');
 		}
+	}
+
+	/**
+	 * 获取指定手机号验证码
+	 * @return int $code
+	 */
+	function smsCode(){
+
+		//提交数据设置任务
+		if($this->data){
+			//清除mobile code值
+			//获取session，获取
+		}
+
+		$hit_code = '';
+		if($hit_code){
+			//不再刷新页面
+		}else{
+			//继续刷新页面
+		}
+	}
+
+	/**
+	 * 提供给send_phone_verify脚本设置验证码
+	 */
+	function doSmsCodeTask($mode, $code=''){
+
+		if($mode == 'get'){
+			$hit = $this->SmsCode->find(array('id'=>1, 'code'=>''));
+			if($hit){
+				clearTableName($hit);
+				echo "{$hit['sid']}|{$hit['uid']}|{$hit['mobile']}";
+			}else{
+				echo "empty";
+			}
+		}
+
+		if($mode == 'set'){
+			if($code){
+				$this->SmsCode->save(array('id'=>1, 'code'=>$code));
+				echo 'ok';
+			}else{
+				echo 'error';
+			}
+		}
+
+		die();
 	}
 }
 

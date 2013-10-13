@@ -1,9 +1,9 @@
-<div style="font-size:14px; font-weight:bold; text-align:left; padding:20px">
+<div style="font-size:12px; font-weight:bold; text-align:left; padding:20px">
 <?php $j=0?>
 <?php foreach($info as $i) :?>
 <?php if($j==0):?>
 
-<div style="color:green">
+<div style="color:green; font-size:14px; font-weight:bold">
 IP : <?=$i['ip']?> <br />
 地区 : <?=$i['area']?> <br />
 信息 : <?=$i['agent']?> <br /><br /><br />

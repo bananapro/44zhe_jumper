@@ -131,7 +131,37 @@ class StatController extends AppController {
 			$datas = $this->OrderFanli->query("SELECT sum(p_fanli) as fanli,donedate FROM order_fanli WHERE type=2 AND donedate>'$last_date' GROUP BY donedate");
 			clearTableName($datas);
 			foreach ($datas as $data) {
-				@$new_datas['Mi结算'][$data['donedate']] = $data['fanli'];
+				@$new_datas['mizhe'][$data['donedate']] = $data['fanli'];
+			}
+
+			$datas = $this->OrderFanli->query("SELECT sum(p_fanli) as fanli,donedate FROM order_fanli WHERE type=3 AND donedate>'$last_date' GROUP BY donedate");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['geihui'][$data['donedate']] = $data['fanli'];
+			}
+
+			$datas = $this->OrderFanli->query("SELECT sum(p_fanli) as fanli,donedate FROM order_fanli WHERE type=4 AND donedate>'$last_date' GROUP BY donedate");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['baobei'][$data['donedate']] = $data['fanli'];
+			}
+
+			$datas = $this->OrderFanli->query("SELECT sum(p_fanli) as fanli,donedate FROM order_fanli WHERE type=5 AND donedate>'$last_date' GROUP BY donedate");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['jsfanli'][$data['donedate']] = $data['fanli'];
+			}
+
+			$datas = $this->OrderFanli->query("SELECT sum(p_fanli) as fanli,donedate FROM order_fanli WHERE type=6 AND donedate>'$last_date' GROUP BY donedate");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['fanxian'][$data['donedate']] = $data['fanli'];
+			}
+
+			$datas = $this->OrderFanli->query("SELECT sum(p_fanli) as fanli,donedate FROM order_fanli WHERE type=6 AND donedate>'$last_date' GROUP BY donedate");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['flk123'][$data['donedate']] = $data['fanli'];
 			}
 		}
 
@@ -218,6 +248,36 @@ class StatController extends AppController {
 			foreach ($datas as $data) {
 				@$new_datas['Mi结算'][$data['buydate']] = $data['fanli'];
 			}
+
+			$datas = $this->OrderFanli->query("SELECT sum(p_fanli) as fanli,buydate FROM order_fanli WHERE type=3 AND donedate>'$last_date' GROUP BY donedate");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['geihui'][$data['donedate']] = $data['fanli'];
+			}
+
+			$datas = $this->OrderFanli->query("SELECT sum(p_fanli) as fanli,buydate FROM order_fanli WHERE type=4 AND donedate>'$last_date' GROUP BY donedate");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['baobei'][$data['donedate']] = $data['fanli'];
+			}
+
+			$datas = $this->OrderFanli->query("SELECT sum(p_fanli) as fanli,buydate FROM order_fanli WHERE type=5 AND donedate>'$last_date' GROUP BY donedate");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['jsfanli'][$data['donedate']] = $data['fanli'];
+			}
+
+			$datas = $this->OrderFanli->query("SELECT sum(p_fanli) as fanli,buydate FROM order_fanli WHERE type=6 AND donedate>'$last_date' GROUP BY donedate");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['fanxian'][$data['donedate']] = $data['fanli'];
+			}
+
+			$datas = $this->OrderFanli->query("SELECT sum(p_fanli) as fanli,buydate FROM order_fanli WHERE type=6 AND donedate>'$last_date' GROUP BY donedate");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['flk123'][$data['donedate']] = $data['fanli'];
+			}
 		}
 
 		require_once MYLIBS . 'ofc-library/open-flash-chart.php';
@@ -286,10 +346,40 @@ class StatController extends AppController {
 		}
 
 		if ($senior) {
-			$datas = $this->StatJump->query("SELECT p_price, p_fanli ,count(*) as nu,DATE(created) as created FROM stat_jump WHERE jumper_type <> 'fanli' AND DATE(created)>'$last_date' GROUP BY DATE(created), p_title");
+			$datas = $this->StatJump->query("SELECT p_price, p_fanli ,count(*) as nu,DATE(created) as created FROM stat_jump WHERE jumper_type = 'mizhe' AND DATE(created)>'$last_date' GROUP BY DATE(created), p_title");
 			clearTableName($datas);
 			foreach ($datas as $data) {
-				@$new_datas['Mi佣金(元)'][$data['created']] += intval($data['p_fanli']);
+				@$new_datas['mizhe'][$data['created']] += intval($data['p_fanli']);
+			}
+
+			$datas = $this->StatJump->query("SELECT p_price, p_fanli ,count(*) as nu,DATE(created) as created FROM stat_jump WHERE jumper_type = 'geihui' AND DATE(created)>'$last_date' GROUP BY DATE(created), p_title");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['geihui'][$data['created']] += intval($data['p_fanli']);
+			}
+
+			$datas = $this->StatJump->query("SELECT p_price, p_fanli ,count(*) as nu,DATE(created) as created FROM stat_jump WHERE jumper_type = 'baobeisha' AND DATE(created)>'$last_date' GROUP BY DATE(created), p_title");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['baobeisha'][$data['created']] += intval($data['p_fanli']);
+			}
+
+			$datas = $this->StatJump->query("SELECT p_price, p_fanli ,count(*) as nu,DATE(created) as created FROM stat_jump WHERE jumper_type = 'jsfanli' AND DATE(created)>'$last_date' GROUP BY DATE(created), p_title");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['jsfanli'][$data['created']] += intval($data['p_fanli']);
+			}
+
+			$datas = $this->StatJump->query("SELECT p_price, p_fanli ,count(*) as nu,DATE(created) as created FROM stat_jump WHERE jumper_type = 'fanxian' AND DATE(created)>'$last_date' GROUP BY DATE(created), p_title");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['fanxian'][$data['created']] += intval($data['p_fanli']);
+			}
+
+			$datas = $this->StatJump->query("SELECT p_price, p_fanli ,count(*) as nu,DATE(created) as created FROM stat_jump WHERE jumper_type = 'flk123' AND DATE(created)>'$last_date' GROUP BY DATE(created), p_title");
+			clearTableName($datas);
+			foreach ($datas as $data) {
+				@$new_datas['flk123'][$data['created']] += intval($data['p_fanli']);
 			}
 		}
 

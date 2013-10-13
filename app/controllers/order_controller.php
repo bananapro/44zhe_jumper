@@ -3,7 +3,7 @@
 class OrderController extends AppController {
 
 	var $name = 'Order';
-	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe', 'StatJump');
+	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe', 'UserBaobeisha', 'StatJump');
 	const TYPE_FANLI = 1;
 	const TYPE_MIZHE = 2;
 	const TYPE_GEIHUI = 3;
@@ -26,6 +26,9 @@ class OrderController extends AppController {
 			}
 
 			$datas = explode("\r\n", trim($file));
+			$global = array();
+			$global_jumper = array();
+
 
 			if ($datas) {
 				foreach ($datas as $data) {
@@ -212,6 +215,8 @@ class OrderController extends AppController {
 			}
 
 			require_once MYLIBS . 'html_dom.class.php';
+			$global = array();
+			$global_jumper = array();
 
 			$i = $file;
 
@@ -334,6 +339,8 @@ class OrderController extends AppController {
 			}
 
 			require_once MYLIBS . 'html_dom.class.php';
+			$global = array();
+			$global_jumper = array();
 
 			$i = $file;
 
@@ -432,12 +439,174 @@ class OrderController extends AppController {
 
 	//提交宝贝杀订单列表页面
 	function postBaobeishaOrder(){
+		if (isset($_FILES['file'])) {
+			$file = file_get_contents($_FILES["file"]["tmp_name"]);
+			if(!$file){
+				die('please input file');
+			}
 
+			require_once MYLIBS . 'html_dom.class.php';
+
+			$global = array();
+			$global_jumper = array();
+
+			$i = $file;
+
+			if ($i) {
+				$html = new simple_html_dom($i);
+				$name_dom = $html->find('div[class=user-nick]', 0);
+				$userid = '';
+				if($name_dom){
+					$username = trim(strip_tags($name_dom));
+					$userid = $this->UserBaobeisha->field('userid', "email like '{$username}@%'");
+				}
+
+				if(!$userid){
+					echo 'Baobeisha user match error!';
+					die();
+				}
+				$doms = $html->find('tr[class=tr]');
+				$new = array();
+				foreach ($doms as $dom) {
+					$cell = $dom->find('td');
+					$single = array();
+					foreach($cell as $c){
+						$single[] = trim(strip_tags($c));
+					}
+
+					$order = array();
+					$order['p_id'] = $c->getAttribute('iid');
+					$order['did'] = $c->getAttribute('trade_id');
+					$order['ordernum'] = $single[0];
+					$order['p_title'] = $single[1];
+					$order['p_price'] = $single[2];
+					$order['p_yongjin'] = intval($single[3])/100 * 100 / C('config', 'RATE_BAOBEISHA');
+					$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
+					$order['donedate'] = $single[4];
+					$order['donedatetime'] = $single[4];
+
+					//下单日期反推10天
+					$order['buydate'] = date('Y-m-d', strtotime($order['donedate']) - 10 * 24 * 3600);
+					$order['buydatetime'] = date('Y-m-d H:i:s', strtotime($order['donedatetime']) - 10 * 24 * 3600);
+
+					$order['jumper_uid'] = $userid;
+
+					$order['type'] = self::TYPE_BAOBEISHA;
+
+					//如果能正常访问到页面，但解析错误，报警
+					if ($order['p_price'] < 1 || !$order['p_title']) {
+						alert('rsync baobeisha order', 'userid : ' . $userid . ' content error');
+						continue;
+					}
+
+					//关联jump记录
+					$date_start = date('Y-m-d', strtotime($order['donedatetime']) - 12 * 24 * 3600);
+					$hit = $this->StatJump->find("p_id = {$order['p_id']} AND created>'{$date_start}'");
+
+					if ($hit) {
+						clearTableName($hit);
+						$global[$order['ordernum']] = $hit['outcode'];
+					}
+
+					$new[] = $order;
+				}
+
+				$return = $this->_saveOrder($new, $global, $global_jumper);
+
+				$fanli = intval($return['fanli']);
+				$order = intval($return['order']);
+				$message = "<b>{$username}</b> orders: <b>{$order}</b> fanli: <b>{$fanli}</b> rate: " . C('config', 'RATE') * 100 . "%";
+				echo $message;
+				br();
+			}
+		}
+		die();
 	}
 
 	//提交金沙返利订单列表页面
 	function postJsfanliOrder(){
+		if (isset($_FILES['file'])) {
+			$file = file_get_contents($_FILES["file"]["tmp_name"]);
+			if(!$file){
+				die('please input file');
+			}
 
+			require_once MYLIBS . 'html_dom.class.php';
+
+			$global = array();
+			$global_jumper = array();
+
+			$i = $file;
+
+			if ($i) {
+				$html = new simple_html_dom($i);
+				$name_dom = $html->find('div[class=user-nick]', 0);
+				$userid = '';
+				if($name_dom){
+					$username = trim(strip_tags($name_dom));
+					$userid = $this->UserBaobeisha->field('userid', "email like '{$username}@%'");
+				}
+
+				if(!$userid){
+					echo 'Baobeisha user match error!';
+					die();
+				}
+				$doms = $html->find('tr[class=tr]');
+				$new = array();
+				foreach ($doms as $dom) {
+					$cell = $dom->find('td');
+					$single = array();
+					foreach($cell as $c){
+						$single[] = trim(strip_tags($c));
+					}
+
+					$order = array();
+					$order['p_id'] = $c->getAttribute('iid');
+					$order['did'] = $c->getAttribute('trade_id');
+					$order['ordernum'] = $single[0];
+					$order['p_title'] = $single[1];
+					$order['p_price'] = $single[2];
+					$order['p_yongjin'] = intval($single[3])/100 * 100 / C('config', 'RATE_BAOBEISHA');
+					$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
+					$order['donedate'] = $single[4];
+					$order['donedatetime'] = $single[4];
+
+					//下单日期反推10天
+					$order['buydate'] = date('Y-m-d', strtotime($order['donedate']) - 10 * 24 * 3600);
+					$order['buydatetime'] = date('Y-m-d H:i:s', strtotime($order['donedatetime']) - 10 * 24 * 3600);
+
+					$order['jumper_uid'] = $userid;
+
+					$order['type'] = self::TYPE_JSFANLI;
+
+					//如果能正常访问到页面，但解析错误，报警
+					if ($order['p_price'] < 1 || !$order['p_title']) {
+						alert('rsync baobeisha order', 'userid : ' . $userid . ' content error');
+						continue;
+					}
+
+					//关联jump记录
+					$date_start = date('Y-m-d', strtotime($order['donedatetime']) - 12 * 24 * 3600);
+					$hit = $this->StatJump->find("p_id = {$order['p_id']} AND created>'{$date_start}'");
+
+					if ($hit) {
+						clearTableName($hit);
+						$global[$order['ordernum']] = $hit['outcode'];
+					}
+
+					$new[] = $order;
+				}
+
+				$return = $this->_saveOrder($new, $global, $global_jumper);
+
+				$fanli = intval($return['fanli']);
+				$order = intval($return['order']);
+				$message = "<b>{$username}</b> orders: <b>{$order}</b> fanli: <b>{$fanli}</b> rate: " . C('config', 'RATE') * 100 . "%";
+				echo $message;
+				br();
+			}
+		}
+		die();
 	}
 
 	//提交返现网订单列表页面
@@ -460,7 +629,7 @@ class OrderController extends AppController {
 				$n['outcode'] = $global[$n['ordernum']];
 			}
 			else {
-				if (isset($global_jumper[$n['jumper_uid']][$n['p_seller']])) {
+				if ($global_jumper && isset($global_jumper[$n['jumper_uid']][$n['p_seller']])) {
 					$n['outcode'] = $global_jumper[$n['jumper_uid']][$n['p_seller']];
 				}
 			}
@@ -468,7 +637,7 @@ class OrderController extends AppController {
 			if (@$n['outcode'] == 'test')
 				continue;
 
-			if ($this->OrderFanli->find(array('did' => $n['did'])))
+			if ($this->OrderFanli->find(array('ordernum' => $n['ordernum'])))
 				continue;
 
 			$this->OrderFanli->create();

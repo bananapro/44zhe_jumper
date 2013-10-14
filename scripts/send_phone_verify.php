@@ -48,6 +48,7 @@ while(1){
         echo "\n";
     }
 
+    //如果最近90分钟有任务，则10秒检测1次，否则10分钟一次
     if(time() - @file_get_contents('/tmp/last_hit.time') < 90*60){
         sleep(10);
     }else{

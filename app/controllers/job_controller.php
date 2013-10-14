@@ -3,7 +3,7 @@
 class JobController extends AppController {
 
 	var $name = 'Job';
-	var $uses = array('UserFanli', 'StatJump', 'OrderFanli', 'UserMizhe', 'Task');
+	var $uses = array('UserFanli', 'StatJump', 'OrderFanli', 'UserMizhe', 'SmsCode', 'Task');
 
 	function beforeRender() {
 		parent::beforeRender();
@@ -62,11 +62,39 @@ class JobController extends AppController {
 		$this->set('pid', $pid);
 	}
 
+	/**
+	 * 提交/获取指定手机号验证码
+	 */
+	function smsCode(){
+
+		$flush = true;
+		//提交数据设置任务
+		if(@$_POST['mobile']){
+			//清除mobile code值
+			$sid = $_COOKIE['PHPSESSID'];
+			$uid = $_COOKIE['prouserid'];
+			$this->SmsCode->save(array('id'=>1, 'mobile'=>$_POST['mobile'], 'sid'=>$sid, 'uid'=>$uid, 'code'=>''));
+		}
+
+		$hit_code = $this->SmsCode->find("id=1 AND code <> ''");
+
+		if($hit_code){
+			//不再刷新页面
+			clearTableName($hit_code);
+			$flush = false;
+			$this->set('code', $hit_code);
+		}
+
+		$this->set('flush', $flush);
+	}
+
 	function nojobs() {
 
 		echo 'jobs all done!';
 		die();
 	}
+
+
 }
 
 ?>

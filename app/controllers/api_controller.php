@@ -349,26 +349,6 @@ class ApiController extends AppController {
 	}
 
 	/**
-	 * 获取指定手机号验证码
-	 * @return int $code
-	 */
-	function smsCode(){
-
-		//提交数据设置任务
-		if($this->data){
-			//清除mobile code值
-			//获取session，获取
-		}
-
-		$hit_code = '';
-		if($hit_code){
-			//不再刷新页面
-		}else{
-			//继续刷新页面
-		}
-	}
-
-	/**
 	 * 提供给send_phone_verify脚本设置验证码
 	 */
 	function doSmsCodeTask($mode, $code=''){

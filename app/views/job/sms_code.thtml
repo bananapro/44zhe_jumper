@@ -1,0 +1,22 @@
+<br /><br /><br /><br /><br /><br />
+<form action="/job/smsCode" method='post'>
+	<input name='mobile' size='30'/>
+	<input type='submit' value='提交手机号' />
+</form>
+<br /><br />
+<?php if($flush):?>
+<h2>自动刷新，倒数 <span id="count">10</span></h2>
+<script>
+     var q = setInterval(function(){
+	document.getElementById('count').innerHTML = parseInt(document.getElementById('count').innerHTML) - 1;
+	if(parseInt(document.getElementById('count').innerHTML) == 0){
+	    location.href='/job/smsCode';
+	}
+    }, 1000);
+</script>
+<?php else:?>
+	<div style='font-size:16px'>
+		手机号：<b><?=$code['mobile']?> &nbsp;
+		验证码: <b><?=$code['code']?></b>
+	</div>
+<?php endif;?>

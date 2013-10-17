@@ -77,7 +77,7 @@ class JobController extends AppController {
 			if(!$sid || !$uid){
 				$error = true;
 			}else{
-				$this->SmsCode->save(array('id'=>1, 'mobile'=>$_POST['mobile'], 'sid'=>$sid, 'uid'=>$uid, 'code'=>''));
+				$this->SmsCode->save(array('id'=>1, 'mobile'=>trim($_POST['mobile']), 'sid'=>$sid, 'uid'=>$uid, 'code'=>''));
 			}
 		}
 

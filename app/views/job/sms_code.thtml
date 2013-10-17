@@ -15,8 +15,12 @@
     }, 1000);
 </script>
 <?php else:?>
+	<?php if(!$error):?>
 	<div style='font-size:16px'>
 		手机号：<b><?=$code['mobile']?> &nbsp;
 		验证码: <b><?=$code['code']?></b>
 	</div>
+	<?php else:?>
+		提交信息有误，或获取不到sid & uid
+	<?php endif?>
 <?php endif;?>

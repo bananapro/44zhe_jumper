@@ -61,7 +61,7 @@
 
 		//新绑定跳转渠道分配
 		//'JUMP_CHANNEL' => array('geihui'=>1, 'mizhe'=>1, 'baobeisha'=>1, 'jsfanli'=>1, 'flk123'=>1, 'fanxian'=>2, 'taofen8'=>2),
-		'JUMP_CHANNEL' => array('geihui'=>1, 'mizhe'=>1, 'baobeisha'=>1, 'jsfanli'=>1, 'fanxian'=>2, 'flk123'=>2),
+		'JUMP_CHANNEL' => array('geihui'=>1, 'mizhe'=>1, 'baobeisha'=>1, 'jsfanli'=>1, 'fanxian'=>1, 'flk123'=>2),
 
 		//渠道临时故障转移(网站故障)
 		'JUMP_CHANNEL_ENABLE' => array(),
@@ -71,6 +71,6 @@
 		'JUMP_CHANNEL_ENABLE' => array('geihui', 'baobeisha', 'jsfanli', 'fanxian', 'flk123'),
 
 		//渠道会员绑定插件账号数量上限
-		'JUMP_CHANNEL_BIND_LIMIT' => 25,
+		'JUMP_CHANNEL_BIND_LIMIT' => 20,
     )
 ?>

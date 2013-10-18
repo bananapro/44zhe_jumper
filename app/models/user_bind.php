@@ -1,29 +1,38 @@
 <?php
 class UserBind extends AppModel {
 
-    var $name = 'UserBind';
-    var $useTable = 'user_bind';
+	var $name = 'UserBind';
+	var $useTable = 'user_bind';
 	static $m;
 
 	function getJumper($my_user = ''){
 
 		if($my_user){
-			$user = $this->find(array('my_user'=>$my_user, 'status'=>1));
-			if($user){
-				clearTableName($user);
-				$m = $this->getChannelUserM($user['jumper_type']);
-				$jumper = $m->find(array('userid'=>$user['jumper_uid']));
-				clearTableName($jumper);
-				if($jumper['status'] == 1){
-					$jumper['type'] = $user['jumper_type'];
-					return $jumper;
-				}else{
+
+			if($my_user != 'selinadaisy@126.com'){
+
+				//判断账号是否已绑过，如果作废，着解绑
+				$user = $this->find(array('my_user'=>$my_user, 'status'=>1));
+				if($user){
+					clearTableName($user);
+					$m = $this->getChannelUserM($user['jumper_type']);
+					$jumper = $m->find(array('userid'=>$user['jumper_uid']));
+					clearTableName($jumper);
+					if($jumper['status'] == 1){
+						$jumper['type'] = $user['jumper_type'];
+						return $jumper;
+					}else{
 					//解绑用户
-					$this->unbindUser($my_user, $user['jumper_type'], $user['jumper_uid']);
+						$this->unbindUser($my_user, $user['jumper_type'], $user['jumper_uid']);
+					}
 				}
+
+				return $this->bindUser($my_user);
+			}else{
+
+				return $this->bindUser($my_user, true);
 			}
 
-			return $this->bindUser($my_user);
 
 		}else{
 
@@ -32,7 +41,7 @@ class UserBind extends AppModel {
 	}
 
 	//绑定策略: 固化账号渠道分配(IP)，支持优渠道先级调整，按渠道前10个账号均分
-	function bindUser($my_user){
+	function bindUser($my_user, $rand = false){
 
 		if(!$my_user)return;
 		$ip = getip();
@@ -67,6 +76,9 @@ class UserBind extends AppModel {
 		clearTableName($users);
 		shuffle($users);
 		$selected = array_pop($users);
+
+		//如果此次绑定是临时随机，用于某些渠道临时故障，或是系统账号
+		if($rand)return $selected;
 
 		if($id = $this->field('id', array('my_user'=>$my_user, 'jumper_type'=>$channel, 'jumper_uid'=>$selected['userid']))){
 			$this->save(array('id'=>$id, 'status'=>1));

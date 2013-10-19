@@ -3,7 +3,7 @@
 class OrderController extends AppController {
 
 	var $name = 'Order';
-	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe', 'UserBaobeisha', 'UserJsfanli', 'UserFanxian', 'StatJump');
+	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe', 'UserBaobeisha', 'UserJsfanli', 'UserFanxian', 'UserGeihui', 'StatJump');
 	const TYPE_FANLI = 1;
 	const TYPE_MIZHE = 2;
 	const TYPE_GEIHUI = 3;
@@ -339,13 +339,31 @@ class OrderController extends AppController {
 			}
 
 			require_once MYLIBS . 'html_dom.class.php';
+			require_once MYLIBS . 'curl.class.php';
 			$global = array();
 			$global_jumper = array();
 
 			$i = $file;
+			$curl = new CURL();
 
 			if ($i) {
 				$html = new simple_html_dom($i);
+
+				$name_dom = $html->find('a[id=my_nav_link2]', 0);
+
+				if($name_dom){
+
+					$username = trim(strip_tags($name_dom->getAttribute('href')));
+					preg_match('/([0-9]+)/', $username, $m);
+					$userid = $m[1];
+				}
+
+				if(!$userid){
+					die('Geihui user match error!');
+				}
+
+				$curl->cookie_path = COOKIE.'geihui/' . $userid . '.cookie';
+
 				$doms = $html->find('tr[class=list_mrow]');
 				$new = array();
 				foreach ($doms as $dom) {
@@ -353,58 +371,45 @@ class OrderController extends AppController {
 					$single = array();
 					foreach($cell as $c){
 
-						$single[] = trim(strip_tags($c));
+						$single[] = str_replace('<br/>', ' ', trim(strip_tags($c, '<br>')));
 					}
 
-					pr($single);continue;
+					$did_href = $cell[6]->find('a', 0)->getAttribute('href');
 
 					$order = array();
-					$order['p_id'] = $matches[1];
-					$p_title = $dom->find('div[class=title] a', 0);
-					$order['p_title'] = $p_title->text();
 
-					$num = $dom->find('div[class=title] p', 0);
-					if (preg_match('/([0-9]+)件/i', $num->text(), $matches)) {
-						$order['num'] = intval($matches[1]); //可能存在同一订单多个
+					$order['did'] = array_pop(explode('=', $did_href));
+					if(!$order['did']){
+						die('Geihui did match error!');
 					}
 
-					$seller = $dom->find('div[class=title] p[class=clearfix] a', 0);
-					$order['p_seller'] = $seller->text();
+					//获取指定订单详情
+					$order_detail = $curl->get('http://www.geihui.com/member/order_detail_list?oid='.$order['did']);
+					$html_d = new simple_html_dom($order_detail);
+					$order['p_id'] = trim($html_d->find('td', 1)->innertext);
+					$order['p_title'] = trim(array_shift(explode('||', str_replace('<br/>', '||', $html_d->find('td', 2)->innertext))));
 
-					$ordernum = $dom->find('div[class=date] b', 0);
-					$order['ordernum'] = $ordernum->text();
-
-					$donedate = $dom->find('div[class=date] p', 1);
-					$order['donedate'] = $donedate->text();
-					$order['donedatetime'] = $donedate->text();
+					$order['ordernum'] = $single[1];
+					$order['donedate'] = $single[2];
+					$order['donedatetime'] = $order['donedate'];
 
 					//下单日期反推10天
 					$order['buydate'] = date('Y-m-d', strtotime($order['donedate']) - 10 * 24 * 3600);
 					$order['buydatetime'] = date('Y-m-d H:i:s', strtotime($order['donedatetime']) - 10 * 24 * 3600);
 
-					$y = md5($order['p_title']);
-					$order['did'] = '10' . strtotime($order['donedatetime']) . hexdec($y[1] . $y[2]);
+					$order['p_price'] = floatval($single[3]);
 
-					$p_price = $dom->find('div[class=price] em', 0);
-					$order['p_price'] = $p_price->text();
-
-					$p_yongjin = $dom->find('div[class=rebate] em', 0);
-					$p_yongjin = $p_yongjin->text();
-					$order['p_yongjin'] = $p_yongjin * 100 / C('config', 'RATE_MIZHE'); //米折网折扣
+					$order['p_yongjin'] = floatval($single[4]) * 100 / C('config', 'RATE_GEIHUI'); //米折网折扣
 					$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
 
 					$order['p_rate'] = C('config', 'RATE');
 					$order['jumper_uid'] = $userid;
-					//去除内部卖家
-					if (in_array($order['p_seller'], C('config', 'HOLD_SELLER'))) {
-						continue;
-					}
 
 					$order['type'] = self::TYPE_GEIHUI;
 
 					//如果能正常访问到页面，但解析错误，报警
-					if ($order['p_price'] < 1 || !$order['p_title']) {
-						alert('rsync mizhe order', 'userid : ' . $userid . ' error');
+					if ($order['p_price'] < 1 || !$order['p_title'] || !$order['did']) {
+						alert('rsync geihui order', 'userid : ' . $userid . ' content error');
 						continue;
 					}
 
@@ -412,14 +417,9 @@ class OrderController extends AppController {
 					$date_start = date('Y-m-d', strtotime($order['donedatetime']) - 12 * 24 * 3600);
 					$hit = $this->StatJump->find("p_id = {$order['p_id']} AND created>'{$date_start}'");
 
-					if (!$hit) {
-						$hit = $this->StatJump->find("p_seller = '{$order['p_seller']}' AND created>'{$date_start}'");
-					}
-
 					if ($hit) {
 						clearTableName($hit);
 						$global[$order['ordernum']] = $hit['outcode'];
-						$global_jumper[$hit['jumper_uid']][$order['p_seller']] = $hit['outcode'];
 					}
 
 					$new[] = $order;
@@ -634,8 +634,7 @@ class OrderController extends AppController {
 				}
 
 				if(!$userid){
-					echo 'Fanxian user match error!';
-					die();
+					die('Fanxian user match error!');
 				}
 
 				$doms = $html->find('div[class=qbdd] tr[class=result]');
@@ -647,15 +646,14 @@ class OrderController extends AppController {
 						$single[] = trim(strip_tags($c));
 					}
 					$p_id_a_href = $cell[0]->children(0)->getAttribute('href');
-					$did_a_href = $cell[5]->find('a', 0)->getAttribute('href');
 					preg_match('/([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9:]+)/', $single[2], $m);
-					// pr($single);
-					// echo $p_id_a_href;die();
+
 					$order = array();
-					$order['p_id'] = array_pop(explode("=", $p_id_a_href));
-					$order['did'] = array_pop(explode("=", $did_a_href));
-					$order['ordernum'] = array_pop(explode("=", $did_a_href));
+
 					$order['p_title'] = $single[0];
+					$order['p_id'] = array_pop(explode("=", $p_id_a_href));
+					$order['ordernum'] = array_pop(explode("=", $did_a_href));
+					$order['did'] = $order['ordernum'];
 					$order['p_price'] = floatval($single[1]);
 					$order['p_yongjin'] = intval($single[3])/100 * 100 / C('config', 'RATE_FANXIAN');
 					$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
@@ -665,11 +663,8 @@ class OrderController extends AppController {
 					//下单日期反推10天
 					$order['buydate'] = date('Y-m-d', strtotime($order['donedate']) - 10 * 24 * 3600);
 					$order['buydatetime'] = date('Y-m-d H:i:s', strtotime($order['donedatetime']) - 10 * 24 * 3600);
-
 					$order['jumper_uid'] = $userid;
-
 					$order['type'] = self::TYPE_FANXIAN;
-
 
 					//如果能正常访问到页面，但解析错误，报警
 					if ($order['p_price'] < 1 || !$order['p_title'] || !$order['p_id'] || !$order['did']) {

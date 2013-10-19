@@ -403,7 +403,12 @@ class OrderController extends AppController {
 
 					$order['p_price'] = floatval($single[3]);
 
-					$order['p_yongjin'] = floatval($single[4]) * 100 / C('config', 'RATE_GEIHUI'); //米折网折扣
+					if($single[5] == '无返利'){
+						$order['p_yongjin'] = 0;
+					}else{
+						$order['p_yongjin'] = floatval($single[4]) * 100 / C('config', 'RATE_GEIHUI');
+					}
+
 					$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
 
 					$order['p_rate'] = C('config', 'RATE');
@@ -800,6 +805,9 @@ class OrderController extends AppController {
 				continue;
 
 			if ($this->OrderFanli->find(array('did' => $n['did'])))
+				continue;
+
+			if ($n['p_price'] < $n['p_yongjin'])
 				continue;
 
 			$this->OrderFanli->create();

@@ -156,103 +156,103 @@ class OrderController extends AppController {
 					}
 
 					if ($n['outcode'] == 'test')
-						continue;
+					continue;
 
-					if (!$this->OrderFanli->find(array('did' => $n['did'], 'status' => $n['status']))) {
+				if (!$this->OrderFanli->find(array('did' => $n['did'], 'status' => $n['status']))) {
 
-						if ($id = $this->OrderFanli->field('id', array('did' => $n['did']))) {
-							$n['id'] = $id;
-						}
-
-						$this->OrderFanli->create();
-						$this->OrderFanli->save($n);
-						$fanli += number_format($n['p_fanli'], 2);
-						$i++;
+					if ($id = $this->OrderFanli->field('id', array('did' => $n['did']))) {
+						$n['id'] = $id;
 					}
+
+					$this->OrderFanli->create();
+					$this->OrderFanli->save($n);
+					$fanli += number_format($n['p_fanli'], 2);
+					$i++;
 				}
+			}
 
 
-				$fanli = floatval($fanli);
-				$message .= "orders: {$i} fanli: {$fanli}  rate: " . C('config', 'RATE') * 100 . "%";
+			$fanli = floatval($fanli);
+			$message .= "orders: {$i} fanli: {$fanli}  rate: " . C('config', 'RATE') * 100 . "%";
 
 				//优化推手，利益最大化
 				//15天以前被暂停的推手，如果账户无资产，则恢复身份并清空pause_date
 				//如果有资产，则查询order判断购物金额是否大于30，如果小于30则重新恢复身份
-				$weekdate = date('Y-m-d', time() - 12 * 24 * 3600);
-				$weekdate2 = date('Y-m-d', time() - 26 * 24 * 3600);
-				$this->UserFanli->query("UPDATE user_fanli SET status=1, pause_date='0000-00-00 00:00:00' WHERE role=3 AND status = 2 AND pause_date < '{$weekdate}' AND fl_fb=0");
-				$users = $this->UserFanli->findAll("role=3 AND status = 2 AND pause_date < '{$weekdate}' AND pause_date > '{$weekdate2}' AND fl_fb>0");
+			$weekdate = date('Y-m-d', time() - 12 * 24 * 3600);
+			$weekdate2 = date('Y-m-d', time() - 26 * 24 * 3600);
+			$this->UserFanli->query("UPDATE user_fanli SET status=1, pause_date='0000-00-00 00:00:00' WHERE role=3 AND status = 2 AND pause_date < '{$weekdate}' AND fl_fb=0");
+			$users = $this->UserFanli->findAll("role=3 AND status = 2 AND pause_date < '{$weekdate}' AND pause_date > '{$weekdate2}' AND fl_fb>0");
 
-				clearTableName($users);
-				foreach ($users as $user) {
+			clearTableName($users);
+			foreach ($users as $user) {
 
-					if ($nu = $this->UserFanli->query("SELECT sum(p_price) as nu FROM order_fanli WHERE jumper_uid='{$user['userid']}'")) {
-						$nu = @intval($nu[0][0]['nu']);
-						if ($nu < 30) {
-							$this->UserFanli->save(array('userid' => $user['userid'], 'status' => 1));
-						}
-					};
-				}
+				if ($nu = $this->UserFanli->query("SELECT sum(p_price) as nu FROM order_fanli WHERE jumper_uid='{$user['userid']}'")) {
+					$nu = @intval($nu[0][0]['nu']);
+					if ($nu < 30) {
+						$this->UserFanli->save(array('userid' => $user['userid'], 'status' => 1));
+					}
+				};
 			}
-			else {
-				$message = 'file format error!';
-			}
-
-			echo $message;
-			die();
 		}
+		else {
+			$message = 'file format error!';
+		}
+
+		echo $message;
+		die();
 	}
+}
 
 
 	//提交米折网订单列表页面
-	function postMizheOrder(){
+function postMizheOrder(){
 
-		if (isset($_FILES['file'])) {
-			$file = file_get_contents($_FILES["file"]["tmp_name"]);
+	if (isset($_FILES['file'])) {
+		$file = file_get_contents($_FILES["file"]["tmp_name"]);
 			//$userid = $_POST['userid'];
-			if(!$file){
-				die('please input userid & file');
-			}
+		if(!$file){
+			die('please input userid & file');
+		}
 
-			require_once MYLIBS . 'html_dom.class.php';
-			$global = array();
-			$global_jumper = array();
+		require_once MYLIBS . 'html_dom.class.php';
+		$global = array();
+		$global_jumper = array();
 
-			$i = $file;
+		$i = $file;
 
-			if ($i) {
-				$html = new simple_html_dom($i);
-				$user_dom = $html->find('span[class=mline] a[href=http://i.mizhe.com]', 0);
-				$email = $user_dom->text();
-				$userid = $this->UserMizhe->field('userid', array('email'=>$email));
-				if(!$userid)die($email . ' can not be match userid');
+		if ($i) {
+			$html = new simple_html_dom($i);
+			$user_dom = $html->find('span[class=mline] a[href=http://i.mizhe.com]', 0);
+			$email = $user_dom->text();
+			$userid = $this->UserMizhe->field('userid', array('email'=>$email));
+			if(!$userid)die($email . ' can not be match userid');
 
 				//如果匹配收入，则为个人中心首页，更新资产即退出
-				$in_hist = $html->find('span[class=price c-999] em', 0);
-				if($in_hist){
-					$in_hist =  $in_hist->text();
-					$in_left = $html->find('span[class=green-price] em', 0);
-					if($in_left)$in_left = $in_left->text();
-					$this->UserMizhe->save(array('userid'=>$userid, 'cash'=>$in_left, 'cash_history'=>$in_hist));
-					echo "userid: {$userid} {$email} &nbsp;&nbsp;cash: {$in_left}&nbsp;&nbsp; history: {$in_hist}";
-					die();
-				}
+			$in_hist = $html->find('span[class=price c-999] em', 0);
+			if($in_hist){
+				$in_hist =  $in_hist->text();
+				$in_left = $html->find('span[class=green-price] em', 0);
+				if($in_left)$in_left = $in_left->text();
+				$this->UserMizhe->save(array('userid'=>$userid, 'cash'=>$in_left, 'cash_history'=>$in_hist));
+				echo "userid: {$userid} {$email} &nbsp;&nbsp;cash: {$in_left}&nbsp;&nbsp; history: {$in_hist}";
+				die();
+			}
 
-				$doms = $html->find('ul[class=order-list-main] li');
-				$new = array();
-				foreach ($doms as $dom) {
-					$link = $dom->find('a', 0);
-					if ($link) {
-						$link = $link->href;
-						$return = preg_match('/([0-9]+)/i', $link, $matches);
-						if ($return) {
-							$order = array();
-							$order['p_id'] = $matches[1];
-							$p_title = $dom->find('div[class=title] a', 0);
-							$order['p_title'] = $p_title->text();
+			$doms = $html->find('ul[class=order-list-main] li');
+			$new = array();
+			foreach ($doms as $dom) {
+				$link = $dom->find('a', 0);
+				if ($link) {
+					$link = $link->href;
+					$return = preg_match('/([0-9]+)/i', $link, $matches);
+					if ($return) {
+						$order = array();
+						$order['p_id'] = $matches[1];
+						$p_title = $dom->find('div[class=title] a', 0);
+						$order['p_title'] = $p_title->text();
 
-							$num = $dom->find('div[class=title] p', 0);
-							if (preg_match('/([0-9]+)件/i', $num->text(), $matches)) {
+						$num = $dom->find('div[class=title] p', 0);
+						if (preg_match('/([0-9]+)件/i', $num->text(), $matches)) {
 								$order['num'] = intval($matches[1]); //可能存在同一订单多个
 							}
 
@@ -703,6 +703,68 @@ class OrderController extends AppController {
 	//提交返利客123订单列表页面
 	function postFlk123Order(){
 
+		if (isset($_FILES['file'])) {
+			$file = file_get_contents($_FILES["file"]["tmp_name"]);
+			if(!$file){
+				die('please input file');
+			}
+
+			$global = array();
+			$global_jumper = array();
+
+			$lines = explode("\n", $file);
+			foreach ($lines as $line) {
+
+				$single = explode("|", $line);
+				$userid = $this->UserBaobeisha->field('userid', "email like '".$single[0]."%'");
+
+				$order = array();
+				$order['p_id'] = $this->StatJump->field('p_id', "p_title like '{$single[2]}%'");
+				if(!$order['p_id'])continue;
+				$order['did'] = $single[1];
+				$order['ordernum'] = $order['did'];
+				$order['p_title'] = $single[2];
+				$order['p_price'] = $single[3];
+				$order['p_yongjin'] = floatval($single[6]) * 100 / C('config', 'RATE_FLK123');
+				$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
+				$order['donedate'] = '20'.$single[5];
+				$order['donedatetime'] = $order['donedate'];
+
+					//下单日期反推10天
+				$order['buydate'] = date('Y-m-d', strtotime($order['donedate']) - 10 * 24 * 3600);
+				$order['buydatetime'] = date('Y-m-d H:i:s', strtotime($order['donedatetime']) - 10 * 24 * 3600);
+
+				$order['jumper_uid'] = $this->StatJump->field('jumper_uid', "p_title like '{$single[2]}%' AND jumper_type='flk123'");;
+
+				$order['type'] = self::TYPE_FLK123;
+
+					//如果能正常访问到页面，但解析错误，报警
+				if ($order['p_price'] < 1 || !$order['p_title'] || !$order['p_id']) {
+					alert('rsync flk123 order', 'userid : ' . $userid . ' content error');
+					continue;
+				}
+
+					//关联jump记录
+				$date_start = date('Y-m-d', strtotime($order['donedatetime']) - 12 * 24 * 3600);
+				$hit = $this->StatJump->find("p_id = {$order['p_id']} AND jumper_type = 'flk123' AND created>'{$date_start}'");
+
+				if ($hit) {
+					clearTableName($hit);
+					$global[$order['ordernum']] = $hit['outcode'];
+				}
+
+				$new[] = $order;
+			}
+
+			$return = $this->_saveOrder($new, $global, $global_jumper);
+
+			$fanli = intval($return['fanli']);
+			$order = intval($return['order']);
+			$message = "orders: <b>{$order}</b> fanli: <b>{$fanli}</b> rate: " . C('config', 'RATE') * 100 . "%";
+			echo $message;
+			br();
+		}
+		die();
 	}
 
 	function _saveOrder($new, $global, $global_jumper){
@@ -721,10 +783,10 @@ class OrderController extends AppController {
 			}
 
 			if (@$n['outcode'] == 'test')
-				continue;
+			continue;
 
 			if ($this->OrderFanli->find(array('ordernum' => $n['ordernum'])))
-				continue;
+			continue;
 
 			$this->OrderFanli->create();
 			$this->OrderFanli->save($n);
@@ -732,7 +794,7 @@ class OrderController extends AppController {
 			$i++;
 		}
 
-		return array('order'=>$i, 'fanli'=>$fanli);
+	return array('order'=>$i, 'fanli'=>$fanli);
 	}
 
 	/**

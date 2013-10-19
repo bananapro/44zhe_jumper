@@ -3,7 +3,7 @@
 class DefaultController extends AppController {
 
 	var $name = 'Default';
-	var $uses = array('OrderFanli', 'StatJump', 'UserFanli', 'UserMizhe');
+	var $uses = array('OrderFanli', 'StatJump', 'UserFanli', 'UserMizhe', 'UserBind');
 	var $loginValide = false;
 
 	function index($pass='') {

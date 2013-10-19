@@ -22,7 +22,7 @@ class UserBind extends AppModel {
 						$jumper['type'] = $user['jumper_type'];
 						return $jumper;
 					}else{
-					//解绑用户
+						//解绑用户
 						$this->unbindUser($my_user, $user['jumper_type'], $user['jumper_uid']);
 					}
 				}
@@ -32,7 +32,6 @@ class UserBind extends AppModel {
 
 				return $this->bindUser($my_user, true);
 			}
-
 
 		}else{
 
@@ -56,7 +55,11 @@ class UserBind extends AppModel {
 
 			$m = $this->getChannelUserM($channel);
 			//跳过无账号的渠道
-			if(!$m->find(array('bind_count'=>'< '.C('config','JUMP_CHANNEL_BIND_LIMIT'), 'status'=>1)))continue;
+			if(!$rand){
+				if(!$m->find(array('bind_count'=>'< '.C('config','JUMP_CHANNEL_BIND_LIMIT'), 'status'=>1)))
+					continue;
+			}
+
 			$total_rate += $rate;
 			for($i=0; $i<$rate;$i++){
 				$channel_rebin[] = $channel;
@@ -65,17 +68,23 @@ class UserBind extends AppModel {
 		}
 
 		if(!$total_rate){
-			alert('bind', 'account empty');
+			alert('bind', 'account empty '.$my_user);
 			return;//无有效渠道账号
 		}
 
 		$channel = $channel_rebin[hexdec($ip_c[0].$ip_c[1])%$total_rate];
 
 		//每次均分前10个账号
-		$users = $this->getChannelUserM($channel)->findAll(array('status' => 1, 'bind_count'=>'< '.C('config','JUMP_CHANNEL_BIND_LIMIT')), '', 'created asc', 10);
+		if(!$rand){
+			$users = $this->getChannelUserM($channel)->findAll(array('status' => 1, 'bind_count'=>'< '.C('config','JUMP_CHANNEL_BIND_LIMIT')), '', 'created asc', 10);
+		}else{
+			$users = $this->getChannelUserM($channel)->findAll(array('status' => 1), '', 'rand()', '', 10);
+		}
+
 		clearTableName($users);
 		shuffle($users);
 		$selected = array_pop($users);
+		$selected['type'] = $channel;
 
 		//如果此次绑定是临时随机，用于某些渠道临时故障，或是系统账号
 		if($rand)return $selected;
@@ -87,7 +96,7 @@ class UserBind extends AppModel {
 		}
 
 		$this->updateBindCount($channel, $selected['userid']);
-		$selected['type'] = $channel;
+
 
 		LogInfo("{$my_user} bind to [{$selected['type']}][{$selected['userid']}]");
 

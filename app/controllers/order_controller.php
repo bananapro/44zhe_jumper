@@ -3,7 +3,7 @@
 class OrderController extends AppController {
 
 	var $name = 'Order';
-	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe', 'UserBaobeisha', 'UserJsfanli', 'StatJump');
+	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe', 'UserBaobeisha', 'UserJsfanli', 'UserFanxian', 'StatJump');
 	const TYPE_FANLI = 1;
 	const TYPE_MIZHE = 2;
 	const TYPE_GEIHUI = 3;
@@ -494,7 +494,7 @@ class OrderController extends AppController {
 					$order['type'] = self::TYPE_BAOBEISHA;
 
 					//如果能正常访问到页面，但解析错误，报警
-					if ($order['p_price'] < 1 || !$order['p_title']) {
+					if ($order['p_price'] < 1 || !$order['p_title'] || !$order['p_id']) {
 						alert('rsync baobeisha order', 'userid : ' . $userid . ' content error');
 						continue;
 					}
@@ -580,7 +580,7 @@ class OrderController extends AppController {
 					$order['type'] = self::TYPE_JSFANLI;
 
 					//如果能正常访问到页面，但解析错误，报警
-					if ($order['p_price'] < 1 || !$order['p_title']) {
+					if ($order['p_price'] < 1 || !$order['p_title'] || !$order['p_id']) {
 						alert('rsync jsfanli order', 'userid : ' . $userid . ' content error');
 						continue;
 					}
@@ -611,7 +611,94 @@ class OrderController extends AppController {
 
 	//提交返现网订单列表页面
 	function postFanxianOrder(){
+		if (isset($_FILES['file'])) {
+			$file = file_get_contents($_FILES["file"]["tmp_name"]);
+			if(!$file){
+				die('please input file');
+			}
 
+			require_once MYLIBS . 'html_dom.class.php';
+
+			$global = array();
+			$global_jumper = array();
+
+			$i = $file;
+
+			if ($i) {
+				$html = new simple_html_dom($i);
+				$name_dom = $html->find('li[class=username] a', 0);
+				$userid = '';
+				if($name_dom){
+					$username = trim(strip_tags($name_dom));
+					$userid = $this->UserFanxian->field('userid', "email like '{$username}%'");
+				}
+
+				if(!$userid){
+					echo 'Fanxian user match error!';
+					die();
+				}
+
+				$doms = $html->find('div[class=qbdd] tr[class=result]');
+				$new = array();
+				foreach ($doms as $dom) {
+					$cell = $dom->find('td');
+					$single = array();
+					foreach($cell as $c){
+						$single[] = trim(strip_tags($c));
+					}
+					$p_id_a_href = $cell[0]->children(0)->getAttribute('href');
+					$did_a_href = $cell[5]->find('a', 0)->getAttribute('href');
+					preg_match('/([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9:]+)/', $single[2], $m);
+					// pr($single);
+					// echo $p_id_a_href;die();
+					$order = array();
+					$order['p_id'] = array_pop(explode("=", $p_id_a_href));
+					$order['did'] = array_pop(explode("=", $did_a_href));
+					$order['ordernum'] = array_pop(explode("=", $did_a_href));
+					$order['p_title'] = $single[0];
+					$order['p_price'] = floatval($single[1]);
+					$order['p_yongjin'] = intval($single[3])/100 * 100 / C('config', 'RATE_FANXIAN');
+					$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
+					$order['donedate'] = trim($m[1]);
+					$order['donedatetime'] = trim($m[1]);
+
+					//下单日期反推10天
+					$order['buydate'] = date('Y-m-d', strtotime($order['donedate']) - 10 * 24 * 3600);
+					$order['buydatetime'] = date('Y-m-d H:i:s', strtotime($order['donedatetime']) - 10 * 24 * 3600);
+
+					$order['jumper_uid'] = $userid;
+
+					$order['type'] = self::TYPE_FANXIAN;
+
+
+					//如果能正常访问到页面，但解析错误，报警
+					if ($order['p_price'] < 1 || !$order['p_title'] || !$order['p_id'] || !$order['did']) {
+						alert('rsync fanxian order', 'userid : ' . $userid . ' content error');
+						continue;
+					}
+
+					//关联jump记录
+					$date_start = date('Y-m-d', strtotime($order['donedatetime']) - 12 * 24 * 3600);
+					$hit = $this->StatJump->find("p_id = {$order['p_id']} AND jumper_type = 'fanxian' AND created>'{$date_start}'");
+
+					if ($hit) {
+						clearTableName($hit);
+						$global[$order['ordernum']] = $hit['outcode'];
+					}
+
+					$new[] = $order;
+				}
+
+				$return = $this->_saveOrder($new, $global, $global_jumper);
+
+				$fanli = intval($return['fanli']);
+				$order = intval($return['order']);
+				$message = "<b>{$username}</b> orders: <b>{$order}</b> fanli: <b>{$fanli}</b> rate: " . C('config', 'RATE') * 100 . "%";
+				echo $message;
+				br();
+			}
+		}
+		die();
 	}
 
 	//提交返利客123订单列表页面

@@ -389,6 +389,10 @@ class OrderController extends AppController {
 					$order['p_id'] = trim($html_d->find('td', 1)->innertext);
 					$order['p_title'] = trim(array_shift(explode('||', str_replace('<br/>', '||', $html_d->find('td', 2)->innertext))));
 
+					if($html_d->find('td', 0)->innertext != $single[1]){
+						die('geihui cookie invalide! rsync first!');
+					}
+
 					$order['ordernum'] = $single[1];
 					$order['donedate'] = $single[2];
 					$order['donedatetime'] = $order['donedate'];

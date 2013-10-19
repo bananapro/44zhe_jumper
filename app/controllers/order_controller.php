@@ -649,20 +649,31 @@ class OrderController extends AppController {
 					foreach($cell as $c){
 						$single[] = trim(strip_tags($c));
 					}
+
+
 					$p_id_a_href = $cell[0]->children(0)->getAttribute('href');
+					$order_id_a_href = $cell[5]->find('a',0)->getAttribute('href');
 					preg_match('/([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9:]+)/', $single[2], $m);
 
 					$order = array();
 
 					$order['p_title'] = $single[0];
 					$order['p_id'] = array_pop(explode("=", $p_id_a_href));
-					$order['ordernum'] = array_pop(explode("=", $did_a_href));
-					$order['did'] = $order['ordernum'];
+
 					$order['p_price'] = floatval($single[1]);
 					$order['p_yongjin'] = intval($single[3])/100 * 100 / C('config', 'RATE_FANXIAN');
 					$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
 					$order['donedate'] = trim($m[1]);
 					$order['donedatetime'] = trim($m[1]);
+
+					$y = md5($order['p_title']);
+					$order['did'] = '20' . strtotime($order['donedatetime']) . hexdec($y[1] . $y[2]);
+
+					if(strpos($order_id_a_href, '=')){
+						$order['ordernum'] = array_pop(explode("=", $order_id_a_href));
+					}else{
+						$order['ordernum'] = $order['did'];
+					}
 
 					//下单日期反推10天
 					$order['buydate'] = date('Y-m-d', strtotime($order['donedate']) - 10 * 24 * 3600);
@@ -786,7 +797,7 @@ class OrderController extends AppController {
 			continue;
 
 			if ($this->OrderFanli->find(array('ordernum' => $n['ordernum'])))
-			continue;
+				continue;
 
 			$this->OrderFanli->create();
 			$this->OrderFanli->save($n);

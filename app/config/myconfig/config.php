@@ -35,7 +35,7 @@
 		'HOLD_SELLER' => array('bluecone'),
 
 		//向阿雄结算费率
-		'RATE' => 0.40,
+		'RATE' => 0.38,
 
         //米折网返利比例，用于跟单还原原始佣金
         'RATE_MIZHE' => 55,

@@ -201,11 +201,11 @@ class OrderController extends AppController {
 		echo $message;
 		die();
 	}
-}
+	}
 
 
 	//提交米折网订单列表页面
-function postMizheOrder(){
+	function postMizheOrder(){
 
 	if (isset($_FILES['file'])) {
 		$file = file_get_contents($_FILES["file"]["tmp_name"]);
@@ -794,7 +794,7 @@ function postMizheOrder(){
 			$i++;
 		}
 
-	return array('order'=>$i, 'fanli'=>$fanli);
+		return array('order'=>$i, 'fanli'=>$fanli);
 	}
 
 	/**

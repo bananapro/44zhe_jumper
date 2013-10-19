@@ -799,6 +799,9 @@ class OrderController extends AppController {
 			if ($this->OrderFanli->find(array('ordernum' => $n['ordernum'])))
 				continue;
 
+			if ($this->OrderFanli->find(array('did' => $n['did'])))
+				continue;
+
 			$this->OrderFanli->create();
 			$this->OrderFanli->save($n);
 			$fanli += $n['p_fanli'];

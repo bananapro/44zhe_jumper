@@ -491,6 +491,7 @@ class OrderController extends AppController {
 					$order['p_price'] = $single[2];
 					$order['p_yongjin'] = intval($single[3])/100 * 100 / C('config', 'RATE_BAOBEISHA');
 					$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
+					$order['p_rate'] = C('config', 'RATE');
 					$order['donedate'] = $single[4];
 					$order['donedatetime'] = $single[4];
 
@@ -516,7 +517,6 @@ class OrderController extends AppController {
 						clearTableName($hit);
 						$global[$order['ordernum']] = $hit['outcode'];
 					}
-
 					$new[] = $order;
 				}
 
@@ -577,6 +577,7 @@ class OrderController extends AppController {
 					$order['p_price'] = $single[2];
 					$order['p_yongjin'] = intval($single[3])/100 * 100 / C('config', 'RATE_JSFANLI');
 					$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
+					$order['p_rate'] = C('config', 'RATE');
 					$order['donedate'] = $single[4];
 					$order['donedatetime'] = $single[4];
 
@@ -668,6 +669,7 @@ class OrderController extends AppController {
 					$order['p_price'] = floatval($single[1]);
 					$order['p_yongjin'] = intval($single[3])/100 * 100 / C('config', 'RATE_FANXIAN');
 					$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
+					$order['p_rate'] = C('config', 'RATE');
 					$order['donedate'] = trim($m[1]);
 					$order['donedatetime'] = trim($m[1]);
 
@@ -743,6 +745,7 @@ class OrderController extends AppController {
 				$order['p_price'] = $single[3];
 				$order['p_yongjin'] = floatval($single[6]) * 100 / C('config', 'RATE_FLK123');
 				$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
+				$order['p_rate'] = C('config', 'RATE');
 				$order['donedate'] = '20'.$single[5];
 				$order['donedatetime'] = $order['donedate'];
 

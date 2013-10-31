@@ -109,7 +109,6 @@ else
 var zheCount = 1;
 var zheHasRequesResult = false;
 
-
 if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 
 	zheInsertLoading();
@@ -197,23 +196,18 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 
 	}, 100);
 
-} else if ((zheHost == 'www.flk123.com' || zheHost == 'www.fanxian.com' ) && zheHref.indexOf('task') > 0) {
+} else if ( zheHost == 'www.fanxian.com' && zheHref.indexOf('task') > 0) {
 
 	zheInsertLoading();
-
-	if (zheHost == 'www.flk123.com'){
-		var itemid = curitem;
-	}else{
-
-		var item_p = zhePasteUrl(decodeURIComponent(zheArgs['k']));
-		var itemid = item_p['id'];
-	}
 
 	var i = setInterval(function() {
 
 		zheCount = zheCount + 1;
-		if (TOP && zheHasRequesResult == false) {
-			zheGetConvert(itemid);
+
+		var link_origin = $('#gotobuy').attr('href');
+		if (TOP && link_origin.indexOf('link=') != -1 && zheHasRequesResult == false) {
+
+			zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=' + encodeURIComponent(link_origin) + '&debug=false');
 			clearInterval(i);
 			zheHasRequesResult = true;
 		}

@@ -115,7 +115,7 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 	document.getElementsByTagName('div')[0].style.display = 'none';
 	document.getElementsByTagName('div')[1].style.display = 'none';
 
-} else if (zheHost == 'www.mizhe.com' && zheHref.indexOf('task') > 0) {
+} else if (zheHost == 'www.mizhe.com' && zheHref.indexOf('taskid') > 0) {
 
 	zheInsertLoading();
 	//document.getElementsByTagName('body')[0].style.display='none';
@@ -123,6 +123,11 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 	var i = setInterval(function() {
 
 		zheCount = zheCount + 1;
+		if (zheCount == 50) { //5秒容忍度
+			loadForceJump();
+			clearInterval(i);
+		}
+
 		if (window.alimamatk_onload) {
 
 			var obj = $(".action .get-btn")[0];
@@ -148,19 +153,18 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 			}
 		}
 
-		if (zheCount == 50) { //5秒容忍度
-			loadForceJump();
-			clearInterval(i);
-		}
-
 	}, 100);
 
-} else if (zheHost == 'taobao.geihui.com' && zheHref.indexOf('task') > 0) {
+} else if (zheHost == 'taobao.geihui.com' && zheHref.indexOf('taskid') > 0) {
 
 	zheInsertLoading();
 	var i = setInterval(function() {
 
 		zheCount = zheCount + 1;
+		if (zheCount == 50) { //5秒容忍度
+			loadForceJump();
+			clearInterval(i);
+		}
 
 		var link_origin = $('.red_link').attr('href');
 		if (link_origin.indexOf('s.click.taobao.com') != -1 && zheHasRequesResult == false) {
@@ -169,19 +173,39 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 			zheHasRequesResult = true;
 		}
 
-		if (zheCount == 50) { //5秒容忍度
-			loadForceJump();
-			clearInterval(i);
-		}
-
 	}, 100);
 
-} else if ((zheHost == 'www.baobeisha.com' || zheHost == 'www.jsfanli.com') && zheHref.indexOf('task') > 0) {
+} else if (zheHost == 'www.baobeisha.com' && zheHref.indexOf('taskid') > 0) {
 
 	zheInsertLoading();
 	var i = setInterval(function() {
 
 		zheCount = zheCount + 1;
+		if (zheCount == 50) { //5秒容忍度
+			loadForceJump();
+			clearInterval(i);
+		}
+
+		var link_origin = $('.goto a').attr('href');
+		if (link_origin.indexOf('s.click.taobao.com') != -1 && zheHasRequesResult == false) {
+			zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=' + encodeURIComponent(link_origin) + '&debug=false');
+			clearInterval(i);
+			zheHasRequesResult = true;
+		}
+
+	}, 100);
+
+} else if (zheHost == 'www.jsfanli.com' && zheHref.indexOf('taskid') > 0) {
+
+	zheInsertLoading();
+	var i = setInterval(function() {
+
+		zheCount = zheCount + 1;
+		if (zheCount == 50) { //5秒容忍度
+			loadForceJump();
+			clearInterval(i);
+		}
+
 		var link_origin = $('#clickUrl').attr('href');
 		if (link_origin.indexOf('url=') != -1 && zheHasRequesResult == false) {
 			zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=' + encodeURIComponent(link_origin) + '&debug=false');
@@ -189,20 +213,19 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 			zheHasRequesResult = true;
 		}
 
-		if (zheCount == 50) { //5秒容忍度
-			loadForceJump();
-			clearInterval(i);
-		}
-
 	}, 100);
 
-} else if ( zheHost == 'www.fanxian.com' && zheHref.indexOf('task') > 0) {
+} else if ( zheHost == 'www.fanxian.com' && zheHref.indexOf('taskid') > 0) {
 
 	zheInsertLoading();
 
 	var i = setInterval(function() {
 
 		zheCount = zheCount + 1;
+		if (zheCount == 100) { //10秒容忍度
+			loadForceJump();
+			clearInterval(i);
+		}
 
 		var link_origin = $('#gotobuy').attr('href');
 		if (TOP && link_origin.indexOf('link=') != -1 && zheHasRequesResult == false) {
@@ -212,17 +235,18 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 			zheHasRequesResult = true;
 		}
 
-		if (zheCount == 100) { //10秒容忍度
-			loadForceJump();
-			clearInterval(i);
-		}
-
 	}, 100);
 
-} else if (zheHost == 'www.taofen8.com' && zheHref.indexOf('task') > 0) {
+} else if (zheHost == 'www.taofen8.com' && zheHref.indexOf('taskid') > 0) {
 
 	zheInsertLoading();
 	var i = setInterval(function() {
+
+		zheCount = zheCount + 1;
+		if (zheCount == 50) { //5秒容忍度
+			loadForceJump();
+			clearInterval(i);
+		}
 
 		var link_origin = $('.sousuo_gotaob').attr('href');
 
@@ -230,11 +254,6 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 			zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=' + encodeURIComponent(link_origin) + '&debug=false');
 			clearInterval(i);
 			zheHasRequesResult = true;
-		}
-
-		if (zheCount == 50) { //5秒容忍度
-			loadForceJump();
-			clearInterval(i);
 		}
 
 	}, 100);

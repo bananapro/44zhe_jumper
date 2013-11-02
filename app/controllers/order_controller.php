@@ -3,7 +3,7 @@
 class OrderController extends AppController {
 
 	var $name = 'Order';
-	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe', 'UserBaobeisha', 'UserJsfanli', 'UserFanxian', 'UserGeihui', 'StatJump');
+	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe', 'UserBaobeisha', 'UserFlk123', 'UserTaofen8', 'UserJsfanli', 'UserFanxian', 'UserGeihui', 'StatJump');
 	const TYPE_FANLI = 1;
 	const TYPE_MIZHE = 2;
 	const TYPE_GEIHUI = 3;
@@ -11,6 +11,7 @@ class OrderController extends AppController {
 	const TYPE_JSFANLI = 5;
 	const TYPE_FANXIAN = 6;
 	const TYPE_FLK123 = 7;
+	const TYPE_TAOFEN8 = 8;
 
 
 	//提交返利网订单数据
@@ -186,73 +187,73 @@ class OrderController extends AppController {
 			clearTableName($users);
 			foreach ($users as $user) {
 
-				if ($nu = $this->UserFanli->query("SELECT sum(p_price) as nu FROM order_fanli WHERE jumper_uid='{$user['userid']}'")) {
-					$nu = @intval($nu[0][0]['nu']);
-					if ($nu < 30) {
-						$this->UserFanli->save(array('userid' => $user['userid'], 'status' => 1));
-					}
-				};
+					if ($nu = $this->UserFanli->query("SELECT sum(p_price) as nu FROM order_fanli WHERE jumper_uid='{$user['userid']}'")) {
+						$nu = @intval($nu[0][0]['nu']);
+						if ($nu < 30) {
+							$this->UserFanli->save(array('userid' => $user['userid'], 'status' => 1));
+						}
+					};
+				}
 			}
-		}
-		else {
-			$message = 'file format error!';
-		}
+			else {
+				$message = 'file format error!';
+			}
 
-		echo $message;
-		die();
-	}
+			echo $message;
+			die();
+		}
 	}
 
 
 	//提交米折网订单列表页面
 	function postMizheOrder(){
 
-	if (isset($_FILES['file'])) {
-		$file = file_get_contents($_FILES["file"]["tmp_name"]);
-			//$userid = $_POST['userid'];
-		if(!$file){
-			die('please input userid & file');
-		}
-
-		require_once MYLIBS . 'html_dom.class.php';
-		$global = array();
-		$global_jumper = array();
-
-		$i = $file;
-
-		if ($i) {
-			$html = new simple_html_dom($i);
-			$user_dom = $html->find('span[class=mline] a[href=http://i.mizhe.com]', 0);
-			$email = $user_dom->text();
-			$userid = $this->UserMizhe->field('userid', array('email'=>$email));
-			if(!$userid)die($email . ' can not be match userid');
-
-				//如果匹配收入，则为个人中心首页，更新资产即退出
-			$in_hist = $html->find('span[class=price c-999] em', 0);
-			if($in_hist){
-				$in_hist =  $in_hist->text();
-				$in_left = $html->find('span[class=green-price] em', 0);
-				if($in_left)$in_left = $in_left->text();
-				$this->UserMizhe->save(array('userid'=>$userid, 'cash'=>$in_left, 'cash_history'=>$in_hist));
-				echo "userid: {$userid} {$email} &nbsp;&nbsp;cash: {$in_left}&nbsp;&nbsp; history: {$in_hist}";
-				die();
+		if (isset($_FILES['file'])) {
+			$file = file_get_contents($_FILES["file"]["tmp_name"]);
+				//$userid = $_POST['userid'];
+			if(!$file){
+				die('please input userid & file');
 			}
 
-			$doms = $html->find('ul[class=order-list-main] li');
-			$new = array();
-			foreach ($doms as $dom) {
-				$link = $dom->find('a', 0);
-				if ($link) {
-					$link = $link->href;
-					$return = preg_match('/([0-9]+)/i', $link, $matches);
-					if ($return) {
-						$order = array();
-						$order['p_id'] = $matches[1];
-						$p_title = $dom->find('div[class=title] a', 0);
-						$order['p_title'] = $p_title->text();
+			require_once MYLIBS . 'html_dom.class.php';
+			$global = array();
+			$global_jumper = array();
 
-						$num = $dom->find('div[class=title] p', 0);
-						if (preg_match('/([0-9]+)件/i', $num->text(), $matches)) {
+			$i = $file;
+
+			if ($i) {
+				$html = new simple_html_dom($i);
+				$user_dom = $html->find('span[class=mline] a[href=http://i.mizhe.com]', 0);
+				$email = $user_dom->text();
+				$userid = $this->UserMizhe->field('userid', array('email'=>$email));
+				if(!$userid)die($email . ' can not be match userid');
+
+					//如果匹配收入，则为个人中心首页，更新资产即退出
+				$in_hist = $html->find('span[class=price c-999] em', 0);
+				if($in_hist){
+					$in_hist =  $in_hist->text();
+					$in_left = $html->find('span[class=green-price] em', 0);
+					if($in_left)$in_left = $in_left->text();
+					$this->UserMizhe->save(array('userid'=>$userid, 'cash'=>$in_left, 'cash_history'=>$in_hist));
+					echo "userid: {$userid} {$email} &nbsp;&nbsp;cash: {$in_left}&nbsp;&nbsp; history: {$in_hist}";
+					die();
+				}
+
+				$doms = $html->find('ul[class=order-list-main] li');
+				$new = array();
+				foreach ($doms as $dom) {
+					$link = $dom->find('a', 0);
+					if ($link) {
+						$link = $link->href;
+						$return = preg_match('/([0-9]+)/i', $link, $matches);
+						if ($return) {
+							$order = array();
+							$order['p_id'] = $matches[1];
+							$p_title = $dom->find('div[class=title] a', 0);
+							$order['p_title'] = $p_title->text();
+
+							$num = $dom->find('div[class=title] p', 0);
+							if (preg_match('/([0-9]+)件/i', $num->text(), $matches)) {
 								$order['num'] = intval($matches[1]); //可能存在同一订单多个
 							}
 
@@ -734,7 +735,7 @@ class OrderController extends AppController {
 			foreach ($lines as $line) {
 
 				$single = explode("|", $line);
-				$userid = $this->UserBaobeisha->field('userid', "email like '".$single[0]."%'");
+				$userid = $this->UserFlk123->field('userid', "email like '".$single[0]."%'");
 
 				$order = array();
 				$order['p_id'] = $this->StatJump->field('p_id', "p_title like '{$single[2]}%'");
@@ -766,6 +767,73 @@ class OrderController extends AppController {
 					//关联jump记录
 				$date_start = date('Y-m-d', strtotime($order['donedatetime']) - 12 * 24 * 3600);
 				$hit = $this->StatJump->find("p_id = {$order['p_id']} AND jumper_type = 'flk123' AND created>'{$date_start}'");
+
+				if ($hit) {
+					clearTableName($hit);
+					$global[$order['ordernum']] = $hit['outcode'];
+				}
+
+				$new[] = $order;
+			}
+
+			$return = $this->_saveOrder($new, $global, $global_jumper);
+
+			$fanli = intval($return['fanli']);
+			$order = intval($return['order']);
+			$message = "orders: <b>{$order}</b> fanli: <b>{$fanli}</b> rate: " . C('config', 'RATE') * 100 . "%";
+			echo $message;
+			br();
+		}
+		die();
+	}
+
+	//提交taofen8订单列表页面
+	function postTaofen8Order(){
+
+		if (isset($_FILES['file'])) {
+			$file = file_get_contents($_FILES["file"]["tmp_name"]);
+			if(!$file){
+				die('please input file');
+			}
+
+			$global = array();
+			$global_jumper = array();
+
+			$lines = explode("\n", $file);
+			foreach ($lines as $line) {
+
+				$single = explode("|", $line);
+				$userid = $this->UserTaofen8->field('userid', "email = '".$single[0]."'");
+
+				$order = array();
+				$order['p_id'] = $single[2];
+				$order['did'] = $single[1];
+				$order['ordernum'] = $order['did'];
+				$order['p_title'] = $single[3];
+				$order['p_price'] = $single[4];
+				$order['p_yongjin'] = floatval($single[5]) * 100 / C('config', 'RATE_TAOFEN8');
+				$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
+				$order['p_rate'] = C('config', 'RATE');
+				$order['donedate'] = str_replace('/', '-', $single[5]);
+				$order['donedatetime'] = $order['donedate'];
+
+				//下单日期反推10天
+				$order['buydate'] = date('Y-m-d', strtotime($order['donedate']) - 10 * 24 * 3600);
+				$order['buydatetime'] = date('Y-m-d H:i:s', strtotime($order['donedatetime']) - 10 * 24 * 3600);
+
+				$order['jumper_uid'] = $this->StatJump->field('jumper_uid', "p_id = '{$single[2]}' AND jumper_type='taofen8'");;
+
+				$order['type'] = self::TYPE_TAOFEN8;
+
+				//如果能正常访问到页面，但解析错误，报警
+				if ($order['p_price'] < 1 || !$order['p_title'] || !$order['p_id']) {
+					alert('rsync taofen8 order', 'userid : ' . $userid . ' content error');
+					continue;
+				}
+
+				//关联jump记录
+				$date_start = date('Y-m-d', strtotime($order['donedatetime']) - 12 * 24 * 3600);
+				$hit = $this->StatJump->find("p_id = {$order['p_id']} AND jumper_type = 'taofen8' AND created>'{$date_start}'");
 
 				if ($hit) {
 					clearTableName($hit);

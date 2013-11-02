@@ -47,11 +47,6 @@
 </form>
 <br /><br />
 
-上传米折订单/个人中心首页<br />
-<form action="/order/postMizheOrder" method="post" enctype="multipart/form-data" target="_blank"><input type="file" value="" name="file"/><input type="submit" value="submit" />
-</form>
-<br /><br />
-
 上传给惠网订单<br />
 <form action="/order/postGeihuiOrder" method="post" enctype="multipart/form-data" target="_blank"><input type="file" value="" name="file"/><input type="submit" value="submit" /></form>
 <br /><br />
@@ -73,6 +68,11 @@
 
 上传返利客123订单<br />
 <form action="/order/postFlk123Order" method="post" enctype="multipart/form-data" target="_blank"><input type="file" value="" name="file"/><input type="submit" value="submit" />
+</form>
+<br /><br />
+
+上传淘粉8订单<br />
+<form action="/order/postTaofen8Order" method="post" enctype="multipart/form-data" target="_blank"><input type="file" value="" name="file"/><input type="submit" value="submit" />
 </form>
 <br /><br />
 

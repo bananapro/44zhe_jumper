@@ -71,11 +71,6 @@
 </form>
 <br /><br />
 
-上传淘粉8订单<br />
-<form action="/order/postTaofen8Order" method="post" enctype="multipart/form-data" target="_blank"><input type="file" value="" name="file"/><input type="submit" value="submit" />
-</form>
-<br /><br />
-
 当前环境:
 <?php
 	if(MY_ENV == 'DEV'){

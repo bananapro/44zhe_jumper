@@ -23,10 +23,10 @@ $curl->cookie_path = '/tmp/cookie';
 $log_dir = './logs/';
 mkdirs($log_dir. 'make.log');
 
-$file = @file_get_contents('./logs/fanli_1111_login_usernames');
+$file = @file_get_contents('./logs/fanli_1111_users');
 
 if(!$file){
-    echo "fanli_login_usernames  not found!\n";
+    echo "fanli_1111_users  not found!\n";
     die();
 }
 
@@ -87,7 +87,7 @@ foreach ($lines as $line) {
             $curl->get('http://huodong.51fanli.com/go1111', 'http://huodong.51fanli.com/go1111');
 	    sleep(rand(15,25));
             $return = $curl->get('http://huodong.51fanli.com/go1111/getPrize', 'http://huodong.51fanli.com/go1111');
-            file_put_contents($log_dir . '1111_huodong.'.date('Ymd').'.log', "[".date('Y-m-d H:i')."][$username][$return]\n", 8);
+            file_put_contents($log_dir . '1111_huodong_'.date('Ymd').'.log', "[".date('Y-m-d H:i')."][$username][$return]\n", 8);
             echo "[".date('Y-m-d H:i')."][success] " . $username . " : $return\n";
         }else{
             echo "[".date('Y-m-d H:i')."][error] " . $username . "\n";

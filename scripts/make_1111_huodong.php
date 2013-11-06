@@ -21,7 +21,7 @@ function p() {
 $curl = new CURL();
 $curl->cookie_path = '/tmp/cookie';
 $log_dir = './logs/';
-mkdirs($log_dir. '1111_huodong.log');
+mkdirs($log_dir. 'make.log');
 
 $file = @file_get_contents('./logs/fanli_1111_login_usernames');
 
@@ -42,11 +42,6 @@ foreach ($lines as $line) {
     if(!$username)continue;
     $succ_user = @file_get_contents($log_dir . '1111_huodong.log');
     $succ_user = str_replace("\n", '', $succ_user);
-
-    if(stripos($succ_user, $username)!==false){
-        echo "[".date('Y-m-d H:i')."][skip] " . $username . "\n";
-        continue;
-    }
 
     $hour = date('H', time());
 
@@ -92,7 +87,7 @@ foreach ($lines as $line) {
             $curl->get('http://huodong.51fanli.com/go1111', 'http://huodong.51fanli.com/go1111');
 	    sleep(rand(15,25));
             $return = $curl->get('http://huodong.51fanli.com/go1111/getPrize', 'http://huodong.51fanli.com/go1111');
-            file_put_contents($log_dir . '1111_huodong.log', "$username : $return\n", 8);
+            file_put_contents($log_dir . '1111_huodong.'.date('Ymd').'.log', "$username : $return\n", 8);
             echo "[".date('Y-m-d H:i')."][success] " . $username . " : $return\n";
         }else{
             echo "[".date('Y-m-d H:i')."][error] " . $username . "\n";

@@ -92,6 +92,8 @@ foreach ($lines as $line) {
         }else{
             echo "[".date('Y-m-d H:i')."][error] " . $username . "\n";
         }
+    }else{
+	sleep((9-$hour)*3600);
     }
 }
 

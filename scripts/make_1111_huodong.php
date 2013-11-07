@@ -27,75 +27,135 @@ $file = @file_get_contents('./logs/fanli_1111_users');
 
 if(!$file){
     echo "fanli_1111_users  not found!\n";
-    die();
+
+}else{
+
+	$lines = explode("\n", $file);
+
+	//完成当天的新用户任务
+	foreach ($lines as $line) {
+
+	    list($username, $password) = explode("\t", $line);
+	    $username = trim($username);
+	    $password = md5(trim($password));
+	    // $password = md5('bpro880214');
+
+	    if(!$username)continue;
+
+	    $hour = date('H', time());
+
+	    if($hour > 8 && $hour < 24){
+
+		$time = time();
+		$time2 = $time + 2;
+		$time4 = $time + 4;
+		$rand16 = rand(1000000000000000, 9999999999999999);
+		$rand4 = rand(1000,9999);
+
+		$tpl = "http://passport.51fanli.com/login/ajaxlogin?jsoncallback=jQuery1720{$rand16}_{$time}{rand4}&username={$username}&userpassword={$password}&passcode=&cooklogin=1&savename=1&t={$time2}&_={$time4}";
+
+		@unlink($curl->cookie_path);
+
+		while(1){
+
+		    $proxy = p();
+		    if(!$proxy){
+			echo "[".date('Y-m-d H:i')."][proxy_get_empty]\n";
+			sleep(2);
+			continue;
+
+		    }else{
+			list($curl->proxy['address'], $curl->proxy['port']) = explode(':', $proxy);
+			$test = $curl->get('http://go.44zhe.com/default/info/ip');
+			if(trim($test) != $curl->proxy['address']){
+			    echo "[".date('Y-m-d H:i')."][proxy_bad]\n";
+			    sleep(2);
+			    continue;
+			}else{
+			    break;
+			}
+		    }
+		}
+		$return = $curl->get($tpl, 'http://passport.51fanli.com/login');
+		if(stripos($return, '20000')!==false){
+		    $curl->get('http://huodong.51fanli.com/go1111', 'http://www.51fanli.com/');
+		    sleep(rand(1,6));
+		    $curl->get('http://huodong.51fanli.com/go1111/interParticipate', 'http://huodong.51fanli.com/go1111');
+		    sleep(rand(1,5));
+		    $curl->get('http://huodong.51fanli.com/go1111', 'http://huodong.51fanli.com/go1111');
+		    sleep(rand(15,25));
+		    $return = $curl->get('http://huodong.51fanli.com/go1111/getPrize', 'http://huodong.51fanli.com/go1111');
+		    file_put_contents($log_dir . '1111_huodong_'.date('Ymd').'.log', "[".date('Y-m-d H:i')."][$username][$return]\n", 8);
+		    echo "[".date('Y-m-d H:i')."][success] " . $username . " : $return\n";
+		}else{
+		    echo "[".date('Y-m-d H:i')."][error] " . $username . "\n";
+		}
+	    }else{
+		sleep((9-$hour)*3600);
+	    }
+	}
 }
 
-$lines = explode("\n", $file);
+//完成全部用户当天抽奖
+$all_user = @file_get_contents('./logs/fanli_1111_users_all');
+$maked_log = @file_get_contents($log_dir . '1111_huodong_'.date('Ymd').'.log');
+$maked_log = str_replace("\n", '|', $maked_log);
 
-foreach ($lines as $line) {
+$lines = explode("\n", $all_user);
+foreach($lines as $line){
+	
+	list($username, $password) = explode("\t", $line);
+	$username = trim($username);
+	$password = md5(trim($password));
+	$hour = date('H', time());
+	
+	if(stripos($maked_log, $username)!==false)continue;
 
-    list($username, $password) = explode("\t", $line);
-    $username = trim($username);
-    $password = md5(trim($password));
-    // $password = md5('bpro880214');
+	if($hour > 8 && $hour < 24){
 
-    if(!$username)continue;
-    $succ_user = @file_get_contents($log_dir . '1111_huodong.log');
-    $succ_user = str_replace("\n", '', $succ_user);
+		$time = time();
+		$time2 = $time + 2;
+		$time4 = $time + 4;
+		$rand16 = rand(1000000000000000, 9999999999999999);
+		$rand4 = rand(1000,9999);
 
-    $hour = date('H', time());
+		$tpl = "http://passport.51fanli.com/login/ajaxlogin?jsoncallback=jQuery1720{$rand16}_{$time}{rand4}&username={$username}&userpassword={$password}&passcode=&cooklogin=1&savename=1&t={$time2}&_={$time4}";
 
-    if($hour > 8 && $hour < 24){
+		@unlink($curl->cookie_path);
 
-        $time = time();
-        $time2 = $time + 2;
-        $time4 = $time + 4;
-        $rand16 = rand(1000000000000000, 9999999999999999);
-        $rand4 = rand(1000,9999);
+		while(1){
 
-        $tpl = "http://passport.51fanli.com/login/ajaxlogin?jsoncallback=jQuery1720{$rand16}_{$time}{rand4}&username={$username}&userpassword={$password}&passcode=&cooklogin=1&savename=1&t={$time2}&_={$time4}";
+		    $proxy = p();
+		    if(!$proxy){
+			echo "[".date('Y-m-d H:i')."][proxy_get_empty]\n";
+			sleep(2);
+			continue;
 
-        @unlink($curl->cookie_path);
+		    }else{
+			list($curl->proxy['address'], $curl->proxy['port']) = explode(':', $proxy);
+			$test = $curl->get('http://go.44zhe.com/default/info/ip');
+			if(trim($test) != $curl->proxy['address']){
+			    echo "[".date('Y-m-d H:i')."][proxy_bad]\n";
+			    sleep(2);
+			    continue;
+			}else{
+			    break;
+			}
+		    }
+		}
 
-        while(1){
-
-            $proxy = p();
-            if(!$proxy){
-                echo "[".date('Y-m-d H:i')."][proxy_get_empty]\n";
-                sleep(2);
-                continue;
-
-            }else{
-                list($curl->proxy['address'], $curl->proxy['port']) = explode(':', $proxy);
-                $test = $curl->get('http://go.44zhe.com/default/info/ip');
-                if(trim($test) != $curl->proxy['address']){
-                    echo "[".date('Y-m-d H:i')."][proxy_bad]\n";
-                    sleep(2);
-                    continue;
-                }else{
-                    break;
-                }
-            }
-        }
-
-        $return = $curl->get($tpl, 'http://passport.51fanli.com/login');
-        if(stripos($return, '20000')!==false){
-            $curl->get('http://huodong.51fanli.com/go1111', 'http://www.51fanli.com/');
-	    sleep(rand(1,6));
-            $curl->get('http://huodong.51fanli.com/go1111/interParticipate', 'http://huodong.51fanli.com/go1111');
-	    sleep(rand(1,5));
-            $curl->get('http://huodong.51fanli.com/go1111', 'http://huodong.51fanli.com/go1111');
-	    sleep(rand(15,25));
-            $return = $curl->get('http://huodong.51fanli.com/go1111/getPrize', 'http://huodong.51fanli.com/go1111');
-            file_put_contents($log_dir . '1111_huodong_'.date('Ymd').'.log', "[".date('Y-m-d H:i')."][$username][$return]\n", 8);
-            echo "[".date('Y-m-d H:i')."][success] " . $username . " : $return\n";
-        }else{
-            echo "[".date('Y-m-d H:i')."][error] " . $username . "\n";
-        }
-    }else{
-	sleep((9-$hour)*3600);
-    }
+		$return = $curl->get($tpl, 'http://passport.51fanli.com/login');
+		if(stripos($return, '20000')!==false){
+		    $curl->get('http://huodong.51fanli.com/go1111', 'http://www.51fanli.com/');
+                    sleep(rand(1,3));
+		    $return = $curl->get('http://huodong.51fanli.com/go1111/getPrize', 'http://huodong.51fanli.com/go1111');
+		    file_put_contents($log_dir . '1111_huodong_'.date('Ymd').'.log', "[".date('Y-m-d H:i')."][$username][$return]\n", 8);
+		    echo "[".date('Y-m-d H:i')."][success] " . $username . " : $return\n";
+		}else{
+		    echo "[".date('Y-m-d H:i')."][error] " . $username . "\n";
+		}
+	}else{
+		sleep((9-$hour)*3600);
+	}
 }
-
-
 ?>

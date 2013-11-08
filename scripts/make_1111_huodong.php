@@ -6,7 +6,7 @@ require MYLIBS . 'curl.class.php';
 //获取代理
 function p() {
 
-    $api = "http://www.xinxinproxy.com/httpip/text?orderId=438892078761457&count=1&includeProvinces=%E4%B8%8A%E6%B5%B7,%E6%9D%AD%E5%B7%9E,%E6%B5%99%E6%B1%9F,%E8%8B%8F%E5%B7%9E,%E5%8D%97%E4%BA%AC&isShuffle=1&isNew=1";
+    $api = "http://www.xinxinproxy.com/httpip/text?orderId=438892078761457&count=1&includeProvinces=%E4%B8%8A%E6%B5%B7,%E6%9D%AD%E5%B7%9E,%E6%B5%99%E6%B1%9F,%E8%8B%8F%E5%B7%9E,%E5%8D%97%E4%BA%AC&isShuffle=1&isNew=0";
 
     $data = file_get_contents($api);
 
@@ -61,7 +61,7 @@ if(!$file){
 		    $proxy = p();
 		    if(!$proxy){
 			echo "[".date('Y-m-d H:i')."][proxy_get_empty]\n";
-			sleep(2);
+			//sleep(2);
 			continue;
 
 		    }else{
@@ -69,7 +69,7 @@ if(!$file){
 			$test = $curl->get('http://go.44zhe.com/default/info/ip');
 			if(trim($test) != $curl->proxy['address']){
 			    echo "[".date('Y-m-d H:i')."][proxy_bad]\n";
-			    sleep(2);
+			    //sleep(2);
 			    continue;
 			}else{
 			    break;
@@ -79,14 +79,18 @@ if(!$file){
 		$return = $curl->get($tpl, 'http://passport.51fanli.com/login');
 		if(stripos($return, '20000')!==false){
 		    $curl->get('http://huodong.51fanli.com/go1111', 'http://www.51fanli.com/');
-		    sleep(rand(1,6));
+		    //sleep(rand(1,6));
 		    $curl->get('http://huodong.51fanli.com/go1111/interParticipate', 'http://huodong.51fanli.com/go1111');
-		    sleep(rand(1,5));
+		    //sleep(rand(1,5));
 		    $curl->get('http://huodong.51fanli.com/go1111', 'http://huodong.51fanli.com/go1111');
-		    sleep(rand(15,25));
+		    //sleep(rand(15,25));
 		    $return = $curl->get('http://huodong.51fanli.com/go1111/getPrize', 'http://huodong.51fanli.com/go1111');
-		    file_put_contents($log_dir . '1111_huodong_'.date('Ymd').'.log', "[".date('Y-m-d H:i')."][$username][$return]\n", 8);
-		    echo "[".date('Y-m-d H:i')."][success] " . $username . " : $return\n";
+		    $obj = json_decode($return, true);
+
+		    if($obj['status']){
+			file_put_contents($log_dir . '1111_huodong_'.date('Ymd').'.log', "[".date('Y-m-d H:i')."][$username][$return]\n", 8);
+			echo "[".date('Y-m-d H:i')."][success] " . $username . " : $return\n";
+		    }
 		}else{
 		    echo "[".date('Y-m-d H:i')."][error] " . $username . "\n";
 		}
@@ -111,7 +115,7 @@ foreach($lines as $line){
 	
 	if(stripos($maked_log, $username)!==false)continue;
 
-	if($hour > 8 && $hour < 24){
+	if(($hour > 7 && $hour < 24) || $hour < 2){
 
 		$time = time();
 		$time2 = $time + 2;
@@ -128,7 +132,7 @@ foreach($lines as $line){
 		    $proxy = p();
 		    if(!$proxy){
 			echo "[".date('Y-m-d H:i')."][proxy_get_empty]\n";
-			sleep(2);
+			//sleep(2);
 			continue;
 
 		    }else{
@@ -136,7 +140,7 @@ foreach($lines as $line){
 			$test = $curl->get('http://go.44zhe.com/default/info/ip');
 			if(trim($test) != $curl->proxy['address']){
 			    echo "[".date('Y-m-d H:i')."][proxy_bad]\n";
-			    sleep(2);
+			    //sleep(2);
 			    continue;
 			}else{
 			    break;
@@ -147,7 +151,7 @@ foreach($lines as $line){
 		$return = $curl->get($tpl, 'http://passport.51fanli.com/login');
 		if(stripos($return, '20000')!==false){
 		    $curl->get('http://huodong.51fanli.com/go1111', 'http://www.51fanli.com/');
-                    sleep(rand(1,3));
+                    sleep(rand(5,10));
 		    $return = $curl->get('http://huodong.51fanli.com/go1111/getPrize', 'http://huodong.51fanli.com/go1111');
 		    file_put_contents($log_dir . '1111_huodong_'.date('Ymd').'.log', "[".date('Y-m-d H:i')."][$username][$return]\n", 8);
 		    echo "[".date('Y-m-d H:i')."][success] " . $username . " : $return\n";
@@ -155,7 +159,7 @@ foreach($lines as $line){
 		    echo "[".date('Y-m-d H:i')."][error] " . $username . "\n";
 		}
 	}else{
-		sleep((9-$hour)*3600);
+		sleep((6-$hour)*3600);
 	}
 }
 ?>

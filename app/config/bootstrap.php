@@ -268,9 +268,13 @@ function taobaoItemDetail($id){
 	$data = file_get_contents('http://fun.51fanli.com/api/search/getItemById?pid=' . $id . '&is_mobile=2&shoptype=2');
 	if ($data) {
 		$data = json_decode($data, true);
+
 		if ($data['status']) {
 			$info['p_title'] = @$data['data']['title'];
 			$info['p_seller'] = @$data['data']['shopname'];
+			$info['p_price'] = @$data['data']['price'];
+			$info['p_fanli'] = str_replace('元', '', @$data['data']['fanli']);
+			$info['p_rate'] = intval(($info['p_fanli']/$info['p_price'])*100);
 			$info['p_url'] = @$data['data']['url'];
 		}
 	}

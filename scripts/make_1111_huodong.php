@@ -159,7 +159,7 @@ foreach($lines as $line){
 		    echo "[".date('Y-m-d H:i')."][error] " . $username . "\n";
 		}
 	}else{
-		sleep((6-$hour)*3600);
+		sleep((8-$hour)*3600);
 	}
 }
 ?>

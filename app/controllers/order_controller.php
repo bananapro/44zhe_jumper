@@ -814,7 +814,7 @@ class OrderController extends AppController {
 				$order['p_yongjin'] = floatval($single[5]) * 100 / C('config', 'RATE_TAOFEN8');
 				$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
 				$order['p_rate'] = C('config', 'RATE');
-				$order['donedate'] = date('Y-m-d H:i:s', strtotime($single[5]);
+				$order['donedate'] = date('Y-m-d H:i:s', strtotime($single[5]));
 				$order['donedatetime'] = $order['donedate'];
 
 				//下单日期反推10天

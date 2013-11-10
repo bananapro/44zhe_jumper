@@ -206,8 +206,8 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 			clearInterval(i);
 		}
 
-		var link_origin = $('#clickUrl').attr('href');
-		if (link_origin.indexOf('url=') != -1 && zheHasRequesResult == false) {
+		var link_origin = $('.goto a').attr('href');
+		if (link_origin.indexOf('s.click.taobao.com') != -1 && zheHasRequesResult == false) {
 			zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=' + encodeURIComponent(link_origin) + '&debug=false');
 			clearInterval(i);
 			zheHasRequesResult = true;

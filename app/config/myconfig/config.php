@@ -73,6 +73,6 @@
 		'JUMP_CHANNEL_ENABLE' => array('geihui', 'baobeisha', 'jsfanli', 'fanxian', 'flk123'),
 
 		//渠道会员绑定插件账号数量上限
-		'JUMP_CHANNEL_BIND_LIMIT' => 25,
+		'JUMP_CHANNEL_BIND_LIMIT' => 28,
     )
 ?>

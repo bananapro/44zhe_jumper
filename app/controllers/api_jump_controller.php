@@ -99,7 +99,7 @@ class ApiJumpController extends AppController {
 			$this->redirect(DEFAULT_ERROR_URL);
 		}
 
-		$this->_addStatJump($shop, 'fanli', $my_user, $oc, $_COOKIE['fl_userid'], $p_id, $p_title, $p_price, 1, $p_seller);
+		$this->_addStatJump($shop, 'fanli', $my_user, $oc, $_SESSION['fl_userid'], $p_id, $p_title, $p_price, 1, $p_seller);
 
 		//封装goshop跳转地址
 

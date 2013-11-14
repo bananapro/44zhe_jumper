@@ -269,8 +269,10 @@ function taobaoItemDetail($id){
 
 	//实例化TopClient类
 	$client = new TopClient;
-	$client->appkey = '12019508';
-	$client->secretKey = '4c079fe9f7edb17e1878f789d04896cf';
+	// $client->appkey = '12019508';
+	// $client->secretKey = '4c079fe9f7edb17e1878f789d04896cf';
+	$client->appkey = '21306056';
+	$client->secretKey = 'f0362fe1abacd41cb0f4495c63c9c0c6';
 	//$client->fanliNick = '苹果元元88';
 	$client->format = 'json';
 	$req = new TbkItemsDetailGetRequest;

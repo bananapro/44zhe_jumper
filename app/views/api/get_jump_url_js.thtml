@@ -31,7 +31,7 @@ function go(){
 		<?php elseif($type == 'flk123'):?>
 		    zheLocation.href = 'http://www.flk123.com/rebate/items/<?=$p['p_id']?>.html?taskid=<?=$taskid?>';
 	    <?php elseif($type == 'fanxian'):?>
-		    zheLocation.href = 'http://www.fanxian.com/?ct=taobao&ac=search&k=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
+		    zheLocation.href = 'http://www.fanxian.com/?ct=jumpto&gid=<?=$p['p_id']?>&s=1&taskid=<?=$taskid?>';
 	    <?php elseif($type == 'taofen8'):?>
 		    zheLocation.href = 'http://www.taofen8.com/s?sort=default&pageNo=1&itemId=<?=$p['p_id']?>&isJhs=false&taskid=<?=$taskid?>';
 	    <?php endif;?>

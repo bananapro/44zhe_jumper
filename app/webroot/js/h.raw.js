@@ -123,12 +123,15 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 
 		if(zheHasRequesResult == false){
 
-			var topWin = window.top.document.getElementById("writeable_iframe_0").contentWindow;
-			objs = topWin.document.getElementsByTagName('a');
-			for(i in objs){
-				if(objs[i].href.indexOf('redirect.simba.taobao.com')>0){
-					objs[i].click();
-					zheHasRequesResult = true;
+			if(window.top.document.getElementById("writeable_iframe_0")){
+
+				var topWin = window.top.document.getElementById("writeable_iframe_0").contentWindow;
+				objs = topWin.document.getElementsByTagName('a');
+				for(i in objs){
+					if(objs[i].href.indexOf('redirect.simba.taobao.com')>0){
+						objs[i].click();
+						zheHasRequesResult = true;
+					}
 				}
 			}
 		}
@@ -246,12 +249,17 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 			clearInterval(i);
 		}
 
-		var link_origin = $('#gotobuy').attr('href');
-		if (TOP && link_origin.indexOf('link=') != -1 && zheHasRequesResult == false) {
+		if(window.top.document.getElementById("writeable_iframe_0")){
 
-			zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=' + encodeURIComponent(link_origin) + '&debug=false');
-			clearInterval(i);
-			zheHasRequesResult = true;
+			var topWin = window.top.document.getElementById("writeable_iframe_0").contentWindow;
+			link = topWin.document.getElementsByTagName("a")[0].attributes.getNamedItem("href").nodeValue
+			if(link){
+				if(link.indexOf('redirect.simba.taobao.com')>0){
+					zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=' + encodeURIComponent(link) + '&debug=false');
+					clearInterval(i);
+					zheHasRequesResult = true;
+				}
+			}
 		}
 
 	}, 100);

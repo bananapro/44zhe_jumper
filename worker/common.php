@@ -6,7 +6,9 @@ define('API', 'http://www.jumper.com/api/');
 define('CACHE', ROOT . 'tmp' . DS);
 define('COOKIE', CACHE . 'login' . DS); //登陆login保存路径
 
-if (is_dir(ROOT . '../../cake/mylibs/'))
+if (is_dir(ROOT . '../../../cake/mylibs/'))
+	define('MYLIBS', ROOT . '../../../cake/mylibs/');
+else if(is_dir(ROOT . '../../cake/mylibs/'))
 	define('MYLIBS', ROOT . '../../cake/mylibs/');
 else
 	define('MYLIBS', ROOT . '../cake/mylibs/');

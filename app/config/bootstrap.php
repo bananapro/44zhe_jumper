@@ -298,7 +298,6 @@ function taobaoItemDetail($id){
 		$info['p_rate'] = $itemDetailArr[$id]['fanli'];
 
 	}else if(@$resp->code){
-		var_dump($resp);die();
 		//TODO alert 记录错误日志
 		alert('TAOBAO API', 'error : ' . $resp->code);
 		$info = array();

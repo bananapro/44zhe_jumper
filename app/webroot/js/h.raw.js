@@ -109,11 +109,30 @@ else
 var zheCount = 1;
 var zheHasRequesResult = false;
 
+
 if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 
 	zheInsertLoading();
 	document.getElementsByTagName('div')[0].style.display = 'none';
 	document.getElementsByTagName('div')[1].style.display = 'none';
+
+}if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshop') > 0) {
+
+	document.getElementsByClassName('fanli-logo')[0].style.display = 'none';
+	var i = setInterval(function() {
+
+		if(zheHasRequesResult == false){
+
+			var topWin = window.top.document.getElementById("writeable_iframe_0").contentWindow;
+			objs = topWin.document.getElementsByTagName('a');
+			for(i in objs){
+				if(objs[i].href.indexOf('redirect.simba.taobao.com')>0){
+					objs[i].click();
+					zheHasRequesResult = true;
+				}
+			}
+		}
+	}, 100);
 
 } else if (zheHost == 'www.mizhe.com' && zheHref.indexOf('taskid') > 0) {
 

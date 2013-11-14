@@ -85,6 +85,11 @@ class DefaultController extends AppController {
 		cache('proxy_info', $last_info);
 		$this->set('info', $last_info);
 	}
+
+	function test(){
+		pr(taobaoItemDetail(23723200458));
+		die();
+	}
 }
 
 ?>

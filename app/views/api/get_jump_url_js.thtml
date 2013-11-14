@@ -9,53 +9,45 @@ function zheLoading() {
 	document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:10000; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2 style="height:30px">Loading ...</h2><img src="http://go.44zhe.com/loading.gif"></div>';
 }
 
+function go(){
+
+	<?php
+		if($pass):
+	?>
+		<?php if($type == 'fanli' || !$type):?>
+
+			<?php if($p['shop'] == 'taobao'):?>
+				zheLocation.href = '<?=DOMAIN?>/apiJump/jumpForce/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>/<?=$p['p_price']?>/<?=$p['p_fanli']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
+			<?php else:?>
+			    zheLocation.href = '<?=DOMAIN?>/apiJump/jump/<?=$p['shop']?>/<?=$p['my_user']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
+			<?php endif?>
+
+	    <?php elseif($type == 'mizhe'):?>
+		    zheLocation.href = 'http://www.mizhe.com/search/item.html?q=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
+	    <?php elseif($type == 'geihui'):?>
+		    zheLocation.href = 'http://taobao.geihui.com/t/search_goods?q=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
+	    <?php elseif($type == 'baobeisha' || $type == 'jsfanli'):?>
+		    zheLocation.href = 'http://www.<?=$type?>.com/index.php?mod=tao&act=view&q=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&search=1&taskid=<?=$taskid?>';
+		<?php elseif($type == 'flk123'):?>
+		    zheLocation.href = 'http://www.flk123.com/rebate/items/<?=$p['p_id']?>.html?taskid=<?=$taskid?>';
+	    <?php elseif($type == 'fanxian'):?>
+		    zheLocation.href = 'http://www.fanxian.com/?ct=taobao&ac=search&k=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
+	    <?php elseif($type == 'taofen8'):?>
+		    zheLocation.href = 'http://www.taofen8.com/s?sort=default&pageNo=1&itemId=<?=$p['p_id']?>&isJhs=false&taskid=<?=$taskid?>';
+	    <?php endif;?>
+
+	<?php else:?>
+	    zheLocation..href = '<?=DOMAIN?>/api/alert/jump/js_no_pass?u=<?=$default_url?>';
+	<?php endif;?>
+}
+
 zheLoading();
+$.ajax({
+	dataType: "jsonp",
+	url: "http://passport.51fanli.com/login/ajaxlogin?username=<?=$fanli_username?>&userpassword=<?=$fanli_password?>&passcode=&cooklogin=1&savename=1",
+	jsonp:"jsoncallback",
+	success: function(e){go()},
+	error: function(){go()}
+});
 
 if(top)zheLocation = top.location;
-<?php
-    if($pass):
-?>
-    <?php if($type == 'fanli' || !$type):?>
-	<?php if($p['shop'] == 'taobao'):?>
-		$.ajax({
-		    dataType: "jsonp",
-		    url: "http://fun.51fanli.com/api/search/getItemById?pid=<?=$p['p_id']?>&is_mobile=2&shoptype=2&track_code=a",
-		    jsonp:"jsoncallback",
-		    success: function(e){
-
-			if(e.status == 1){
-			    p_title = encodeURIComponent(e.data.title);
-			    p_seller = encodeURIComponent(e.data.shopname);
-			    ju = encodeURIComponent(e.data.url);
-			    zheLocation.href = '<?=DOMAIN?>/apiJump/jump/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>/<?=$p['p_price']?>/<?=$p['p_fanli']?>?p_title='+p_title+'&ju='+ju+'&oc=<?=$p['oc']?>&target=<?=$p['target']?>&p_seller='+p_seller;
-			}else{
-			    zheLocation.href = '<?=DOMAIN?>/api/alert/jump/51fanli_status_error?u=<?=$default_url?>&target=<?=$p['target']?>';
-			}
-
-		    },
-		    error: function(){
-				zheLocation.href = '<?=DOMAIN?>/apiJump/jumpForce/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>/<?=$p['p_price']?>/<?=$p['p_fanli']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
-		    }
-
-		});
-	<?php else:?>
-	    zheLocation.href = '<?=DOMAIN?>/apiJump/jump/<?=$p['shop']?>/<?=$p['my_user']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
-	<?php endif?>
-
-    <?php elseif($type == 'mizhe'):?>
-	    zheLocation.href = 'http://www.mizhe.com/search/item.html?q=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
-    <?php elseif($type == 'geihui'):?>
-	    zheLocation.href = 'http://taobao.geihui.com/t/search_goods?q=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
-    <?php elseif($type == 'baobeisha' || $type == 'jsfanli'):?>
-	    zheLocation.href = 'http://www.<?=$type?>.com/index.php?mod=tao&act=view&q=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&search=1&taskid=<?=$taskid?>';
-	<?php elseif($type == 'flk123'):?>
-	    zheLocation.href = 'http://www.flk123.com/rebate/items/<?=$p['p_id']?>.html?taskid=<?=$taskid?>';
-    <?php elseif($type == 'fanxian'):?>
-	    zheLocation.href = 'http://www.fanxian.com/?ct=taobao&ac=search&k=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
-    <?php elseif($type == 'taofen8'):?>
-	    zheLocation.href = 'http://www.taofen8.com/s?sort=default&pageNo=1&itemId=<?=$p['p_id']?>&isJhs=false&taskid=<?=$taskid?>';
-    <?php endif;?>
-
-<?php else:?>
-    zheLocation..href = '<?=DOMAIN?>/api/alert/jump/js_no_pass?u=<?=$default_url?>';
-<?php endif;?>

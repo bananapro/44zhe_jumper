@@ -188,7 +188,7 @@ class ApiController extends AppController {
 				//当认为走渠道没问题时，但容忍度降到0，也不再走mizhe
 				if (isset($_COOKIE["{$type}_balance"]) && $_COOKIE["{$type}_balance"] == 0){
 
-					setcookie("{$type}_succ", 0, time() - 360 * 24 * 3600, '/'); //清除米折通道成功标识
+					setcookie("{$type}_succ", 0, time() - 360 * 24 * 3600, '/'); //清除通道成功标识
 					alert("{$type} jump", '['. $param['oc'] .']['. getBrowser() .'] balance become zero');
 					$type = false;
 				}
@@ -215,6 +215,21 @@ class ApiController extends AppController {
 			$this->set('taskid', $this->Task->getLastInsertID());
 		}
 
+		if($_COOKIE['fl_userid']){
+
+			$user = $this->UserFanli->find(array('userid'=>$_COOKIE['fl_userid']));
+			clearTableName($user);
+		}else{
+			//选取fanli pool准备备选通道
+			$user = $this->UserFanli->getPoolBig($my_user);
+			if (!$user) {
+				alert('User Error', 'can not found a user for jump');
+			}
+			setcookie("fl_userid", $user['userid'], time() + 365 * 24 * 3600, '/'); //每3天允许1次尝试渠道
+		}
+
+		$this->set('fanli_username', $user['username']);
+		$this->set('fanli_password', md5($user['username'].'0a'));
 		$this->set('type', $type);
 		$this->set('default_url', $default_url);
 		$this->set('p', $param);
@@ -239,7 +254,7 @@ class ApiController extends AppController {
 			if(@$_GET['force'] && $t_info){
 
 				$this->Task->save(array('id'=>$taskid, 'status'=>3, 'link_origin' =>$link_origin));
-				$link = str_replace('http://', '', DOMAIN . '/apiJump/jumpForce/' . "{$t_info['shop']}/{$t_info['my_user']}/{$t_info['p_id']}/{$t_info['p_price']}/{$t_info['p_fanli']}?oc={$t_info['oc']}&target={$t_info['target']}");
+				$link = str_replace('http://', '', DOMAIN . '/apiJump/jumpForce/' . "{$t_info['shop']}/{$t_info['my_user']}?oc={$t_info['oc']}&target={$t_info['target']}");
 				$this->set('link', $link);
 
 			}else if($t_info){
@@ -253,7 +268,7 @@ class ApiController extends AppController {
 				if(!$link){//转换失败强制转换
 					$converted = false;
 					$this->Task->save(array('id'=>$taskid, 'status'=>3, 'link_origin' =>$link_origin));
-					$link = DOMAIN . '/apiJump/jumpForce/' . "{$t_info['shop']}/{$t_info['my_user']}/{$t_info['p_id']}/{$t_info['p_price']}/{$t_info['p_fanli']}?oc={$t_info['oc']}&target={$t_info['target']}";
+					$link = DOMAIN . '/apiJump/jumpForce/' . "{$t_info['shop']}/{$t_info['my_user']}/{$t_info['p_id']}?oc={$t_info['oc']}&target={$t_info['target']}";
 				}
 				$link = str_replace('http://', '', $link);
 

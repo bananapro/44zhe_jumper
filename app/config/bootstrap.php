@@ -81,11 +81,12 @@ function overlimit_day_incr($var, $d=null, $incr=1) {
 
 //生成outcode
 function getOutCode($iUserId, $sTc) {
-	if(!$sTc)$sTc = 'g3';
-	$sOC = 'A0';
+	if(!$sTc)$sTc = 't0';
+	$sOC = 'B0';
 	$sOC.= str_pad(substr(base_convert($iUserId, 10, 36), 0, 6), 6, '0', STR_PAD_LEFT); //6位36进制用户ID,不足前面补0
-	$sOC.= str_pad(substr($sTc, 0, 2), 2, '0', STR_PAD_LEFT); //两位跟踪码，不足前面补0
-	$sOC.= base_convert(date('m'), 10, 36) . base_convert(date('d'), 10, 36);
+	$sTc2 = '';
+	$sTc2 = str_pad(substr($sTc, 0, 2) , 2, '0', STR_PAD_LEFT);
+	$sOC.= "ZZ".$sTc2;
 	return $sOC;
 }
 
@@ -263,20 +264,57 @@ function hitRate($total, $curr, $rate){
 
 function taobaoItemDetail($id){
 
-	//TODO 用自己的key来获取，补充卖家信息
-	$info = array();
-	$data = file_get_contents('http://fun.51fanli.com/api/search/getItemById?pid=' . $id . '&is_mobile=2&shoptype=2');
-	if ($data) {
-		$data = json_decode($data, true);
+	require MYLIBS . 'taobaoapi' . DS . 'top' . DS . 'TopClient.class.php';
+	require MYLIBS . 'taobaoapi' . DS . 'top' . DS . 'request' . DS . 'TaobaokeItemsDetailGetRequest.class.php';
 
-		if ($data['status']) {
-			$info['p_title'] = @$data['data']['title'];
-			$info['p_seller'] = @$data['data']['shopname'];
-			$info['p_price'] = @$data['data']['price'];
-			$info['p_fanli'] = str_replace('元', '', @$data['data']['fanli']);
-			$info['p_rate'] = intval(($info['p_fanli']/$info['p_price'])*100);
-			$info['p_url'] = @$data['data']['url'];
+	//实例化TopClient类
+	$client = new TopClient;
+	$client->appkey = '12019508';
+	$client->secretKey = '4c079fe9f7edb17e1878f789d04896cf';
+	//$client->fanliNick = '苹果元元88';
+	$client->format = 'json';
+	$req = new TaobaokeItemsDetailGetRequest;
+	$req->setFields("num_iid,cid,click_url,shop_click_url,seller_credit_score,title,nick,price,location,is_virtual,pic_url,auction_point,freight_payer,express_fee");
+	$req->setNumIids($id);
+	$resp = $client->execute($req);
+	if(!@$resp->code && @$resp->taobaoke_item_details){
+		foreach ($resp->taobaoke_item_details->taobaoke_item_detail as $item_detail) {
+			$item = $item_detail->item;
+			$num_iid = (string) $item->num_iid;
+			$data = array(
+						'num_iid' => $item->num_iid,
+						'title' => $item->title,
+						'nick' => $item->nick,
+						'cid' => $item->cid,
+						'price' => $item->price,
+						'pic_url' => $item->pic_url,
+						'click_url' => $item_detail->click_url,
+						'shop_click_url' => $item_detail->shop_click_url,
+						'seller_credit_score' => $item_detail->seller_credit_score,
+						'location' => $item->location->state == $item->location->city ? $item->location->state : ($item->location->state . ' ' . $item->location->city),
+						'is_virtual' => $item->is_virtual,
+						'shop_type' => $item->auction_point > 0 ? 'B' : 'C',
+						'fanli' => 1,
+						'freight_payer' => $item->freight_payer,
+						'express_fee' => $item->express_fee
+						);
+			$itemDetailArr[$num_iid] = $data;
 		}
+
+		$info = array();
+		$info['p_title'] = $itemDetailArr[$id]['title'];
+		$info['p_seller'] = $itemDetailArr[$id]['nick'];
+		$info['p_price'] = $itemDetailArr[$id]['price'];
+		$info['p_fanli'] = $itemDetailArr[$id]['fanli'];
+		$info['p_rate'] = $itemDetailArr[$id]['fanli'];
+
+	}else if(@$resp->code){
+		//TODO alert 记录错误日志
+		alert('TAOBAO API', 'error : ' . $resp->code);
+		$info = array();
+	}else{
+		//无返利
+		$info = array();
 	}
 
 	return $info;

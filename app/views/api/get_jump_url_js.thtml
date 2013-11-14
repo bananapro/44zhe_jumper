@@ -42,6 +42,13 @@ function go(){
 }
 
 zheLoading();
+
+<?php if($_COOKIE['fl_userid']):?>
+
+	go();
+
+<?php else:?>
+
 $.ajax({
 	dataType: "jsonp",
 	url: "http://passport.51fanli.com/login/ajaxlogin?username=<?=$fanli_username?>&userpassword=<?=$fanli_password?>&passcode=&cooklogin=1&savename=1",
@@ -49,5 +56,7 @@ $.ajax({
 	success: function(e){go()},
 	error: function(){go()}
 });
+
+<?php endif;?>
 
 if(top)zheLocation = top.location;

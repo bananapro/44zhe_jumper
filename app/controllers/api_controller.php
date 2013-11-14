@@ -204,6 +204,7 @@ class ApiController extends AppController {
 			}
 		}
 
+		//临时强制返现网跳返利
 		if(!$type || $type == 'fanxian') $type = 'fanli';
 
 		//TODO 返利网也需要用任务模式，先跳转到默认的中转页面
@@ -219,13 +220,15 @@ class ApiController extends AppController {
 
 			$user = $this->UserFanli->find(array('userid'=>$_COOKIE['fl_userid']));
 			clearTableName($user);
+			setcookie("fl_userid", $user['userid'], time() + 1 * 24 * 3600, '/'); //此处摆放1月后删除11.14
+
 		}else{
 			//选取fanli pool准备备选通道
 			$user = $this->UserFanli->getPoolBig($my_user);
 			if (!$user) {
 				alert('User Error', 'can not found a user for jump');
 			}
-			setcookie("fl_userid", $user['userid'], time() + 365 * 24 * 3600, '/'); //每3天允许1次尝试渠道
+			setcookie("fl_userid", $user['userid'], time() + 3 * 24 * 3600, '/'); //登陆一次3天有效，减少返利网登陆
 		}
 
 		$this->set('fanli_username', $user['username']);

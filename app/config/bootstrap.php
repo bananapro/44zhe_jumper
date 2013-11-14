@@ -265,7 +265,7 @@ function hitRate($total, $curr, $rate){
 function taobaoItemDetail($id){
 
 	require MYLIBS . 'taobaoapi' . DS . 'top' . DS . 'TopClient.class.php';
-	require MYLIBS . 'taobaoapi' . DS . 'top' . DS . 'request' . DS . 'TaobaokeItemsDetailGetRequest.class.php';
+	require MYLIBS . 'taobaoapi' . DS . 'top' . DS . 'request' . DS . 'TbkItemsDetailGetRequest.php';
 
 	//实例化TopClient类
 	$client = new TopClient;
@@ -273,30 +273,19 @@ function taobaoItemDetail($id){
 	$client->secretKey = '4c079fe9f7edb17e1878f789d04896cf';
 	//$client->fanliNick = '苹果元元88';
 	$client->format = 'json';
-	$req = new TaobaokeItemsDetailGetRequest;
-	$req->setFields("num_iid,cid,click_url,shop_click_url,seller_credit_score,title,nick,price,location,is_virtual,pic_url,auction_point,freight_payer,express_fee");
+	$req = new TbkItemsDetailGetRequest;
+	$req->setFields("num_iid,seller_id,nick,title,price,volume,pic_url,item_url,shop_url");
 	$req->setNumIids($id);
 	$resp = $client->execute($req);
-	if(!@$resp->code && @$resp->taobaoke_item_details){
-		foreach ($resp->taobaoke_item_details->taobaoke_item_detail as $item_detail) {
-			$item = $item_detail->item;
+	if(!@$resp->code && @$resp->tbk_items){
+		foreach ($resp->tbk_items->tbk_item as $item) {
 			$num_iid = (string) $item->num_iid;
 			$data = array(
 						'num_iid' => $item->num_iid,
 						'title' => $item->title,
 						'nick' => $item->nick,
-						'cid' => $item->cid,
 						'price' => $item->price,
-						'pic_url' => $item->pic_url,
-						'click_url' => $item_detail->click_url,
-						'shop_click_url' => $item_detail->shop_click_url,
-						'seller_credit_score' => $item_detail->seller_credit_score,
-						'location' => $item->location->state == $item->location->city ? $item->location->state : ($item->location->state . ' ' . $item->location->city),
-						'is_virtual' => $item->is_virtual,
-						'shop_type' => $item->auction_point > 0 ? 'B' : 'C',
 						'fanli' => 1,
-						'freight_payer' => $item->freight_payer,
-						'express_fee' => $item->express_fee
 						);
 			$itemDetailArr[$num_iid] = $data;
 		}
@@ -309,6 +298,7 @@ function taobaoItemDetail($id){
 		$info['p_rate'] = $itemDetailArr[$id]['fanli'];
 
 	}else if(@$resp->code){
+		var_dump($resp);die();
 		//TODO alert 记录错误日志
 		alert('TAOBAO API', 'error : ' . $resp->code);
 		$info = array();

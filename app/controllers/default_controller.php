@@ -86,8 +86,8 @@ class DefaultController extends AppController {
 		$this->set('info', $last_info);
 	}
 
-	function test(){
-		pr(taobaoItemDetail(23723200458));
+	function test($id){
+		pr(taobaoItemDetail($id));
 		die();
 	}
 }

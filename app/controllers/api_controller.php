@@ -204,7 +204,7 @@ class ApiController extends AppController {
 			}
 		}
 
-		if(!$type) $type = 'fanli';
+		if(!$type || $type == 'fanxian') $type = 'fanli';
 
 		//TODO 返利网也需要用任务模式，先跳转到默认的中转页面
 		if($type != 'fanli'){

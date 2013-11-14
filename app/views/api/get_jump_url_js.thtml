@@ -18,7 +18,7 @@ function go(flag){
 		<?php if($type == 'fanli' || !$type):?>
 
 			<?php if($p['shop'] == 'taobao'):?>
-				zheLocation.href = '<?=DOMAIN?>/apiJump/jumpForce/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>/<?=$p['p_price']?>/<?=$p['p_fanli']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>&flag='+flag;
+				zheLocation.href = '<?=DOMAIN?>/apiJump/jumpForce/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>&flag='+flag;
 			<?php else:?>
 			    zheLocation.href = '<?=DOMAIN?>/apiJump/jump/<?=$p['shop']?>/<?=$p['my_user']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
 			<?php endif?>
@@ -54,7 +54,7 @@ $.ajax({
 	dataType: "jsonp",
 	url: "http://passport.51fanli.com/login/ajaxlogin?username=<?=$fanli_username?>&userpassword=<?=$fanli_password?>&passcode=&cooklogin=1&savename=1",
 	jsonp:"jsoncallback",
-	success: function(e){if(e.status == 20000){go('<?=$fanli_userid?>')}else{go('fail')}},
+	success: function(e){if(e.status == 20000 || e.status == 20009){go('<?=$fanli_userid?>')}else{go('fail')}},
 	error: function(){go('fail')}
 });
 

@@ -46,6 +46,9 @@ class ApiJumpController extends AppController {
 			$this->redirect(DEFAULT_ERROR_URL);
 		}
 
+		if($_GET['flag'] != 'fail' && $_GET['flag']>0){
+			$_SESSION['fl_userid'] = $_GET['flag'];
+		}
 		$this->jump($shop, $my_user, $p_id, $data['p_title'], $data['p_price'], $data['p_seller']);
 	}
 
@@ -91,7 +94,7 @@ class ApiJumpController extends AppController {
 			$this->redirect($_GET['target']);
 		}
 
-		if (!$_COOKIE['fl_userid']) {
+		if (!$_SESSION['fl_userid']) {
 			alert('User Error', 'can not found fl_userid for jump');
 			$this->redirect(DEFAULT_ERROR_URL);
 		}

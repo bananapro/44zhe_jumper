@@ -216,11 +216,10 @@ class ApiController extends AppController {
 			$this->set('taskid', $this->Task->getLastInsertID());
 		}
 
-		if($_COOKIE['fl_userid']){
+		if($_SESSION['fl_userid']){
 
 			$user = $this->UserFanli->find(array('userid'=>$_COOKIE['fl_userid']));
 			clearTableName($user);
-			setcookie("fl_userid", $user['userid'], time() + 1 * 24 * 3600, '/'); //此处摆放1月后删除11.14
 
 		}else{
 			//选取fanli pool准备备选通道
@@ -228,11 +227,11 @@ class ApiController extends AppController {
 			if (!$user) {
 				alert('User Error', 'can not found a user for jump');
 			}
-			setcookie("fl_userid", $user['userid'], time() + 3 * 24 * 3600, '/'); //登陆一次3天有效，减少返利网登陆
 		}
 
 		$this->set('fanli_username', $user['username']);
 		$this->set('fanli_password', md5($user['username'].'0a'));
+		$this->set('fanli_userid', $user['userid']);
 		$this->set('type', $type);
 		$this->set('default_url', $default_url);
 		$this->set('p', $param);

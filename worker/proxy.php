@@ -132,18 +132,23 @@ if (@$mission['mission_type'] == 'login') {
 		}
 
 		//step 2: 提交登陆申请
-		if ($path == '/login' && $_SERVER['REQUEST_METHOD'] == 'POST') {
+		if ($path == '/xiuajax' && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
 			$proxy->enable_follow = false;
 			$page = $proxy->request($uri);
-			if (stripos($proxy->response_headers, '302 Moved Temporarily')) {
+			if (stripos($page, 'login success')) {
 				$return = loginSucc($mission['jumper_type'], $mission['jumper_uid'], $proxy->response_cookies);
 				if ($return) {
 					setcookie('carry_mission', '', 0, '/'); //清除任务标识
 					//TODO 清除登陆状态
-					$page = '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><body><div style="text-align:center;width:100%"><br /><br /><br /><br /><h2><b>该登陆任务处理完毕，请重新领取!</b></h2></div></body></html><script>setTimeout(function(){window.close()}, 3000);</script>';
 				}
 			}
+		}
+
+		//step 3: 用户中心
+		if ($path == '/user' && $_SERVER['REQUEST_METHOD'] == 'GET') {
+
+			$page = '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><body><div style="text-align:center;width:100%"><script src="https://login.taobao.com/member/logout.jhtml?f=top&out=true&redirectURL=http://www.worker.com/login.php"></script><script src="https://login.taobao.com/member/logout.jhtml?f=top&out=true"></script><script src="https://login.taobao.com/member/login.jhtml?sub=true&style=mini_top&need_sign=top&full_redirect=true&from=mini_top&from_encoding=utf-8#"></script><br /><br /><br /><br /><h2><b>该登陆任务处理完毕，请重新领取!</b></h2></div></body></html><script>setTimeout(function(){window.close()}, 3000);</script>';
 		}
 		//end mizhe login mission
 	}

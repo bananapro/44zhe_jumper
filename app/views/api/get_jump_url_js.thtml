@@ -10,7 +10,7 @@ function zheLoading() {
 	document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:100000; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2 style="height:30px">Loading ...</h2><img src="http://go.44zhe.com/loading.gif"></div>';
 }
 
-function go(flag){
+function go(flag,fcode){
 
 	<?php
 		if($pass):
@@ -18,7 +18,7 @@ function go(flag){
 		<?php if($type == 'fanli' || !$type):?>
 
 			<?php if($p['shop'] == 'taobao'):?>
-				zheLocation.href = '<?=DOMAIN?>/apiJump/jumpForce/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>&flag='+flag;
+				zheLocation.href = '<?=DOMAIN?>/apiJump/jumpForce/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>&flag='+flag+'&fcode='+fcode;
 			<?php else:?>
 			    zheLocation.href = '<?=DOMAIN?>/apiJump/jump/<?=$p['shop']?>/<?=$p['my_user']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
 			<?php endif?>
@@ -46,7 +46,7 @@ zheLoading();
 
 <?php if($_SESSION['fl_userid']):?>
 
-	go('fail');
+	go('fail','pass');
 
 <?php else:?>
 
@@ -54,8 +54,8 @@ $.ajax({
 	dataType: "jsonp",
 	url: "http://passport.51fanli.com/login/ajaxlogin?username=<?=$fanli_username?>&userpassword=<?=$fanli_password?>&passcode=&cooklogin=1&savename=1",
 	jsonp:"jsoncallback",
-	success: function(e){if(e.status == 20000 || e.status == 20009){go('<?=$fanli_userid?>')}else{go('fail')}},
-	error: function(){go('fail')}
+	success: function(e){if(e.status == 20000 || e.status == 20009){go('<?=$fanli_userid?>')}else{go('fail',e.status)}},
+	error: function(){go('fail','error')}
 });
 
 <?php endif;?>

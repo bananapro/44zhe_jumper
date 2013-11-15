@@ -74,7 +74,7 @@ class StatController extends AppController {
 		$this->set('last_jumps', $last_jumps);
 
 		//最新报警
-		$last_alerts = $this->Alert->findAll('', '', 'id DESC', 5);
+		$last_alerts = $this->Alert->findAll('', '', 'id DESC', 15);
 		clearTableName($last_alerts);
 		$this->set('last_alerts', $last_alerts);
 

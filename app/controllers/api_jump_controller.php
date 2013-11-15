@@ -48,6 +48,8 @@ class ApiJumpController extends AppController {
 
 		if($_GET['flag'] != 'fail' && $_GET['flag']>0){
 			$_SESSION['fl_userid'] = $_GET['flag'];
+		}else{
+			alert('fanli login', 'fail code ' . $_GET['fcode']);
 		}
 		$this->jump($shop, $my_user, $p_id, $data['p_title'], $data['p_price'], $data['p_seller']);
 	}
@@ -95,7 +97,7 @@ class ApiJumpController extends AppController {
 		}
 
 		if (!$_SESSION['fl_userid']) {
-			alert('Fanli Login Error', '[' . getip() . '][' . getBrowser() . '] session fl_userid miss');
+			alert('fanli login', 'session fl_userid miss');
 			$this->redirect(DEFAULT_ERROR_URL);
 		}
 

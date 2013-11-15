@@ -158,6 +158,7 @@ function ApiFanliPassport($api, $params, $secret = '9f93eab2452f8dba5c7b9dd49dd8
 
 	$params['t'] = time();
 	$params['ip'] = '127.0.0.1';
+	$params['client'] = getBrowser();
 	ksort($params);
 
 	foreach ($params as $key => $val) {

@@ -207,6 +207,41 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 
 	}, 100);
 
+}else if (zheHost == 'fanli.juanpi.com' && zheHref.indexOf('taskid') > 0) {
+
+	zheInsertLoading();
+	var i = setInterval(function() {
+
+		zheCount = zheCount + 1;
+		if (zheCount == 50) { //5秒容忍度
+			loadForceJump();
+			clearInterval(i);
+		}
+
+		obj = $('.fan_box a')[0];
+		try {
+			var event = document.createEvent('HTMLEvents');
+			event.initEvent("mousedown", true, true);
+			event.eventType = 'message';
+			obj.dispatchEvent(event);
+
+		} catch (e) {
+			// 仅IE6/7/8不支持
+			var event = document.createEventObject();
+			event.eventType = 'message';
+			event.srcElement = obj;
+			obj.fireEvent('onmousedown', event);
+		}
+
+		var link_origin = $('.fan_box a').attr('href');
+		if (link_origin.indexOf('g.click.taobao.com') != -1 && zheHasRequesResult == false) {
+			zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=' + encodeURIComponent(link_origin) + '&debug=false');
+			clearInterval(i);
+			zheHasRequesResult = true;
+		}
+
+	}, 100);
+
 } else if ( zheHost == 'www.fanxian.com' && zheHref.indexOf('taskid') > 0) {
 
 	zheInsertLoading();

@@ -22,19 +22,14 @@ function go(flag,fcode){
 			<?php else:?>
 			    zheLocation.href = '<?=DOMAIN?>/apiJump/jump/<?=$p['shop']?>/<?=$p['my_user']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
 			<?php endif?>
-
-	    <?php elseif($type == 'mizhe'):?>
-		    zheLocation.href = 'http://www.mizhe.com/search/item.html?q=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
-	    <?php elseif($type == 'geihui'):?>
-		    zheLocation.href = 'http://taobao.geihui.com/t/search_goods?q=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
 	    <?php elseif($type == 'baobeisha' || $type == 'jsfanli'):?>
 		    zheLocation.href = 'http://www.<?=$type?>.com/index.php?mod=tao&act=view&q=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&search=1&taskid=<?=$taskid?>';
 		<?php elseif($type == 'flk123'):?>
 		    zheLocation.href = 'http://www.flk123.com/rebate/items/<?=$p['p_id']?>.html?taskid=<?=$taskid?>';
 	    <?php elseif($type == 'fanxian'):?>
 		    zheLocation.href = 'http://www.fanxian.com/?ct=jumpto&gid=<?=$p['p_id']?>&s=1&taskid=<?=$taskid?>';
-	    <?php elseif($type == 'taofen8'):?>
-		    zheLocation.href = 'http://www.taofen8.com/s?sort=default&pageNo=1&itemId=<?=$p['p_id']?>&isJhs=false&taskid=<?=$taskid?>';
+	    <?php elseif($type == 'juanpi'):?>
+		    zheLocation.href = 'http://fanli.juanpi.com/fanli?k=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
 	    <?php endif;?>
 
 	<?php else:?>
@@ -44,12 +39,6 @@ function go(flag,fcode){
 
 zheLoading();
 
-<?php if($_SESSION['fl_userid']):?>
-
-	go('fail','pass');
-
-<?php else:?>
-
 $.ajax({
 	dataType: "jsonp",
 	url: "http://passport.51fanli.com/login/ajaxlogin?username=<?=$fanli_username?>&userpassword=<?=$fanli_password?>&passcode=&cooklogin=1&savename=1",
@@ -57,5 +46,3 @@ $.ajax({
 	success: function(e){if(e.status == 20000 || e.status == 20009){go('<?=$fanli_userid?>', '')}else{go('fail',e.status)}},
 	error: function(){go('fail','error')}
 });
-
-<?php endif;?>

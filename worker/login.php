@@ -1,7 +1,6 @@
 <?PHP
 
 require './common.php';
-
 //取登陆任务
 $mission = getLoginFailCookies();
 
@@ -27,6 +26,11 @@ if (@$_GET['mission_begin']) {
 
 				case 'taofen8':
 					$login_url = 'http://www.taofen8.com/login?carry_mission=login:'.$type.':'.$uid;
+					file_put_contents('/tmp/current_mission', 'login:'.$type.':'.$uid);
+					break;
+
+				case 'juanpi':
+					$login_url = 'http://www.juanpi.com/login?ref=%2Fuser&carry_mission=login:'.$type.':'.$uid;
 					file_put_contents('/tmp/current_mission', 'login:'.$type.':'.$uid);
 					break;
 

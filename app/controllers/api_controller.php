@@ -205,7 +205,7 @@ class ApiController extends AppController {
 		}
 
 		//临时强制返现网跳返利
-		if(!$type || $type == 'fanxian') $type = 'fanli';
+		if(!$type) $type = 'fanli';
 
 		//TODO 返利网也需要用任务模式，先跳转到默认的中转页面
 		if($type != 'fanli'){

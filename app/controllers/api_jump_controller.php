@@ -95,7 +95,7 @@ class ApiJumpController extends AppController {
 		}
 
 		if (!$_SESSION['fl_userid']) {
-			alert('User Error', 'can not found fl_userid for jump');
+			alert('Fanli Login Error', '[' . getip() . '][' . getBrowser() . '] session fl_userid miss');
 			$this->redirect(DEFAULT_ERROR_URL);
 		}
 

@@ -41,8 +41,7 @@ class ApiJumpController extends AppController {
 		$data = taobaoItemDetail($p_id);
 
 		if (!$data) {
-
-			alert('jumpForce', 'can not fetch data');
+			alert('jumpForce', 'pid: ' . $p_id . ' get detail error');
 			$this->redirect(DEFAULT_ERROR_URL);
 		}
 

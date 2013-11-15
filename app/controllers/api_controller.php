@@ -271,6 +271,8 @@ class ApiController extends AppController {
 					$converted = false;
 					$this->Task->save(array('id'=>$taskid, 'status'=>3, 'link_origin' =>$link_origin));
 					$link = DOMAIN . '/apiJump/jumpForce/' . "{$t_info['shop']}/{$t_info['my_user']}/{$t_info['p_id']}?oc={$t_info['oc']}&target={$t_info['target']}";
+				}else{
+					$this->Task->save(array('id'=>$taskid, 'link_finish'=>$link));
 				}
 				$link = str_replace('http://', '', $link);
 

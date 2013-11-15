@@ -131,14 +131,13 @@
 </table>
 <table width="640">
     <tr>
-        <td class="head2" colspan="4">最新报警</td>
+        <td class="head2" colspan="5">最新报警</td>
     </tr>
     <?php foreach($last_alerts as $alert):?>
     <tr>
         <td class="ec" style="white-space:nowrap" width="20%"><?=$alert['created']?></td>
         <td class="fl" style="white-space:nowrap" width="13%"><?=$alert['target']?></td>
         <td class="ec" style="white-space:nowrap" width="13%"><?=$alert['ip']?></td>
-        <td class="ec" style="white-space:nowrap" width="13%"><?=$alert['area']?></td>
         <td class="ec" style="white-space:nowrap" width="13%"><?=$alert['client']?></td>
         <td class="fl" style="text-align: left"><?=$alert['info']?></td>
     </tr>

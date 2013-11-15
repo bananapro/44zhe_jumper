@@ -137,66 +137,6 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 		}
 	}, 100);
 
-} else if (zheHost == 'www.mizhe.com' && zheHref.indexOf('taskid') > 0) {
-
-	zheInsertLoading();
-	//document.getElementsByTagName('body')[0].style.display='none';
-	//setInterval("document.getElementsByTagName('body')[0].style.display='none'",100);
-	var i = setInterval(function() {
-
-		zheCount = zheCount + 1;
-		if (zheCount == 50) { //5秒容忍度
-			loadForceJump();
-			clearInterval(i);
-		}
-
-		if (window.alimamatk_onload) {
-
-			var obj = $(".action .get-btn")[0];
-			try {
-				var event = document.createEvent('HTMLEvents');
-				event.initEvent("mousedown", true, true);
-				event.eventType = 'message';
-				obj.dispatchEvent(event);
-
-			} catch (e) {
-				// 仅IE6/7/8不支持
-				var event = document.createEventObject();
-				event.eventType = 'message';
-				event.srcElement = obj;
-				obj.fireEvent('onmousedown', event);
-			}
-
-			var link_origin = $(".action .get-btn").attr('href');
-			if (link_origin.indexOf('g.click.taobao.com') != -1 && zheHasRequesResult == false) {
-				zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=' + encodeURIComponent(link_origin) + '&debug=false');
-				clearInterval(i);
-				zheHasRequesResult = true;
-			}
-		}
-
-	}, 100);
-
-} else if (zheHost == 'taobao.geihui.com' && zheHref.indexOf('taskid') > 0) {
-
-	zheInsertLoading();
-	var i = setInterval(function() {
-
-		zheCount = zheCount + 1;
-		if (zheCount == 50) { //5秒容忍度
-			loadForceJump();
-			clearInterval(i);
-		}
-
-		var link_origin = $('.red_link').attr('href');
-		if (link_origin.indexOf('s.click.taobao.com') != -1 && zheHasRequesResult == false) {
-			zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=' + encodeURIComponent(link_origin) + '&debug=false');
-			clearInterval(i);
-			zheHasRequesResult = true;
-		}
-
-	}, 100);
-
 } else if (zheHost == 'www.baobeisha.com' && zheHref.indexOf('taskid') > 0) {
 
 	zheInsertLoading();
@@ -290,27 +230,6 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 					zheHasRequesResult = true;
 				}
 			}
-		}
-
-	}, 100);
-
-} else if (zheHost == 'www.taofen8.com' && zheHref.indexOf('taskid') > 0) {
-
-	zheInsertLoading();
-	var i = setInterval(function() {
-
-		zheCount = zheCount + 1;
-		if (zheCount == 50) { //5秒容忍度
-			loadForceJump();
-			clearInterval(i);
-		}
-
-		var link_origin = $('.sousuo_gotaob').attr('href');
-
-		if (link_origin.indexOf('s.click.taobao.com') != -1 && zheHasRequesResult == false) {
-			zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=' + encodeURIComponent(link_origin) + '&debug=false');
-			clearInterval(i);
-			zheHasRequesResult = true;
 		}
 
 	}, 100);

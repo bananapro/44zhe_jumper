@@ -274,7 +274,6 @@ class ApiController extends AppController {
 				}
 				$link = str_replace('http://', '', $link);
 
-				if(!$link)$link = 'www.taobao.com';
 				$this->set('link', $link);
 
 				$item_info = taobaoItemDetail($t_info['p_id']);

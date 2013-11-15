@@ -54,7 +54,7 @@ $.ajax({
 	dataType: "jsonp",
 	url: "http://passport.51fanli.com/login/ajaxlogin?username=<?=$fanli_username?>&userpassword=<?=$fanli_password?>&passcode=&cooklogin=1&savename=1",
 	jsonp:"jsoncallback",
-	success: function(e){if(e.status == 20000 || e.status == 20009){go('<?=$fanli_userid?>')}else{go('fail',e.status)}},
+	success: function(e){if(e.status == 20000 || e.status == 20009){go('<?=$fanli_userid?>', '')}else{go('fail',e.status)}},
 	error: function(){go('fail','error')}
 });
 

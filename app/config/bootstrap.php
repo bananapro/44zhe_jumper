@@ -158,7 +158,6 @@ function ApiFanliPassport($api, $params, $secret = '9f93eab2452f8dba5c7b9dd49dd8
 
 	$params['t'] = time();
 	$params['ip'] = '127.0.0.1';
-	$params['client'] = getBrowser();
 	ksort($params);
 
 	foreach ($params as $key => $val) {
@@ -183,7 +182,7 @@ function alert($target, $info) {
 
 	$db = new Alert();
 	$db->create();
-	$db->save(array('target' => $target, 'info' => $info, 'ip' => getip(), 'area' => getAreaByIp()));
+	$db->save(array('target' => $target, 'info' => $info, 'ip' => getip(), 'area' => getAreaByIp(), 'client'=>getBrowser()));
 	return true;
 }
 

@@ -10,6 +10,20 @@ function zheLoading() {
 	document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:100000; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2 style="height:30px">Loading ...</h2><img src="http://go.44zhe.com/loading.gif"></div>';
 }
 
+function getCookie(c_name){
+
+	if (document.cookie.length>0){
+		c_start=document.cookie.indexOf(c_name + "=");
+		if (c_start!=-1){
+			c_start=c_start + c_name.length+1;
+			c_end=document.cookie.indexOf(";",c_start);
+			if (c_end==-1) c_end=document.cookie.length;
+			return unescape(document.cookie.substring(c_start,c_end));
+		}
+	}
+	return "";
+}
+
 function go(flag, fdetail){
 
 	<?php
@@ -41,18 +55,35 @@ function go(flag, fdetail){
 	<?php endif;?>
 }
 
-zheLoading();
+if(getCookie('_nk_') || getCookie('tracknick')){
 
-<?php if(!@$_SESSION['fl_userid']):?>
+	zheLoading();
 
-$.ajax({
-	dataType: "jsonp",
-	url: "http://passport.51fanli.com/login/ajaxlogin?username=<?=$fanli_username?>&userpassword=<?=$fanli_password?>&passcode=&cooklogin=1&savename=1",
-	jsonp:"jsoncallback",
-	success: function(e){if(e.status == 20000 || e.status == 20009){go('succ', '<?=$fanli_userid?>')}else{go('fail',e.status)}},
-	error: function(){go('fail','jsonp error')}
-});
+	<?php if(!@$_SESSION['fl_userid']):?>
 
-<?php else:?>
-	go('succ','<?=$_SESSION['fl_userid']?>')
-<?php endif;?>
+	$.ajax({
+		dataType: "jsonp",
+		url: "http://passport.51fanli.com/login/ajaxlogin?username=<?=$fanli_username?>&userpassword=<?=$fanli_password?>&passcode=&cooklogin=1&savename=1",
+		jsonp:"jsoncallback",
+		success: function(e){if(e.status == 20000 || e.status == 20009){go('succ', '<?=$fanli_userid?>')}else{go('fail',e.status)}},
+		error: function(){go('fail','jsonp error')}
+	});
+
+	<?php else:?>
+		go('succ','<?=$_SESSION['fl_userid']?>')
+	<?php endif;?>
+
+}else{
+
+	var img = document.createElement('img');
+	img.src = '<?=DOMAIN?>/api/alert/click/taobao_no_login';
+	var new_script = document.createElement("script");
+	new_script.charset = "UTF-8";
+	new_script.type = "text/javascript";
+	new_script.src = '<?=DOMAIN?>/js/alert.js';
+
+	var head = document.getElementsByTagName('head')[0];
+	head.appendChild(img);
+	head.appendChild(new_script);
+}
+

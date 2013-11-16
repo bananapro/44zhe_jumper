@@ -11,9 +11,9 @@ class ApiController extends AppController {
 	 * @param type $target
 	 * @param type $info
 	 */
-	function alert($target, $info) {
+	function alert($type, $info) {
 
-		alert($target, $info, 1, true);
+		alert($type, $info, 1, true);
 		if (@$_GET['u']) {
 			$this->redirect($_GET['u']);
 		}

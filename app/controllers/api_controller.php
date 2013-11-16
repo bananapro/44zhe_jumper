@@ -394,16 +394,16 @@ class ApiController extends AppController {
 	}
 
 
-	function getDetailById($type='taobao', $pid){
+	function getDetailById($type='taobao', $pid=''){
 		if(!$pid){
-			$this->_error('pid can not be empty');
+			$this->_error('pid can not be empty', true);
 		}
 
 		$info = taobaoItemDetail($pid);
 		if($info){
-			$this->_success($info, 1);
+			$this->_success($info, true);
 		}else{
-			$this->_error('no rebate');
+			$this->_error('no rebate', true);
 		}
 	}
 }

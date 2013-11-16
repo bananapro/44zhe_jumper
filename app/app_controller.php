@@ -87,12 +87,12 @@ class AppController extends Controller {
         die();
     }
 
-    function _error($message = '') {
+    function _error($message = '', $force_api=false) {
 
         if (!$message)
             $message = '系统发生错误，请重试!';
         if (!DEBUG) {
-            if ($this->isAjax()) {
+            if ($this->isAjax() || $force_api) {
 
                 if ($this->isJsonp()) {
                     $this->_jsonpReturn($message, 0);

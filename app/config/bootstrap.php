@@ -301,7 +301,7 @@ function taobaoItemDetail($id){
 
 	}else if(@$resp->code){
 		//TODO alert 记录错误日志
-		alert('TAOBAO API', 'error : ' . $resp->code);
+		alert('taobao api', 'error : [' . $resp->code . ']');
 		$info = array();
 	}else{
 		//无返利

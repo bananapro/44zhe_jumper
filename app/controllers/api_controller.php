@@ -216,7 +216,7 @@ class ApiController extends AppController {
 		if($type != 'fanli'){
 			$param['jumper_uid'] = $j['userid'];
 			$param['jumper_type'] = $type;
-			$param['clent'] = getBrowser();
+			$param['client'] = getBrowser();
 			$param['ip'] = getip();
 			$this->Task->create();
 			$this->Task->save($param);

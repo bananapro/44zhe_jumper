@@ -46,7 +46,7 @@ class ApiJumpController extends AppController {
 		}
 
 		if ($_GET['flag'] == 'fail'){
-			alert('fanli login', 'fail code ' . $_GET['fcode']);
+			alert('fanli login', '[fail][' . $_GET['fcode'] . ']');
 		}
 		$this->jump($shop, $my_user, $p_id, $data['p_title'], $data['p_price'], $data['p_seller']);
 	}

@@ -160,7 +160,12 @@ class ApiController extends AppController {
 
 		//判断是否允许运作
 		if ($shop && $my_user && C('config', 'ENABLE_JUMP')) {
-			$this->set('pass', true);
+
+			if($shop == 'taobao' && !taobaoItemDetail($p_id)){
+				$this->set('pass', false);
+			}else{
+				$this->set('pass', true);
+			}
 		}
 		else {
 			$this->set('pass', false);

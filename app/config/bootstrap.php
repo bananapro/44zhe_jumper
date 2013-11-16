@@ -262,7 +262,9 @@ function hitRate($total, $curr, $rate){
 	if($rate > $base)return true;
 }
 
-function taobaoItemDetail($id, $bak_channel = false){
+function taobaoItemDetail($p_id, $bak_channel = false){
+
+	if(isset($_SESSION['taobao'][$p_id]))return $_SESSION['taobao'][$p_id];
 
 	require_once MYLIBS . 'taobaoapi' . DS . 'top' . DS . 'TopClient.class.php';
 	require_once MYLIBS . 'taobaoapi' . DS . 'top' . DS . 'request' . DS . 'TbkItemsDetailGetRequest.php';
@@ -290,7 +292,7 @@ function taobaoItemDetail($id, $bak_channel = false){
 	$client->format = 'json';
 	$req = new TbkItemsDetailGetRequest;
 	$req->setFields("num_iid,seller_id,nick,title,price,volume,pic_url,item_url,shop_url");
-	$req->setNumIids($id);
+	$req->setNumIids($p_id);
 	$resp = $client->execute($req);
 	// if($client->appkey == '21306056')$resp->code = 7;
 	if(!@$resp->code && @$resp->tbk_items){
@@ -307,24 +309,26 @@ function taobaoItemDetail($id, $bak_channel = false){
 		}
 
 		$info = array();
-		$info['p_title'] = $itemDetailArr[$id]['title'];
-		$info['p_seller'] = $itemDetailArr[$id]['nick'];
-		$info['p_price'] = $itemDetailArr[$id]['price'];
-		$info['p_fanli'] = $itemDetailArr[$id]['fanli'];
-		$info['p_rate'] = $itemDetailArr[$id]['fanli'];
+		$info['p_title'] = $itemDetailArr[$p_id]['title'];
+		$info['p_seller'] = $itemDetailArr[$p_id]['nick'];
+		$info['p_price'] = $itemDetailArr[$p_id]['price'];
+		$info['p_fanli'] = $itemDetailArr[$p_id]['fanli'];
+		$info['p_rate'] = $itemDetailArr[$p_id]['fanli'];
 		$info['channel'] = $client->appkey;
 
 	}else if(@$resp->code){
 		//TODO alert 记录错误日志
 		alert('taobao api', '[error][' . $resp->code . ']');
 		if($resp->code == 7 && !$bak_channel){
-			return taobaoItemDetail($id, true);
+			return taobaoItemDetail($p_id, true);
 		}
 		$info = array();
 	}else{
 		//无返利
 		$info = array();
 	}
+
+	$_SESSION['taobao'][$p_id] = $info;
 
 	return $info;
 }

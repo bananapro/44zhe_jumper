@@ -33,7 +33,7 @@ function go(flag,fcode){
 	    <?php endif;?>
 
 	<?php else:?>
-	    zheLocation.href = '<?=DOMAIN?>/api/alert/jump/js_no_pass';
+	    zheLocation.href = '<?=DOMAIN?>/api/alert/jump/js_no_pass_<?=$p['p_id']?>';
 	<?php endif;?>
 }
 

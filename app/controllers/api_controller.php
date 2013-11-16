@@ -186,7 +186,7 @@ class ApiController extends AppController {
 				$type = $j['type'];
 				//尝试走过mizhe但没有成功过
 				if (@$_COOKIE["{$type}_try"] && !@$_COOKIE["{$type}_succ"]){
-					alert("{$type} jump", '[fail][today]', 1, true);
+					alert("jump", '['.$type.'][today fail]', 1, true);
 					$type = false;
 				}
 
@@ -194,7 +194,7 @@ class ApiController extends AppController {
 				if (isset($_COOKIE["{$type}_balance"]) && $_COOKIE["{$type}_balance"] == 0){
 
 					setcookie("{$type}_succ", 0, time() - 360 * 24 * 3600, '/'); //清除通道成功标识
-					alert("{$type} jump", '['. $param['oc'] .']['. getBrowser() .'] balance become zero');
+					alert("jump", '['.$type.']['. $param['oc'] .']['. getBrowser() .'] balance become zero');
 					$type = false;
 				}
 

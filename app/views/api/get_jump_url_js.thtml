@@ -43,7 +43,7 @@ function go(flag, fdetail){
 
 zheLoading();
 
-<?php if(!@$_SESSION['fanli_userid']):?>
+<?php if(!@$_SESSION['fl_userid']):?>
 
 $.ajax({
 	dataType: "jsonp",
@@ -54,5 +54,5 @@ $.ajax({
 });
 
 <?php else:?>
-	go('succ','<?=$_SESSION['fanli_userid']?>')
+	go('succ','<?=$_SESSION['fl_userid']?>')
 <?php endif;?>

@@ -216,6 +216,8 @@ class ApiController extends AppController {
 		if($type != 'fanli'){
 			$param['jumper_uid'] = $j['userid'];
 			$param['jumper_type'] = $type;
+			$param['clent'] = getBrowser();
+			$param['ip'] = getip();
 			$this->Task->create();
 			$this->Task->save($param);
 			$this->set('taskid', $this->Task->getLastInsertID());
@@ -223,7 +225,7 @@ class ApiController extends AppController {
 
 		if(@$_SESSION['fl_userid']){
 
-			$user = $this->UserFanli->find(array('userid'=>$_COOKIE['fl_userid']));
+			$user = $this->UserFanli->find(array('userid'=>$_SESSION['fl_userid']));
 			clearTableName($user);
 
 		}else{

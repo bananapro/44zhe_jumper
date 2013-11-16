@@ -403,7 +403,7 @@ class ApiController extends AppController {
 		if($info){
 			$this->_success($info, 1);
 		}else{
-			$this->_error('can not get detail');
+			$this->_error('no rebate');
 		}
 	}
 }

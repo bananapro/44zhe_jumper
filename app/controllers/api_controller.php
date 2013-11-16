@@ -186,7 +186,7 @@ class ApiController extends AppController {
 				$type = $j['type'];
 				//尝试走过mizhe但没有成功过
 				if (@$_COOKIE["{$type}_try"] && !@$_COOKIE["{$type}_succ"]){
-					alert("jump", '['.$type.'][today fail]', 1, true);
+					alert("jump", '[today fail]['.$type.']', 1, true);
 					$type = false;
 				}
 

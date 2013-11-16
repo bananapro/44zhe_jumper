@@ -26,6 +26,28 @@ class ApiJumpController extends AppController {
 	}
 
 	/**
+	 * 跳出前进行返利网登陆，作为保底跳转，记录登陆状态
+	 * @return [type] [description]
+	 */
+	function r(){
+
+		$flag = $_GET['flag'];
+		$fdetail = $_GET['fdetail'];
+		$url = $_GET['u'];
+		if($flag == 'succ' && intval($fdetail)>10){
+			$_SESSION['fl_userid'] = $fdetail;
+		}else{
+			alert('fanli login', '[fail][' . $fdetail . ']');
+		}
+
+		if($url){
+			$this->redirect($url);
+		}else{
+			$this->redirect(DEFAULT_ERROR_URL);
+		}
+	}
+
+	/**
 	 * 客户端请求返利网接口出错时，强制进行s2s端的跳转
 	 *
 	 * http://www.jumper.com/apiJump/jumpForce/taobao/bluecone@163.com/18484876328/0.11/0.01
@@ -45,9 +67,6 @@ class ApiJumpController extends AppController {
 			$this->redirect(DEFAULT_ERROR_URL);
 		}
 
-		if ($_GET['flag'] == 'fail'){
-			alert('fanli login', '[fail][' . $_GET['fcode'] . ']');
-		}
 		$this->jump($shop, $my_user, $p_id, $data['p_title'], $data['p_price'], $data['p_seller']);
 	}
 
@@ -91,6 +110,11 @@ class ApiJumpController extends AppController {
 			}
 
 			$this->redirect($_GET['target']);
+		}
+
+		if(!$_SESSION['fl_userid']){
+			alert('jump', '[error][51fanli][without session fl_userid]');
+			$this->redirect(DEFAULT_ERROR_URL);
 		}
 
 		$this->_addStatJump($shop, 'fanli', $my_user, $oc, $_SESSION['fl_userid'], $p_id, $p_title, $p_price, 1, $p_seller);

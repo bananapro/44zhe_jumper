@@ -221,7 +221,7 @@ class ApiController extends AppController {
 			$this->set('taskid', $this->Task->getLastInsertID());
 		}
 
-		if($_SESSION['fl_userid']){
+		if(@$_SESSION['fl_userid']){
 
 			$user = $this->UserFanli->find(array('userid'=>$_COOKIE['fl_userid']));
 			clearTableName($user);

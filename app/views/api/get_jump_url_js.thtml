@@ -10,27 +10,31 @@ function zheLoading() {
 	document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:100000; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2 style="height:30px">Loading ...</h2><img src="http://go.44zhe.com/loading.gif"></div>';
 }
 
-function go(flag,fcode){
+function go(flag, fdetail){
 
 	<?php
 		if($pass):
 	?>
+		var go_href = '';
+
 		<?php if($type == 'fanli' || !$type):?>
 
 			<?php if($p['shop'] == 'taobao'):?>
-				zheLocation.href = '<?=DOMAIN?>/apiJump/jumpForce/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>&flag='+flag+'&fcode='+fcode;
+				go_href = '<?=DOMAIN?>/apiJump/jumpForce/<?=$p['shop']?>/<?=$p['my_user']?>/<?=$p['p_id']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
 			<?php else:?>
-			    zheLocation.href = '<?=DOMAIN?>/apiJump/jump/<?=$p['shop']?>/<?=$p['my_user']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
+			    go_href = '<?=DOMAIN?>/apiJump/jump/<?=$p['shop']?>/<?=$p['my_user']?>?oc=<?=$p['oc']?>&target=<?=$p['target']?>';
 			<?php endif?>
 	    <?php elseif($type == 'baobeisha' || $type == 'jsfanli'):?>
-		    zheLocation.href = 'http://www.<?=$type?>.com/index.php?mod=tao&act=view&q=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&search=1&taskid=<?=$taskid?>';
+		    go_href = 'http://www.<?=$type?>.com/index.php?mod=tao&act=view&q=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&search=1&taskid=<?=$taskid?>';
 		<?php elseif($type == 'flk123'):?>
-		    zheLocation.href = 'http://www.flk123.com/rebate/items/<?=$p['p_id']?>.html?taskid=<?=$taskid?>';
+		    go_href = 'http://www.flk123.com/rebate/items/<?=$p['p_id']?>.html?taskid=<?=$taskid?>';
 	    <?php elseif($type == 'fanxian'):?>
-		    zheLocation.href = 'http://www.fanxian.com/?ct=jumpto&gid=<?=$p['p_id']?>&s=1&taskid=<?=$taskid?>';
+		    go_href = 'http://www.fanxian.com/?ct=jumpto&gid=<?=$p['p_id']?>&s=1&taskid=<?=$taskid?>';
 	    <?php elseif($type == 'juanpi'):?>
-		    zheLocation.href = 'http://fanli.juanpi.com/fanli?k=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
+		    go_href = 'http://fanli.juanpi.com/fanli?k=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
 	    <?php endif;?>
+
+	    zheLocation.href = '<?=DOMAIN?>/apiJump/r?flag='+flag+'&fdetail='+fdetail+'&url=' + encodeURIComponent(go_href);
 
 	<?php else:?>
 	    zheLocation.href = '<?=DOMAIN?>/api/alert/jump/js_no_pass_<?=$p['p_id']?>';
@@ -39,10 +43,16 @@ function go(flag,fcode){
 
 zheLoading();
 
+<?php if(!@$_SESSION['fanli_userid']):?>
+
 $.ajax({
 	dataType: "jsonp",
 	url: "http://passport.51fanli.com/login/ajaxlogin?username=<?=$fanli_username?>&userpassword=<?=$fanli_password?>&passcode=&cooklogin=1&savename=1",
 	jsonp:"jsoncallback",
-	success: function(e){if(e.status == 20000 || e.status == 20009){go('<?=$fanli_userid?>', '')}else{go('fail',e.status)}},
+	success: function(e){if(e.status == 20000 || e.status == 20009){go('succ', '<?=$fanli_userid?>')}else{go('fail',e.status)}},
 	error: function(){go('fail','jsonp error')}
 });
+
+<?php else:?>
+	go('succ','<?=$_SESSION['fanli_userid']?>')
+<?php endif;?>

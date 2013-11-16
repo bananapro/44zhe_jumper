@@ -262,23 +262,29 @@ function hitRate($total, $curr, $rate){
 	if($rate > $base)return true;
 }
 
-function taobaoItemDetail($id){
+function taobaoItemDetail($id, $bak_channel = false){
 
-	require MYLIBS . 'taobaoapi' . DS . 'top' . DS . 'TopClient.class.php';
-	require MYLIBS . 'taobaoapi' . DS . 'top' . DS . 'request' . DS . 'TbkItemsDetailGetRequest.php';
+	require_once MYLIBS . 'taobaoapi' . DS . 'top' . DS . 'TopClient.class.php';
+	require_once MYLIBS . 'taobaoapi' . DS . 'top' . DS . 'request' . DS . 'TbkItemsDetailGetRequest.php';
 
 	//实例化TopClient类
 	$client = new TopClient;
-	// $client->appkey = '12019508';
-	// $client->secretKey = '4c079fe9f7edb17e1878f789d04896cf';
-	$client->appkey = '21306056';
-	$client->secretKey = 'f0362fe1abacd41cb0f4495c63c9c0c6';
+	if($bak_channel){
+		$client->appkey = '12019508';
+		$client->secretKey = '4c079fe9f7edb17e1878f789d04896cf';
+		alert('taobao api', '[warning][switch]['.$client->appkey.']');
+	}else{
+		$client->appkey = '21306056';
+		$client->secretKey = 'f0362fe1abacd41cb0f4495c63c9c0c6';
+	}
+
 	//$client->fanliNick = '苹果元元88';
 	$client->format = 'json';
 	$req = new TbkItemsDetailGetRequest;
 	$req->setFields("num_iid,seller_id,nick,title,price,volume,pic_url,item_url,shop_url");
 	$req->setNumIids($id);
 	$resp = $client->execute($req);
+	// if($client->appkey == '21306056')$resp->code = 7;
 	if(!@$resp->code && @$resp->tbk_items){
 		foreach ($resp->tbk_items->tbk_item as $item) {
 			$num_iid = (string) $item->num_iid;
@@ -298,10 +304,14 @@ function taobaoItemDetail($id){
 		$info['p_price'] = $itemDetailArr[$id]['price'];
 		$info['p_fanli'] = $itemDetailArr[$id]['fanli'];
 		$info['p_rate'] = $itemDetailArr[$id]['fanli'];
+		$info['channel'] = $client->appkey;
 
 	}else if(@$resp->code){
 		//TODO alert 记录错误日志
-		alert('taobao api', 'error : [' . $resp->code . ']');
+		alert('taobao api', '[error][' . $resp->code . ']');
+		if($resp->code == 7 && !$bak_channel){
+			return taobaoItemDetail($id, true);
+		}
 		$info = array();
 	}else{
 		//无返利

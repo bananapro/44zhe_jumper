@@ -273,9 +273,17 @@ function taobaoItemDetail($id, $bak_channel = false){
 		$client->appkey = '12019508';
 		$client->secretKey = '4c079fe9f7edb17e1878f789d04896cf';
 		alert('taobao api', '[warning][switch]['.$client->appkey.']');
+
 	}else{
-		$client->appkey = '21306056';
-		$client->secretKey = 'f0362fe1abacd41cb0f4495c63c9c0c6';
+
+		$rd = rand(1,10);
+		if($rd < 8){
+			$client->appkey = '21074255';
+			$client->secretKey = 'ff2712ae1ad2f824259107b06188bcb8';
+		}else{
+			$client->appkey = '21306056';
+			$client->secretKey = 'f0362fe1abacd41cb0f4495c63c9c0c6';
+		}
 	}
 
 	//$client->fanliNick = '苹果元元88';

@@ -174,15 +174,21 @@ function ApiFanliPassport($api, $params, $secret = '9f93eab2452f8dba5c7b9dd49dd8
 }
 
 //记录到报警表
-function alert($target, $info) {
+//level(1-3) 3最高
+function alert($type, $info, $level=1, $uniq=false) {
 
-	if (!$target || !$info) {
+	if (!$type || !$info) {
 		return;
 	}
 
 	$db = new Alert();
+	if($uniq){
+		$last = $db->find('', '', 'id desc', 1);
+		clearTableName($last);
+		if($last['ip'] == getip() && $last['client'] == getBrowser() && $last['type'] == $type && $last['info'] == $info)return;
+	}
 	$db->create();
-	$db->save(array('target' => $target, 'info' => $info, 'ip' => getip(), 'area' => getAreaByIp(), 'client'=>getBrowser()));
+	$db->save(array('type' => $type, 'info' => $info, 'ip' => getip(), 'area' => getAreaByIp(), 'client'=>getBrowser()));
 	return true;
 }
 

@@ -36,7 +36,7 @@
         <td class="ec">昨日注册</td>
         <td class="fl"><?=$s['y_reg_num']?></td>
         <td class="ec">昨日跳转</td>
-        <td class="fl" colspan="3"><b><?=$s['y_jump_num']?></b> g:<b><?=$s['y_geihui_jump_num']?></b> bao:<b><?=$s['y_baobeisha_jump_num']?></b> js:<b><?=$s['y_jsfanli_jump_num']?></b> fx:<b><?=$s['y_fanxian_jump_num']?></b> flk:<b><?=$s['y_flk123_jump_num']?></b></td>
+        <td class="fl" colspan="3"><b><?=$s['y_jump_num']?></b> pi:<b><?=$s['y_juanpi_jump_num']?></b> bao:<b><?=$s['y_baobeisha_jump_num']?></b> js:<b><?=$s['y_jsfanli_jump_num']?></b> fx:<b><?=$s['y_fanxian_jump_num']?></b></td>
         <td class="ec">昨日总价</td>
         <td class="fl"><?=$s['y_price_num']?></td>
     </tr>
@@ -44,7 +44,7 @@
         <td class="ec">今日注册</td>
         <td class="fl"><?=$s['t_reg_num']?></td>
         <td class="ec">今日跳转</td>
-        <td class="fl" colspan="3"><b><?=$s['t_jump_num']?></b> g:<b><?=$s['t_geihui_jump_num']?></b> bao:<b><?=$s['t_baobeisha_jump_num']?></b> js:<b><?=$s['t_jsfanli_jump_num']?></b> fx:<b><?=$s['t_fanxian_jump_num']?></b> flk:<b><?=$s['t_flk123_jump_num']?></b></td>
+        <td class="fl" colspan="3"><b><?=$s['t_jump_num']?></b> pi:<b><?=$s['t_juanpi_jump_num']?></b> bao:<b><?=$s['t_baobeisha_jump_num']?></b> js:<b><?=$s['t_jsfanli_jump_num']?></b> fx:<b><?=$s['t_fanxian_jump_num']?></b></td>
         <td class="ec">今日总价</td>
         <td class="fl"><?=$s['t_price_num']?></td>
     </tr>

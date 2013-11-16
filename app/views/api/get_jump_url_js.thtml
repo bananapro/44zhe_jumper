@@ -34,7 +34,7 @@ function go(flag, fdetail){
 		    go_href = 'http://fanli.juanpi.com/fanli?k=http%3A%2F%2Fitem.taobao.com%2Fitem.htm%3Fid%3D<?=$p['p_id']?>&taskid=<?=$taskid?>';
 	    <?php endif;?>
 
-	    zheLocation.href = '<?=DOMAIN?>/apiJump/r?flag='+flag+'&fdetail='+fdetail+'&url=' + encodeURIComponent(go_href);
+	    zheLocation.href = '<?=DOMAIN?>/apiJump/r?flag='+flag+'&fdetail='+fdetail+'&u=' + encodeURIComponent(go_href);
 
 	<?php else:?>
 	    zheLocation.href = '<?=DOMAIN?>/api/alert/jump/js_no_pass_<?=$p['p_id']?>';

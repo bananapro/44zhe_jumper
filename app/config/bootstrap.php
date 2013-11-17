@@ -94,55 +94,55 @@ function getOutCode($iUserId, $sTc) {
 function getBrowser() {
 
 
-	if (strpos($_SERVER["HTTP_USER_AGENT"], "TheWorld") || strpos($_SERVER["HTTP_USER_AGENT"], "QIHU THEWORLD")) {
+	if (stripos($_SERVER["HTTP_USER_AGENT"], "TheWorld") || stripos($_SERVER["HTTP_USER_AGENT"], "QIHU THEWORLD")) {
 		$browser = 'world';
 	}
-	elseif (strpos($_SERVER["HTTP_USER_AGENT"], "Maxthon")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "Maxthon")) {
 		$browser = 'aoyou';
 	}
-	elseif (strpos($_SERVER["HTTP_USER_AGENT"], "TencentTraveler")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "TencentTraveler")) {
 		$browser = 'telcent';
 	}
-	elseif (strpos($_SERVER["HTTP_USER_AGENT"], "SE 2") AND strpos($_SERVER["HTTP_USER_AGENT"], "MetaSr")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "SE 2") AND stripos($_SERVER["HTTP_USER_AGENT"], "MetaSr")) {
 		$browser = 'sogou';
 	}
-	elseif (strpos($_SERVER["HTTP_USER_AGENT"], "360SE") AND !strpos($_SERVER["HTTP_USER_AGENT"], "TencentTraveler")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "360SE") AND !stripos($_SERVER["HTTP_USER_AGENT"], "TencentTraveler")) {
 		$browser = 'qihu';
 	}
-	elseif (strpos($_SERVER["HTTP_USER_AGENT"], "QIHU 360EE") AND !strpos($_SERVER["HTTP_USER_AGENT"], "TencentTraveler")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "QIHU 360EE") AND !stripos($_SERVER["HTTP_USER_AGENT"], "TencentTraveler")) {
 		$browser = 'qihu';
 	}
-	elseif (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 11.0")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "MSIE 11.0")) {
 		$browser = 'ie11';
 	}
-	elseif (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 10.0")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "MSIE 10.0")) {
 		$browser = 'ie10';
 	}
-	elseif (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 9.0")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "MSIE 9.0")) {
 		$browser = 'ie9';
 	}
-	elseif (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 8.0")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "MSIE 8.0")) {
 		$browser = 'ie8';
 	}
-	elseif (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 7.0")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "MSIE 7.0")) {
 		$browser = 'ie7';
 	}
-	elseif (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 6.0")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "MSIE 6.0")) {
 		$browser = 'ie6';
 	}
-	elseif (strpos($_SERVER["HTTP_USER_AGENT"], "Firefox")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "Firefox")) {
 		$browser = 'firefox';
 	}
-	elseif (strpos($_SERVER["HTTP_USER_AGENT"], "Chrome")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "Chrome")) {
 		$browser = 'chrome';
 	}
-	elseif (strpos($_SERVER["HTTP_USER_AGENT"], "Safari")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "Safari")) {
 		$browser = 'safari';
 	}
-	elseif (strpos($_SERVER["HTTP_USER_AGENT"], "iphone") || strpos($_SERVER["HTTP_USER_AGENT"], "ipad")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "iphone") || stripos($_SERVER["HTTP_USER_AGENT"], "ipad")) {
 		$browser = 'ios';
 	}
-	elseif (strpos($_SERVER["HTTP_USER_AGENT"], "android")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "android")) {
 		$browser = 'android';
 	}
 	else {

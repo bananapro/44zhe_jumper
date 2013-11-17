@@ -32,7 +32,7 @@ function zheInsertLoading() {
 }
 
 function zheGetConvert(iid) {
-	
+
 	if(!window.alimamatk_show)return;
 	if(!iid)return;
 	if(!KSLITE)return;

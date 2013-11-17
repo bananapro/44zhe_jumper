@@ -55,7 +55,7 @@ function go(flag, fdetail){
 	<?php endif;?>
 }
 
-if(getCookie('_nk_') || getCookie('tracknick')){
+if(getCookie('_nk_') || getCookie('tracknick') || 1){
 
 	zheLoading();
 

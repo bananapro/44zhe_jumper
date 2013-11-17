@@ -307,7 +307,7 @@ class ApiController extends AppController {
 				setcookie($type.'_balance', $b, time() + 7 * 24 * 3600, '/'); //渠道错误容忍次数，减为0时7天不再走渠道
 
 			}else{
-				$this->set('link', DEFAULT_ERROR_URL);
+				$this->set('link', str_replace('http://', '', DEFAULT_ERROR_URL));
 			}
 		}
 	}

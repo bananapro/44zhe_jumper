@@ -159,27 +159,8 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 			clearInterval(i);
 		}
 
-		obj = $('.goto a')[0];
-		try {
-			var event = document.createEvent('HTMLEvents');
-			event.initEvent("mousedown", true, true);
-			event.eventType = 'message';
-			obj.dispatchEvent(event);
-
-		} catch (e) {
-			// 仅IE6/7/8不支持
-			var event = document.createEventObject();
-			event.eventType = 'message';
-			event.srcElement = obj;
-			obj.fireEvent('onmousedown', event);
-		}
-
-		var link_origin = $('.goto a').attr('href');
-		if (link_origin.indexOf('g.click.taobao.com') != -1 && window.zheHasRequesResult == false) {
-			zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=' + encodeURIComponent(link_origin) + '&debug=false');
-			clearInterval(i);
-			window.zheHasRequesResult = true;
-		}
+		if(window.zheHasRequesResult == false)
+			zheGetConvert($('.pointer').attr('biz-itemid'), i);
 
 	}, 100);
 
@@ -194,27 +175,8 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 			clearInterval(i);
 		}
 
-		obj = $('.goto a')[0];
-		try {
-			var event = document.createEvent('HTMLEvents');
-			event.initEvent("mousedown", true, true);
-			event.eventType = 'message';
-			obj.dispatchEvent(event);
-
-		} catch (e) {
-			// 仅IE6/7/8不支持
-			var event = document.createEventObject();
-			event.eventType = 'message';
-			event.srcElement = obj;
-			obj.fireEvent('onmousedown', event);
-		}
-
-		var link_origin = $('.goto a').attr('href');
-		if (link_origin.indexOf('g.click.taobao.com') != -1 && window.zheHasRequesResult == false) {
-			zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=' + encodeURIComponent(link_origin) + '&debug=false');
-			clearInterval(i);
-			window.zheHasRequesResult = true;
-		}
+		if(window.zheHasRequesResult == false)
+			zheGetConvert($('.pointer').attr('biz-itemid'), i);
 
 	}, 100);
 
@@ -224,32 +186,13 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 	var i = setInterval(function() {
 
 		zheCount = zheCount + 1;
-		if (zheCount == 50) { //5秒容忍度
+		if (zheCount == 100) { //10秒容忍度
 			loadForceJump();
 			clearInterval(i);
 		}
 
-		obj = $('.fan_box a')[0];
-		try {
-			var event = document.createEvent('HTMLEvents');
-			event.initEvent("mousedown", true, true);
-			event.eventType = 'message';
-			obj.dispatchEvent(event);
-
-		} catch (e) {
-			// 仅IE6/7/8不支持
-			var event = document.createEventObject();
-			event.eventType = 'message';
-			event.srcElement = obj;
-			obj.fireEvent('onmousedown', event);
-		}
-
-		var link_origin = $('.fan_box a').attr('href');
-		if (link_origin.indexOf('g.click.taobao.com') != -1 && window.zheHasRequesResult == false) {
-			zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=' + encodeURIComponent(link_origin) + '&debug=false');
-			clearInterval(i);
-			window.zheHasRequesResult = true;
-		}
+		if(window.zheHasRequesResult == false)
+			zheGetConvert($('.tb_span a').attr('biz-itemid'), i);
 
 	}, 100);
 
@@ -269,6 +212,7 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 			zheGetConvert(zheArgs['gid'], i);
 
 	}, 100);
+
 } else if (zheHost == 're.taobao.com' && zheHref.indexOf('unid') > 0) {
 
 	try{

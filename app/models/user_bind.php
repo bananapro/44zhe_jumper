@@ -129,6 +129,9 @@ class UserBind extends AppModel {
 
 	//更新用户被绑定总量
 	function updateBindCount($jumper_type, $jumper_uid){
+		if(!$this->getChannelUserM($jumper_type)->find(array('userid'=>$jumper_uid))){
+			return;
+		}
 		$count = $this->findCount(array('status'=>1, 'jumper_type'=>$jumper_type, 'jumper_uid'=>$jumper_uid));
 		$this->getChannelUserM($jumper_type)->save(array('userid'=>$jumper_uid, 'bind_count'=>$count));
 	}

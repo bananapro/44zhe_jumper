@@ -194,7 +194,7 @@ class ApiController extends AppController {
 				if (isset($_COOKIE["{$type}_balance"]) && $_COOKIE["{$type}_balance"] == 0){
 
 					setcookie("{$type}_succ", 0, time() - 360 * 24 * 3600, '/'); //清除通道成功标识
-					alert("jump", '['.$type.']['. $param['oc'] .']['. getBrowser() .'] balance become zero');
+					alert("jump", '[balance zero]['.$type.']['. $param['oc'] .']');
 					$type = false;
 				}
 

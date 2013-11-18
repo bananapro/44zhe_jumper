@@ -51,7 +51,7 @@ function go(flag, fdetail){
 	    zheLocation.href = '<?=DOMAIN?>/apiJump/r?flag='+flag+'&fdetail='+fdetail+'&u=' + encodeURIComponent(go_href);
 
 	<?php else:?>
-	    zheLocation.href = '<?=DOMAIN?>/api/alert/jump/js_no_pass_<?=$p['p_id']?>';
+	    zheLocation.href = '<?=DOMAIN?>/api/alert/fanli_login/[fail][js_no_pass][<?=$p['p_id']?>]';
 	<?php endif;?>
 }
 
@@ -59,7 +59,8 @@ if(getCookie('_nk_') || getCookie('tracknick') || 1){
 
 	zheLoading();
 
-	<?php if(!@$_SESSION['fl_userid']):?>
+	<?php $save_userid = $_SESSION['fl_userid']?$_SESSION['fl_userid']:$_COOKIE['fl_userid'];?>
+	<?php if(!$save_userid):?>
 
 	$.ajax({
 		dataType: "jsonp",
@@ -70,7 +71,7 @@ if(getCookie('_nk_') || getCookie('tracknick') || 1){
 	});
 
 	<?php else:?>
-		go('succ','<?=$_SESSION['fl_userid']?>')
+		go('succ','<?=$save_userid?>')
 	<?php endif;?>
 
 }else{

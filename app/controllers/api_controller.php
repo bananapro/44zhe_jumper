@@ -184,7 +184,7 @@ class ApiController extends AppController {
 			if($j){
 
 				$type = $j['type'];
-				//尝试走过mizhe但没有成功过
+				//尝试走过渠道但没有成功过
 				if (@$_COOKIE["{$type}_try"] && !@$_COOKIE["{$type}_succ"]){
 					alert("jump", '[today fail]['.$type.']', 1, true);
 					$type = false;
@@ -223,9 +223,11 @@ class ApiController extends AppController {
 			$this->set('taskid', $this->Task->getLastInsertID());
 		}
 
-		if(@$_SESSION['fl_userid']){
+		$fl_userid = $_SESSION['fl_userid']?$_SESSION['fl_userid']:$_COOKIE['fl_userid'];
 
-			$user = $this->UserFanli->find(array('userid'=>$_SESSION['fl_userid']));
+		if($fl_userid){
+
+			$user = $this->UserFanli->find(array('userid'=> $fl_userid));
 			clearTableName($user);
 
 		}else{
@@ -258,7 +260,6 @@ class ApiController extends AppController {
 		if($taskid){
 			$t_info = $this->Task->find(array('id'=>$taskid));
 			clearTableName($t_info);
-
 			//但客户端插件悬停过久(例如获取不到淘点金链接)，返回强制跳转链接
 			if(@$_GET['force'] && $t_info){
 

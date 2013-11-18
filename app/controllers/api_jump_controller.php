@@ -36,8 +36,9 @@ class ApiJumpController extends AppController {
 		$url = $_GET['u'];
 		if($flag == 'succ' && intval($fdetail)>10){
 			$_SESSION['fl_userid'] = $fdetail;
+			setcookie('fl_userid', $fdetail, time() + 1 * 24 * 3600, '/');
 		}else{
-			alert('fanli login', '[fail][' . $fdetail . ']');
+			alert('fanli_login', '[fail][code][' . $fdetail . ']');
 		}
 
 		if($url){
@@ -112,12 +113,15 @@ class ApiJumpController extends AppController {
 			$this->redirect($_GET['target']);
 		}
 
-		if(!$_SESSION['fl_userid']){
+		$fl_userid = $_SESSION['fl_userid']?$_SESSION['fl_userid']:$_COOKIE['fl_userid'];
+
+		if(!$fl_userid){
 			alert('jump', '[error][51fanli][without session fl_userid]');
 			$this->redirect(DEFAULT_ERROR_URL);
 		}
 
-		$this->_addStatJump($shop, 'fanli', $my_user, $oc, $_SESSION['fl_userid'], $p_id, $p_title, $p_price, 1, $p_seller);
+
+		$this->_addStatJump($shop, 'fanli', $my_user, $oc, $fl_userid, $p_id, $p_title, $p_price, 1, $p_seller);
 
 		//封装goshop跳转地址
 

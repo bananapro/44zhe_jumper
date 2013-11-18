@@ -60,7 +60,7 @@
         <td class="ec">今日小单</td>
         <td class="fl"><?=$s['t_r_num']?></td>
         <td class="ec">今日绑定</td>
-        <td class="fl" colspan="3">pi:<b><?=$s['t_juanpi_bind_num']?></b> bao:<b><?=$s['t_baobeisha_bind_num']?></b> js:<b><?=$s['t_jsfanli_bind_num']?></b> fx:<b><?=$s['t_fanxian_bind_num']?></b></td>
+        <td class="fl" colspan="3">pi:<b><?=$s['t_juanpi_bind_num']?></b> bao:<b><?=$s['t_baobeisha_bind_num']?></b> js:<b><?=$s['t_jsfanli_bind_num']?></b> fx:<b><?=$s['t_fanxian_bind_num']?></b> &nbsp; 剩余:<b><font color="<?=$user_store_left<80?'red':'green';?>"><?=$user_store_left?></font></b></td>
         <td class="ec">今日佣金</td>
         <td class="fl"><?=$s['t_fanli_num']?></td>
     </tr>

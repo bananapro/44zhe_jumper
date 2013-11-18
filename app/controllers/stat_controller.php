@@ -33,13 +33,25 @@ class StatController extends AppController {
 		$s['y_jump_num'] = $this->StatJump->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND outcode<>'test'");
 		$s['t_jump_num'] = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'");
 
+		$user_store_left = 0;
+
 		foreach(C('config', 'JUMP_CHANNEL') as $type => $v){
 			$s['y_'.$type.'_bind_num'] = $this->UserBind->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND jumper_type = '{$type}'");
 			$s['t_'.$type.'_bind_num'] = $this->UserBind->findCount("created>'" . $today . "' AND jumper_type = '{$type}'");
 
 			$s['y_'.$type.'_jump_num'] = $this->StatJump->findCount("created>'" . $yesterday . "' AND created<'" . $today . "' AND outcode<>'test' AND jumper_type='{$type}'");
 			$s['t_'.$type.'_jump_num'] = $this->StatJump->findCount("created>'" . $today . "' AND outcode<>'test'  AND jumper_type='{$type}'");
+
+			$user_store = $this->UserBind->getChannelUserM($type)->findAll(array('status' => 1, 'bind_count'=>'< '.C('config','JUMP_CHANNEL_BIND_LIMIT')));
+			clearTableName($user_store);
+
+			foreach($user_store as $u){
+				$bind_count = $u['bind_count'];
+				$user_store_left = C('config', 'JUMP_CHANNEL_BIND_LIMIT') - $bind_count;
+			}
 		}
+
+		$this->set('user_store_left', $user_store_left);
 
 
 		$s['y_price_num'] = intval($this->StatJump->findSum('p_price', "created>'" . $yesterday . "' AND created<'" . $today . "'"));

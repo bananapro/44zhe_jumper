@@ -61,7 +61,7 @@ function overlimit_day($var, $d=null) {
  * @param type $var
  * @return boolean
  */
-function overlimit_day_incr($var, $d=null, $incr=1) {
+function overlimit_dy_incr($var, $d=null, $incr=1) {
 
 	if (!$d)
 		$d = date('Ymd');
@@ -188,7 +188,7 @@ function alert($type, $info, $level=1, $uniq=false) {
 		if($last['ip'] == getip() && $last['client'] == getBrowser() && $last['type'] == $type && $last['info'] == $info)return;
 	}
 	$db->create();
-	$db->save(array('type' => $type, 'info' => $info, 'ip' => getip(), 'area' => getAreaByIp(), 'client'=>getBrowser()));
+	$db->save(array('type' => $type, 'info' => $info, 'ip' => getip(), 'area' => getAreaByIp(), 'client'=>getBrowser(), 'level'=>$level));
 	return true;
 }
 
@@ -270,7 +270,10 @@ function hitRate($total, $curr, $rate){
 
 function taobaoItemDetail($p_id, $bak_channel = false){
 
-	if(isset($_SESSION['taobao'][$p_id]))return $_SESSION['taobao'][$p_id];
+	$stat_obj = new StatApi();
+
+	$content = $stat_obj->field('content', array('p_id'=>$p_id, 'created'=>date('Y-m-d')));
+	if($content)return json_decode($content, true);
 
 	require_once MYLIBS . 'taobaoapi' . DS . 'top' . DS . 'TopClient.class.php';
 	require_once MYLIBS . 'taobaoapi' . DS . 'top' . DS . 'request' . DS . 'TbkItemsDetailGetRequest.php';
@@ -322,19 +325,24 @@ function taobaoItemDetail($p_id, $bak_channel = false){
 		$info['p_rate'] = $itemDetailArr[$p_id]['fanli'];
 		$info['channel'] = $client->appkey;
 
+		if($info['p_title'])
+			$stat_obj->add(1, 'succ', $p_id, json_encode($info));
+		else
+			alert('taobao api', '[error][api fatal error]['.$p_id.'][!!!!!!!!!!!]');
+
 	}else if(@$resp->code){
 		//TODO alert 记录错误日志
-		alert('taobao api', '[error][' . $resp->code . ']');
+		alert('taobao api', '[error][' . $resp->code . ']['.$p_id.']');
+		$stat_obj->add(0, $resp->code);
 		if($resp->code == 7 && !$bak_channel){
 			return taobaoItemDetail($p_id, true);
 		}
 		$info = array();
 	}else{
 		//无返利
+		$stat_obj->add(1, 'no_rebate', $p_id);
 		$info = array();
 	}
-
-	$_SESSION['taobao'][$p_id] = $info;
 
 	return $info;
 }

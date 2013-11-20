@@ -47,7 +47,11 @@ class StatController extends AppController {
 
 			foreach($user_store as $u){
 				$bind_count = $u['bind_count'];
+<<<<<<< HEAD
 				$user_store_left += C('config', 'JUMP_CHANNEL_BIND_LIMIT') - $bind_count;
+=======
+				$user_store_left = C('config', 'JUMP_CHANNEL_BIND_LIMIT') - $bind_count;
+>>>>>>> 85494a1f480e1d7abf3b4f1c963208532b42c40a
 			}
 		}
 

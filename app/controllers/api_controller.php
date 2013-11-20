@@ -3,7 +3,7 @@
 class ApiController extends AppController {
 
 	var $name = 'Api';
-	var $uses = array('UserFanli', 'UserMizhe', 'UserBind', 'UserCandidate', 'StatJump', 'StatRegFailed', 'StatJump', 'OrderFanli', 'UserBind', 'Task', 'SmsCode');
+	var $uses = array('UserFanli', 'UserMizhe', 'UserBind', 'UserCandidate', 'StatJump', 'StatRegFailed', 'StatJump', 'OrderFanli', 'UserBind', 'Task', 'SmsCode', 'OrderTmp');
 	var $layout = 'ajax';
 
 	/**
@@ -403,7 +403,12 @@ class ApiController extends AppController {
 		die();
 	}
 
-
+	/**
+	 * 获取指定商品详情
+	 * @param  string $type 商家类型
+	 * @param  string $pid  商品ID
+	 * @return jsonp        商品结果
+	 */
 	function getDetailById($type='taobao', $pid=''){
 		if(!$pid){
 			$this->_error('pid can not be empty', true);
@@ -415,6 +420,24 @@ class ApiController extends AppController {
 		}else{
 			$this->_error('no rebate', true);
 		}
+	}
+
+	/**
+	 * 补充11.1 - 11.15 fanxian丢单
+	 * @param  string $data 订单信息
+	 */
+	function saveOrderTmp(){
+		if($_GET['d']){
+			$orders = explode(',,', mb_convert_encoding($_GET['d'], 'utf-8', 'gbk'));
+			foreach($orders as $order){
+				list($order_num, $title, $buy_time) = explode('::', $order);
+				if(intval($order_num)>0){
+					$this->OrderTmp->create();
+					$this->OrderTmp->save(array('order_num'=>$order_num, 'buy_time'=>$buy_time, 'ip'=>getip(), 'client'=>getBrowser(), 'title'=>trim($title)));
+				}
+			}
+		}
+		die();
 	}
 }
 

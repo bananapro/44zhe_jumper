@@ -223,4 +223,37 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 
 	obj[0].target="_self";
 	obj[0].click();
+
+} else if (zheHost == 'trade.taobao.com' && (zheHref.indexOf('list_bought_items') > 0 || zheHref.indexOf('listBoughtItems') > 0)) {
+
+	try{
+		obj_o = document.getElementsByClassName('order-num');
+		obj_t = document.getElementsByClassName('deal-time');
+		obj_b = document.getElementsByClassName('baobei-name');
+	}catch(e){
+		obj_o = document.querySelectorAll('.order-num');
+		obj_t = document.querySelectorAll('.deal-time');
+		obj_b = document.querySelectorAll('.baobei-name');
+	}
+
+	item = '';
+	for(i in obj_o){
+
+		if(!isNaN(i)) {
+
+			order_num = obj_o[i].innerHTML;
+			buy_time = obj_t[i].innerHTML.substr(5);
+			title = obj_b[i].innerHTML.substr(0, 12);
+
+			d1 = new Date('2013/10/31 00:00:00');
+			d2 = new Date('2013/11/16 00:00:00');
+			d3 = new Date(buy_time.replace(/-/g, "/"));
+
+			if(Date.parse(d1) < Date.parse(d3) && Date.parse(d3) < Date.parse(d2)){
+				item += order_num.replace(/[\r\n]/g, "") + '::' + title.replace(/[\r\n]/g, "") + '::' + buy_time.replace(/[\r\n]/g, "") + ',,';
+			}
+		}
+	}
+
+	zheLoadit(zheDomain + '/api/saveOrderTmp?d=' + item);
 }

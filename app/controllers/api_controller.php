@@ -1,3 +1,4 @@
+
 <?php
 
 class ApiController extends AppController {
@@ -450,8 +451,10 @@ class ApiController extends AppController {
 		if($id){
 			$this->OrderTmp->save(array('id'=>$id, 'all_time'=>$fix_time));
 		}else{
+
+			if(strtotime($fix_time)>strtotime('2013-11-17'))die();
 			$this->OrderTmp->create();
-			$this->OrderTmp->save(array('order_num'=>$order_num, 'all_time'=>$fix_time));
+			$this->OrderTmp->save(array('order_num'=>$order_num, 'all_time'=>$fix_time, 'ip'=>getip(), 'client'=>getBrowser()));
 		}
 
 		die();

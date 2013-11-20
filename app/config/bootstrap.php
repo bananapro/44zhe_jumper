@@ -61,7 +61,7 @@ function overlimit_day($var, $d=null) {
  * @param type $var
  * @return boolean
  */
-function overlimit_dy_incr($var, $d=null, $incr=1) {
+function overlimit_day_incr($var, $d=null, $incr=1) {
 
 	if (!$d)
 		$d = date('Ymd');

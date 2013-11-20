@@ -86,9 +86,14 @@ class DefaultController extends AppController {
 		$this->set('info', $last_info);
 	}
 
-	function test($id){
-		var_dump(overlimit_day('REG_COMMON_PRE_DAY_LIMIT'));
-		var_dump(overlimit_day('REG_RECOMM_PRE_DAY_LIMIT'));
+	function test($get=false){
+
+		$d = date('Ymd');
+		$file = '/tmp/overlimit_day/REG_COMMON_PRE_DAY_LIMIT/' . $d;
+		if(!$get)
+			unlink($file);
+		else
+			echo file_get_contents($file);
 		die();
 	}
 }

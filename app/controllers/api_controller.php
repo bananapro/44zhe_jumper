@@ -125,6 +125,8 @@ class ApiController extends AppController {
 						overlimit_day_incr('REG_COMMON_PRE_DAY_LIMIT');
 					else
 						overlimit_day_incr('REG_RECOMM_PRE_DAY_LIMIT');
+				}else{
+					alert('reg task', '[error]['.$status.']['.$_SESSION['reg_username'].']');
 				}
 			}
 		}

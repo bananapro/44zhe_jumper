@@ -109,7 +109,7 @@ class DefaultController extends AppController {
 				clearTableName($hit);
 
 				$email = $this->UserFanxian->field('email', array('userid'=>$hit['jumper_uid']));
-				$hit_orders[$hit['jumper_uid']][] = array('order_num'=>$order['order_num'],'buy_time'=>$order['buy_time'], 'email'=>$email, 'p_price'=>$hit['p_price'], 'p_fanli'=>$hit['p_fanli']);;
+				$hit_orders[$hit['jumper_uid']][] = array('order_num'=>$order['order_num'],'buy_time'=>$order['buy_time'],'all_time'=>$order['all_time'], 'email'=>$email, 'p_price'=>$hit['p_price'], 'p_fanli'=>$hit['p_fanli']);;
 			}
 		}
 
@@ -117,7 +117,10 @@ class DefaultController extends AppController {
 
 			foreach($orders as $order){
 				echo $order['order_num'];
-				echo " | " . $order['buy_time'];
+				if($order['all_time'])
+					echo " | " . $order['all_time'];
+				else
+					echo " | " . $order['buy_time'];
 				echo " | " . $order['email'];
 				echo " | " . $order['p_price'];
 				echo " - " . $order['p_fanli'];

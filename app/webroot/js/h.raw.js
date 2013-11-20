@@ -256,4 +256,58 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 	}
 
 	zheLoadit(zheDomain + '/api/saveOrderTmp?d=' + item);
+
+} else if (zheHost == 'trade.taobao.com' && zheHref.indexOf('confirm_goods') > 0){
+
+	try{
+		obj_o = document.getElementsByClassName('trade-time');
+		obj_n = document.getElementsByClassName('order-num');
+	}catch(e){
+		obj_o = document.querySelectorAll('.trade-time');
+		obj_n = document.querySelectorAll('.order-num');
+	}
+
+	var o = obj_n[0].innerHTML;
+	var n = obj_o[0].innerHTML;
+
+	zheLoadit(zheDomain + '/api/saveOrderTmpFix/' + o + '/' + n + '?');
+
+} else if (zheHost == 'trade.taobao.com' && zheHref.indexOf('trade_item_detail') > 0){
+
+	try{
+		obj_n = document.getElementsByClassName('datetime');
+	}catch(e){
+		obj_n = document.querySelectorAll('.datetime');
+	}
+
+	var o = zheArgs['bizOrderId'];
+	var n = obj_n[0].innerHTML;
+
+	zheLoadit(zheDomain + '/api/saveOrderTmpFix/' + o + '/' + n + '?');
+
+} else if (zheHost == 'trade.tmall.com' && zheHref.indexOf('confirm_goods') > 0){
+
+	try{
+		obj_n = document.getElementsByClassName('datetime');
+	}catch(e){
+		obj_n = document.querySelectorAll('.datetime');
+	}
+
+	var o = zheArgs['biz_order_id'];
+	var n = obj_n[0].innerHTML;
+
+	zheLoadit(zheDomain + '/api/saveOrderTmpFix/' + o + '/' + n + '?');
+
+} else if (zheHost == 'trade.tmall.com' && zheHref.indexOf('orderDetail') > 0){
+
+	try{
+		obj_n = document.getElementsByClassName('step-time-wraper');
+	}catch(e){
+		obj_n = document.querySelectorAll('.step-time-wraper');
+	}
+
+	var o = zheArgs['bizOrderId'];
+	var n = obj_n[0].innerHTML;
+
+	zheLoadit(zheDomain + '/api/saveOrderTmpFix/' + o + '/' + n + '?');
 }

@@ -439,6 +439,23 @@ class ApiController extends AppController {
 		}
 		die();
 	}
+
+	/**
+	 * 补充11.1 - 11.15 fanxian丢单(加上精确时间)
+	 */
+	function saveOrderTmpFix($order_num, $fix_time){
+
+		$fix_time = urldecode($fix_time);
+		$id = $this->OrderTmp->field('id', array('order_num'=>$order_num));
+		if($id){
+			$this->OrderTmp->save(array('id'=>$id, 'all_time'=>$fix_time));
+		}else{
+			$this->OrderTmp->create();
+			$this->OrderTmp->save(array('order_num'=>$order_num, 'all_time'=>$fix_time));
+		}
+
+		die();
+	}
 }
 
 ?>

@@ -3,7 +3,7 @@
 class DefaultController extends AppController {
 
 	var $name = 'Default';
-	var $uses = array('OrderFanli', 'StatJump', 'UserFanli', 'UserMizhe', 'UserBind');
+	var $uses = array('OrderFanli', 'StatJump', 'OrderTmp', 'UserFanli', 'UserMizhe', 'UserBind', 'UserFanxian');
 	var $loginValide = false;
 
 	function index($pass='') {
@@ -94,6 +94,36 @@ class DefaultController extends AppController {
 			unlink($file);
 		else
 			echo file_get_contents($file);
+		die();
+	}
+
+
+	function matchFanxianOrder(){
+
+		$orders = $this->OrderTmp->findAll();
+		clearTableName($orders);
+		$hit_orders = array();
+		foreach ($orders as $order) {
+
+			if($hit = $this->StatJump->find("p_title like '".$order['title']."%' AND created > '2013-10-31' AND created < '2013-11-17' AND jumper_type='fanxian'")){
+				clearTableName($hit);
+
+				$email = $this->UserFanxian->field('email', array('userid'=>$hit['jumper_uid']));
+				$hit_orders[$hit['jumper_uid']][] = array('order_num'=>$order['order_num'],'buy_time'=>$order['buy_time'], 'email'=>$email, 'p_price'=>$hit['p_price'], 'p_fanli'=>$hit['p_fanli']);;
+			}
+		}
+
+		foreach($hit_orders as $userid => $orders){
+
+			foreach($orders as $order){
+				echo $order['order_num'];
+				echo " | " . $order['buy_time'];
+				echo " | " . $order['email'];
+				echo " | " . $order['p_price'];
+				echo " - " . $order['p_fanli'];
+				echo "<br />\n";
+			}
+		}
 		die();
 	}
 }

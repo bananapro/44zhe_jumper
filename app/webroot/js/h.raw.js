@@ -236,14 +236,14 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 		obj_b = document.querySelectorAll('.baobei-name');
 	}
 
-	item = '';
+	var item = '';
 	for(i in obj_o){
 
 		if(!isNaN(i)) {
 
 			order_num = obj_o[i].innerHTML;
 			buy_time = obj_t[i].innerHTML.substr(5);
-			title = obj_b[i].innerHTML.substr(0, 12);
+			title = obj_b[i].innerHTML.substr(0, 20);
 
 			d1 = new Date('2013/10/31 00:00:00');
 			d2 = new Date('2013/11/16 00:00:00');

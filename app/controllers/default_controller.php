@@ -104,7 +104,7 @@ class DefaultController extends AppController {
 		clearTableName($orders);
 		$hit_orders = array();
 		foreach ($orders as $order) {
-
+			if(!$order['title'])continue;
 			if($hit = $this->StatJump->find("p_title like '".$order['title']."%' AND created > '2013-10-31' AND created < '2013-11-17' AND jumper_type='fanxian'")){
 				clearTableName($hit);
 

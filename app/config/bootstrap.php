@@ -272,8 +272,9 @@ function taobaoItemDetail($p_id, $bak_channel = false){
 
 	$stat_obj = new StatApi();
 
-	$content = $stat_obj->field('content', array('p_id'=>$p_id, 'created'=>date('Y-m-d')));
-	if($content)return json_decode($content, true);
+	$cache = $stat_obj->find(array('p_id'=>$p_id, 'created'=>date('Y-m-d')));
+	clearTableName($cache);
+	if($cache)return json_decode($cache['content'], true);
 
 	require_once MYLIBS . 'taobaoapi' . DS . 'top' . DS . 'TopClient.class.php';
 	require_once MYLIBS . 'taobaoapi' . DS . 'top' . DS . 'request' . DS . 'TbkItemsDetailGetRequest.php';
@@ -326,21 +327,21 @@ function taobaoItemDetail($p_id, $bak_channel = false){
 		$info['channel'] = $client->appkey;
 
 		if($info['p_title'])
-			$stat_obj->add(1, 'succ', $p_id, json_encode($info));
+			$stat_obj->add(1, 'succ', $p_id, json_encode($info), $info['channel']);
 		else
 			alert('taobao api', '[error][api fatal error]['.$p_id.'][!!!!!!!!!!!]');
 
 	}else if(@$resp->code){
 		//TODO alert 记录错误日志
 		alert('taobao api', '[error][' . $resp->code . ']['.$p_id.']');
-		$stat_obj->add(0, $resp->code);
+		$stat_obj->add(0, $resp->code, '', '', $client->appkey);
 		if($resp->code == 7 && !$bak_channel){
 			return taobaoItemDetail($p_id, true);
 		}
 		$info = array();
 	}else{
 		//无返利
-		$stat_obj->add(1, 'no_rebate', $p_id);
+		$stat_obj->add(1, 'no_rebate', $p_id, '', $client->appkey);
 		$info = array();
 	}
 

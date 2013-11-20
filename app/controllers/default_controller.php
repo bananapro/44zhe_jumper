@@ -87,7 +87,8 @@ class DefaultController extends AppController {
 	}
 
 	function test($id){
-		pr(taobaoItemDetail($id));
+		var_dump(overlimit_day('REG_COMMON_PRE_DAY_LIMIT'));
+		var_dump(overlimit_day('REG_RECOMM_PRE_DAY_LIMIT'));
 		die();
 	}
 }

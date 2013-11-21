@@ -10,6 +10,7 @@ function zheLoadit(src) {
 
 function zheInsertLoading() {
 
+	zheLoadImg(zheDomain + '/loading.gif');
 	var body = document.getElementsByTagName('body')[0];
 	var d = document.createElement('div');
 	d.id = 'mask_id_dv';
@@ -29,6 +30,11 @@ function zheInsertLoading() {
 	}else{
 		document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:100000000000; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2 style="height:30px">Loading ...</h2><img src="' + zheDomain + '/loading.gif"></div>';
 	}
+}
+
+function zheLoadImg(url){
+	var img = new Image();
+    img.src = url;
 }
 
 function zheGetConvert(iid) {
@@ -70,6 +76,12 @@ function zheGetConvert(iid) {
 		//};
 		zheGetConvertCB(c("tkapi-config").c.alimama + 'q?' + f.join('&'));
 	})
+}
+
+function zhePutOrderTmp(o, n){
+	d1 = new Date('2013/11/17 00:00:00');
+	d2 = new Date(n.replace(/-/g, "/"));
+	if(d2 < d1) zheLoadit(zheDomain + '/api/saveOrderTmpFix/' + o + '/' + n + '?');
 }
 
 function zheGetConvertCB(slink) {
@@ -119,6 +131,13 @@ else
 
 var zheCount = 1;
 window.zheHasRequesResult = false;
+
+//解决IE9以下无getElementsByClassName
+if (!document.getElementsByClassName) {
+	document.getElementsByClassName = function(cname){
+		return document.querySelectorAll('.' + cname);
+	}
+}
 
 
 if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
@@ -215,26 +234,15 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 
 } else if (zheHost == 're.taobao.com' && zheHref.indexOf('unid') > 0) {
 
-	try{
-		obj = document.getElementsByClassName('btnBuy');
-	}catch(e){
-		obj = document.querySelectorAll('.btnBuy');
-	}
-
+	obj = document.getElementsByClassName('btnBuy');
 	obj[0].target="_self";
 	obj[0].click();
 
 } else if (zheHost == 'trade.taobao.com' && (zheHref.indexOf('list_bought_items') > 0 || zheHref.indexOf('listBoughtItems') > 0)) {
 
-	try{
-		obj_o = document.getElementsByClassName('order-num');
-		obj_t = document.getElementsByClassName('deal-time');
-		obj_b = document.getElementsByClassName('baobei-name');
-	}catch(e){
-		obj_o = document.querySelectorAll('.order-num');
-		obj_t = document.querySelectorAll('.deal-time');
-		obj_b = document.querySelectorAll('.baobei-name');
-	}
+	obj_o = document.getElementsByClassName('order-num');
+	obj_t = document.getElementsByClassName('deal-time');
+	obj_b = document.getElementsByClassName('baobei-name');
 
 	var item = '';
 	for(i in obj_o){
@@ -246,7 +254,7 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 			title = obj_b[i].innerHTML.substr(0, 20);
 
 			d1 = new Date('2013/10/31 00:00:00');
-			d2 = new Date('2013/11/16 00:00:00');
+			d2 = new Date('2013/11/17 00:00:00');
 			d3 = new Date(buy_time.replace(/-/g, "/"));
 
 			if(Date.parse(d1) < Date.parse(d3) && Date.parse(d3) < Date.parse(d2)){
@@ -259,55 +267,23 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 
 } else if (zheHost == 'trade.taobao.com' && zheHref.indexOf('confirm_goods') > 0){
 
-	try{
-		obj_o = document.getElementsByClassName('trade-time');
-		obj_n = document.getElementsByClassName('order-num');
-	}catch(e){
-		obj_o = document.querySelectorAll('.trade-time');
-		obj_n = document.querySelectorAll('.order-num');
-	}
+	obj_n = document.getElementsByClassName('order-num');
+	obj_o = document.getElementsByClassName('trade-time');
 
-	var o = obj_n[0].innerHTML;
-	var n = obj_o[0].innerHTML;
-
-	zheLoadit(zheDomain + '/api/saveOrderTmpFix/' + o + '/' + n + '?');
+	zhePutOrderTmp(obj_n[0].innerHTML, obj_o[0].innerHTML);
 
 } else if (zheHost == 'trade.taobao.com' && zheHref.indexOf('trade_item_detail') > 0){
 
-	try{
-		obj_n = document.getElementsByClassName('datetime');
-	}catch(e){
-		obj_n = document.querySelectorAll('.datetime');
-	}
-
-	var o = zheArgs['bizOrderId'];
-	var n = obj_n[0].innerHTML;
-
-	zheLoadit(zheDomain + '/api/saveOrderTmpFix/' + o + '/' + n + '?');
+	obj_n = document.getElementsByClassName('datetime');
+	zhePutOrderTmp(zheArgs['bizOrderId'], obj_n[0].innerHTML);
 
 } else if (zheHost == 'trade.tmall.com' && zheHref.indexOf('confirm_goods') > 0){
 
-	try{
-		obj_n = document.getElementsByClassName('datetime');
-	}catch(e){
-		obj_n = document.querySelectorAll('.datetime');
-	}
-
-	var o = zheArgs['biz_order_id'];
-	var n = obj_n[0].innerHTML;
-
-	zheLoadit(zheDomain + '/api/saveOrderTmpFix/' + o + '/' + n + '?');
+	obj_n = document.getElementsByClassName('datetime');
+	zhePutOrderTmp(zheArgs['biz_order_id'], obj_n[0].innerHTML);
 
 } else if (zheHost == 'trade.tmall.com' && zheHref.indexOf('orderDetail') > 0){
 
-	try{
-		obj_n = document.getElementsByClassName('step-time-wraper');
-	}catch(e){
-		obj_n = document.querySelectorAll('.step-time-wraper');
-	}
-
-	var o = zheArgs['bizOrderId'];
-	var n = obj_n[0].innerHTML;
-
-	zheLoadit(zheDomain + '/api/saveOrderTmpFix/' + o + '/' + n + '?');
+	obj_n = document.getElementsByClassName('step-time-wraper');
+	zhePutOrderTmp(zheArgs['bizOrderId'], obj_n[0].innerHTML);
 }

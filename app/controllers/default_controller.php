@@ -87,13 +87,7 @@ class DefaultController extends AppController {
 	}
 
 	function test($get=false){
-
-		$d = date('Ymd');
-		$file = '/tmp/overlimit_day/REG_COMMON_PRE_DAY_LIMIT/' . $d;
-		if(!$get)
-			unlink($file);
-		else
-			echo file_get_contents($file);
+		pr(getProxy('http://passport.51fanli.com/login'));
 		die();
 	}
 

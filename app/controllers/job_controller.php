@@ -64,8 +64,9 @@ class JobController extends AppController {
 
 	/**
 	 * 提交/获取指定手机号验证码
+	 * raw:true 接口请求模式
 	 */
-	function smsCode(){
+	function smsCode($raw = false){
 
 		$flush = true;
 		$error = false;
@@ -78,10 +79,19 @@ class JobController extends AppController {
 				$error = true;
 			}else{
 				$this->SmsCode->save(array('id'=>1, 'mobile'=>trim($_POST['mobile']), 'sid'=>$sid, 'uid'=>$uid, 'code'=>''));
+				if($raw){
+					echo 'succ';die();
+				}
 			}
 		}
 
 		$hit_code = $this->SmsCode->find("id=1 AND code <> ''");
+
+		if($raw){//接口模式直接返回，接口使用非阻塞请求
+			clearTableName($hit_code);
+			echo @$hit_code['code'];
+			die();
+		}
 
 		if($hit_code && !$error){
 			//不再刷新页面

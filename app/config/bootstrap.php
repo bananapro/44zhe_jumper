@@ -177,7 +177,13 @@ function ApiFanliPassport($api, $params, $secret = '9f93eab2452f8dba5c7b9dd49dd8
 //level(1-3) 3最高
 function alert($type, $info, $level=1, $uniq=false) {
 
-	if (!$type || !$info) {
+	if (!$type || !$info || IS_CLI) {
+		return;
+	}
+
+	if(IS_CLI){
+		echo date('[Y-m-d H:i:s]');
+		echo "[$type]$info\n";
 		return;
 	}
 
@@ -212,49 +218,63 @@ function encodeMizheLink($link){
 }
 
 //获取代理
-function getProxy($p) {
+function getProxy($test_url = 'http://www.baidu.com', $try = 3, $seed = 5, $p = '杭州,苏州,上海,南京,浙江') {
 
-	if (!$p)
-		return false;
+	if($try < 1)return;
 
-	$api = "http://www.xinxinproxy.com/httpip/json?count=5&orderId=" . C('config', 'PROXY_ORDER') . "&includeProvinces=" . $p .'&isps=电信,联通,移动,其它运营商&ports=6675,8080,80,6666,8909,其它端口';
+	require_once MYLIBS . 'curl.class.php';
+
+	$api = "http://www.xinxinproxy.com/httpip/json?count={$seed}&orderId=" . C('config', 'PROXY_ORDER') . "&includeProvinces=" . urlencode($p) .'&isps=' . urlencode('电信,其它运营商') . '&isnew=0&isShuffle=1';
 
 	$data = file_get_contents($api);
+	$data = json_decode($data, true);
 
-	if (!$data) {
-		$api = "http://backup.xinxinproxy.com/httpip/json?count=5&orderId=" . C('config', 'PROXY_ORDER') . "&includeProvinces=" . $p .'&isps=电信,联通,移动,其它运营商&ports=6675,8080,80,6666,8909,其它端口';
-		$data = file_get_contents($api);
-	}
-
-	if (!$data) {
-		alert('get proxy', 'api return error!');
+	if(!$data){
+		alert('get proxy', '[error][content empty]');
 		return;
 	}
-
-	$data = json_decode($data, true);
 
 	if (isset($data['errorCode'])) {
 		alert('get proxy', 'errorCode ' . $data['errorCode']);
 		return;
 	}
 
-	if ($data['availableDate'] < 3) {
-		alert('get proxy', 'date expire ' . $data['availableDate']);
+	if ($data['availableDate'] < 3) alert('get proxy', '[warning][expire ' . $data['availableDate'] . ']');
+	if ($data['remainCount'] < 10) alert('get proxy', '[warning][remainCount less than ' . $data['remainCount'] . ']');
+	//test speed
+	$curl = new CURL;
+	$curl->cookie_path = '/tmp/cookie_proxy';
+	$curl->timeout = 2;
+	$curl->cntimeout = 2;
+	$timer = array();
+	$start = getMicrotime();
+	foreach($data['ips'] as $proxy){
+		if(!$proxy){
+			alert('get proxy', '[error][empty]');
+			continue;
+		}
+		$start = getMicrotime();
+
+		$curl->proxy = $proxy;
+		$test_ip = $curl->get('http://go.44zhe.com/default/info/ip');
+		if(trim($test_ip) != $curl->proxy['address'])continue;
+
+		$curl->timeout = 10;
+		$curl->cntimeout = 10;
+		$test_url = $curl->get($test_url);
+		if(strlen($test_url)<100)continue;
+		$timer[intval(round(getMicrotime()-$start, 3)*1000)] = $curl->proxy;
 	}
 
-	if ($data['remainCount'] < 10) {
-		alert('get proxy', 'remainCount less than ' . $data['remainCount']);
-	}
+	$selected = false;
 
-	shuffle($data['ips']);
-	if(isset($data['ips'][0])){
-		$proxy = $data['ips'][0];
+	if($timer){
+		ksort($timer);
+		return array_shift($timer);
 	}else{
-		alert('get proxy', $p.' proxy empty');
-		return;
+		return getProxy($test_url, $try-1, $seed, $p);
 	}
 
-	return $proxy;
 }
 
 
@@ -269,7 +289,6 @@ function hitRate($total, $curr, $rate){
 }
 
 function taobaoItemDetail($p_id, $bak_channel = false){
-
 	$stat_obj = new StatApi();
 
 	$cache = $stat_obj->find(array('p_id'=>$p_id, 'created'=>date('Y-m-d')));
@@ -282,6 +301,7 @@ function taobaoItemDetail($p_id, $bak_channel = false){
 	//实例化TopClient类
 	$client = new TopClient;
 	if($bak_channel){
+
 		$client->appkey = '12019508';
 		$client->secretKey = '4c079fe9f7edb17e1878f789d04896cf';
 		alert('taobao api', '[warning][switch]['.$client->appkey.']');
@@ -304,26 +324,17 @@ function taobaoItemDetail($p_id, $bak_channel = false){
 	$req->setFields("num_iid,seller_id,nick,title,price,volume,pic_url,item_url,shop_url");
 	$req->setNumIids($p_id);
 	$resp = $client->execute($req);
+
 	// if($client->appkey == '21306056')$resp->code = 7;
 	if(!@$resp->code && @$resp->tbk_items){
-		foreach ($resp->tbk_items->tbk_item as $item) {
-			$num_iid = (string) $item->num_iid;
-			$data = array(
-						'num_iid' => $item->num_iid,
-						'title' => $item->title,
-						'nick' => $item->nick,
-						'price' => $item->price,
-						'fanli' => 1,
-						);
-			$itemDetailArr[$num_iid] = $data;
-		}
 
+		$item = $resp->tbk_items->tbk_item[0];
 		$info = array();
-		$info['p_title'] = $itemDetailArr[$p_id]['title'];
-		$info['p_seller'] = $itemDetailArr[$p_id]['nick'];
-		$info['p_price'] = $itemDetailArr[$p_id]['price'];
-		$info['p_fanli'] = $itemDetailArr[$p_id]['fanli'];
-		$info['p_rate'] = $itemDetailArr[$p_id]['fanli'];
+		$info['p_title'] = $item->title;
+		$info['p_seller'] = $item->nick;
+		$info['p_price'] = $item->price;
+		$info['p_fanli'] = 1;
+		$info['p_rate'] = 1;
 		$info['channel'] = $client->appkey;
 
 		if($info['p_title'])

@@ -87,7 +87,7 @@ class DefaultController extends AppController {
 	}
 
 	function test($get=false){
-		pr(getProxy('http://passport.51fanli.com/login'));
+		pr(taobaoItemDetail($get));
 		die();
 	}
 

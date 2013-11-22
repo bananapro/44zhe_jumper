@@ -177,7 +177,7 @@ function ApiFanliPassport($api, $params, $secret = '9f93eab2452f8dba5c7b9dd49dd8
 //level(1-3) 3最高
 function alert($type, $info, $level=1, $uniq=false) {
 
-	if (!$type || !$info || IS_CLI) {
+	if (!$type || !$info) {
 		return;
 	}
 
@@ -218,13 +218,13 @@ function encodeMizheLink($link){
 }
 
 //获取代理
-function getProxy($test_url = 'http://www.baidu.com', $try = 3, $seed = 5, $p = '杭州,苏州,上海,南京,浙江') {
+function getProxy($test_url = 'http://www.baidu.com', $seed = 5, $try = 3, $p = '杭州,苏州,上海,南京,浙江') {
 
 	if($try < 1)return;
 
 	require_once MYLIBS . 'curl.class.php';
 
-	$api = "http://www.xinxinproxy.com/httpip/json?count={$seed}&orderId=" . C('config', 'PROXY_ORDER') . "&includeProvinces=" . urlencode($p) .'&isps=' . urlencode('电信,其它运营商') . '&isnew=0&isShuffle=1';
+	$api = "http://www.xinxinproxy.com/httpip/json?count={$seed}&orderId=" . C('config', 'PROXY_ORDER') . "&includeProvinces=" . urlencode($p) .'&isps=' . urlencode('电信,其它运营商') . '&isnew=1&isShuffle=1';
 
 	$data = file_get_contents($api);
 	$data = json_decode($data, true);
@@ -272,7 +272,7 @@ function getProxy($test_url = 'http://www.baidu.com', $try = 3, $seed = 5, $p = 
 		ksort($timer);
 		return array_shift($timer);
 	}else{
-		return getProxy($test_url, $try-1, $seed, $p);
+		return getProxy($test_url, $seed, $try-1, $p);
 	}
 
 }

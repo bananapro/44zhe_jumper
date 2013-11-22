@@ -10,7 +10,7 @@ if (!defined('PS')) {
 
 if (!defined('ROOT')) {
 
-	define('ROOT', (dirname(dirname(__FILE__))));
+	define('ROOT', dirname(dirname(__FILE__)));
 }
 if (!defined('APP_DIR')) {
 
@@ -29,7 +29,6 @@ if (!defined('WWW_ROOT')) {
 	define('WWW_ROOT', dirname(__FILE__) . DS);
 }
 
-//echo 13;die();
 if (!defined('CORE_PATH')) {
 	if (function_exists('ini_set')) {
 		ini_set('include_path', ini_get('include_path') . PS . CAKE_CORE_INCLUDE_PATH .
@@ -44,7 +43,6 @@ if (!defined('CORE_PATH')) {
 		define('CORE_PATH', CAKE_CORE_INCLUDE_PATH . DS);
 	}
 }
-//echo CORE_PATH;die();
 
 require CORE_PATH . 'cake' . DS . 'bootstrap.php';
 

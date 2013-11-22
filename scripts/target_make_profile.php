@@ -45,6 +45,8 @@ function isSucc($return){
 
 function getPhoneCode($curl, $mobile){
 
+	$proxy = $curl->proxy;
+	$curl->proxy = false;
 	$return = $curl->post('http://sms.51fanli.com/job/smsCode/raw', array('mobile'=>$mobile));
 	if($return != 'succ'){
 		alert('smsCode', '[post '.$mobile.' task return error]');
@@ -54,11 +56,14 @@ function getPhoneCode($curl, $mobile){
 	$timer = 0;
 	while(1){
 
-		sleep(10);
+		alert('smsCode', '[waiting]['.$mobile.' code return]');
+		sleep(rand(15,20));
 		$code = $curl->get('http://sms.51fanli.com/job/smsCode/raw');
-		if($code)return array_pop(explode('|', $code));
+		if($code){
+			$curl->proxy = $proxy;
+			return array_pop(explode('|', $code));
+		}
 		$timer++;
-		alert('waiting', '[mobile]['.$mobile.' code return]');
 		if($timer > 95)return;
 	}
 }
@@ -71,6 +76,7 @@ while(1){
 	}
 
 	$taskid = $t['id'];
+	alert('task', '[start]['.$t['username'].']');
 
 	$time = time();
 	$time2 = $time + 2;
@@ -82,6 +88,7 @@ while(1){
 	$tpl = "{$domain}login/ajaxlogin?jsoncallback=jQuery1720{$rand16}_{$time}{rand4}&username={$t['username']}&userpassword=".md5($t['password'])."&passcode=&cooklogin=1&savename=1&t={$time2}&_={$time4}";
 
 	@unlink($curl->cookie_path);
+	alert('proxy', '[begin selecting ...]');
 	$p = getProxy('http://passport.51fanli.com/login');
 	if(!$p){
 		finishTask($taskid, 0);
@@ -91,6 +98,7 @@ while(1){
 		$curl->proxy = $p;
 	}
 
+	alert('login', '[begin login ...]');
 	$return = $curl->get($tpl, "{$domain}login");
 
 	if(stripos($return, '20000')!==false){
@@ -122,6 +130,8 @@ while(1){
 			continue;
 		}
 
+		alert('bind', '[mobile]['.$t['mobile'].'][ok]');
+
 		//绑定支付宝
 
 		$curl->get("{$domain}center/safeaccount/accountManagement", "{$domain}center/safeuser/safecenter");
@@ -151,6 +161,8 @@ while(1){
 			continue;
 		}
 
+		alert('bind', '[alipay]['.$t['alipay'].'][ok]');
+
 		$data = array();
 		$data['smsset[od]'] = 0;
 		$data['smsset[fl]'] = 0;
@@ -165,12 +177,17 @@ while(1){
 		$curl->post("{$domain}center/safephone/savenotify", $data, "{$domain}center/safeuser/safecenter");
 
 		finishTask($taskid, 2);
-		alert('succ', $t['username']);
+		alert('task', '[end]['.$t['username'].'][ok]');
 
 	}else{
 
 	    finishTask($taskid, 10, '[login error]['.$return.']');
 	}
+
+	alert('sleep', '10 second ...');
+	echo "\n";
+	sleep(10);
+
 }
 
 ?>

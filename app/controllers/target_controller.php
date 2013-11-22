@@ -28,10 +28,11 @@ class TargetController extends AppController {
 	 * @return [json] [处理结果]
 	 */
 	function finishTask($taskid, $status=1){
+
 		if(!$taskid)$this->_error('任务ID不能为空!');
 
-		if(!@$_GET['msg'])$_GET['msg'] = '';
-		$this->Target->save(array('id'=>$taskid, 'status'=>$status, 'error_msg'=>$_GET['msg']));
+		if(!@$_GET['error_msg'])$_GET['error_msg'] = '';
+		$this->Target->save(array('id'=>$taskid, 'status'=>$status, 'error_msg'=>$_GET['error_msg']));
 
 		$this->_success('ok', true);
 	}

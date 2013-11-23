@@ -28,6 +28,7 @@ function finishTask($taskid, $status=2, $error_msg=''){
 		echo date('[Y-m-d H:i:s]');
 		echo $error_msg;
 		echo "\n";
+		echo "\n";
 	}
 
 	$task = file_get_contents($api.'target/finishTask/'.$taskid.'/'.$status.'?error_msg='.urlencode($error_msg));
@@ -85,7 +86,7 @@ while(1){
 	$rand4 = rand(1000,9999);
 
 
-	$tpl = "{$domain}login/ajaxlogin?jsoncallback=jQuery1720{$rand16}_{$time}{rand4}&username={$t['username']}&userpassword=".md5($t['password'])."&passcode=&cooklogin=1&savename=1&t={$time2}&_={$time4}";
+	$tpl = "{$domain}login/ajaxlogin?jsoncallback=jQuery1720{$rand16}_{$time}{$rand4}&username={$t['username']}&userpassword=".md5($t['password'])."&passcode=&cooklogin=1&savename=1&t={$time2}&_={$time4}";
 
 	@unlink($curl->cookie_path);
 	alert('proxy', '[begin selecting ...]');
@@ -103,85 +104,95 @@ while(1){
 
 	if(stripos($return, '20000')!==false){
 
-		//绑定手机
-		$curl->get("{$domain}center/safephone/bindphone1", "{$domain}center/safeuser/safecenter");
-		$return = $curl->post("{$domain}center/safephone/ajaxBindPhone1", array('mobile'=>$t['mobile']), "{$domain}center/safephone/bindphone1");
-		if(!isSucc($return)){
-			finishTask($taskid,  10, '[ajaxBindPhone1]['.$return.']');
-			continue;
+		if($t['step'] = 1){
+			//绑定手机
+			$curl->get("{$domain}center/safephone/bindphone1", "{$domain}center/safeuser/safecenter");
+			$return = $curl->post("{$domain}center/safephone/ajaxBindPhone1", array('mobile'=>$t['mobile']), "{$domain}center/safephone/bindphone1");
+			if(!isSucc($return)){
+				finishTask($taskid,  10, '[ajaxBindPhone1]['.$return.']');
+				continue;
+			}
+
+			$r = $curl->get("{$domain}center/safephone/bindPhone2");
+			$return = $curl->get("{$domain}center/safephone/sendverifycode?pos=601&mobile={$t['mobile']}");
+			if(!isSucc($return)){
+				finishTask($taskid, 10, '[sendverifycode1]['.$return.']');
+				continue;
+			}
+
+			$code = getPhoneCode($curl, $t['mobile']);
+			if(!$code){
+				finishTask($taskid, 10, '[sendverifycode1][get code fail]');
+				continue;
+			}
+
+			$return = $curl->post("{$domain}center/safephone/ajaxBindPhone2", array('mobile'=>$t['mobile'], 'code'=>$code), "{$domain}center/safephone/bindphone2");
+			if(!isSucc($return)){
+				finishTask($taskid, 10, '[ajaxBindPhone2]['.$return.']');
+				continue;
+			}
+
+			alert('bind', '[mobile]['.$t['mobile'].'][ok]');
 		}
 
-		$r = $curl->get("{$domain}center/safephone/bindPhone2");
-		$return = $curl->get("{$domain}center/safephone/sendverifycode?pos=601&mobile={$t['mobile']}");
-		if(!isSucc($return)){
-			finishTask($taskid, 10, '[sendverifycode]['.$return.']');
-			continue;
+		if($t['step'] = 1 || $t['step'] = 2){
+			//绑定支付宝
+
+			$curl->get("{$domain}center/safeaccount/accountManagement", "{$domain}center/safeuser/safecenter");
+			$curl->get("{$domain}center/safeaccount/bindAlipay1_beta", "{$domain}center/safeuser/accountManagement");
+			$return = $curl->post("{$domain}center/safeaccount/ajaxBindAlipay1", array('pay_account'=>$t['alipay'], 'realname'=>$t['truename'], 'identify'=>$t['idcard'], 'identify_type'=>1), "{$domain}center/safeaccount/bindAlipay1_beta");
+			if(!isSucc($return)){
+				finishTask($taskid, 11, '[ajaxBindAlipay1]['.$return.']');
+				continue;
+			}
+
+			$curl->get("{$domain}center/safeaccount/bindAlipay2");
+			$return = $curl->get("{$domain}center/safephone/sendverifycode?pos=906&mobile=");
+			if(!isSucc($return)){
+				finishTask($taskid, 11, '[sendverifycode2]['.$return.']');
+				continue;
+			}
+
+			$code = getPhoneCode($curl, $t['mobile']);
+			if(!$code){
+				finishTask($taskid, 11, '[sendverifycode2][get code fail]');
+				continue;
+			}
+
+			$return = $curl->post("{$domain}center/safeaccount/ajaxBindAlipay2", array('code'=>$code), "{$domain}center/safeaccount/bindAlipay2");
+			if(!isSucc($return)){
+				finishTask($taskid, 11, '[ajaxBindAlipay2]['.$return.']');
+				continue;
+			}
+
+			alert('bind', '[alipay]['.$t['alipay'].'][ok]');
+
+			$data = array();
+			$data['smsset[od]'] = 0;
+			$data['smsset[fl]'] = 0;
+			$data['smsset[fl_mode]'] = 2;
+			$data['smsset[point]'] = 0;
+			$data['smsset[cash]'] = 0;
+			$data['smsset[g_refund]'] = 0;
+			$data['smsset[g_appeal]'] = 0;
+			$data['smsset[g_refuse]'] = 0;
+			$data['mailset[g_refuse]'] = 0;
+
+			$curl->post("{$domain}center/safephone/savenotify", $data, "{$domain}center/safeuser/safecenter");
+
+			finishTask($taskid, 2);
+			alert('task', '[end]['.$t['username'].'][ok]');
 		}
 
-		$code = getPhoneCode($curl, $t['mobile']);
-		if(!$code){
-			finishTask($taskid, 10, '[sendverifycode][get code fail]');
-			continue;
-		}
+	//20002
+	}elseif(stripos($return, '20002')!==false){
+		finishTask($taskid, 19, '[login error]['.$return.']');
 
-		$return = $curl->post("{$domain}center/safephone/ajaxBindPhone2", array('mobile'=>$t['mobile'], 'code'=>$code), "{$domain}center/safephone/bindphone2");
-		if(!isSucc($return)){
-			finishTask($taskid, 10, '[ajaxBindPhone2]['.$return.']');
-			continue;
-		}
+	}elseif(stripos($return, 'connect')!==false || stripos($return, 'operation')!==false || stripos($return, 'empty')!==false){
 
-		alert('bind', '[mobile]['.$t['mobile'].'][ok]');
-
-		//绑定支付宝
-
-		$curl->get("{$domain}center/safeaccount/accountManagement", "{$domain}center/safeuser/safecenter");
-		$curl->get("{$domain}center/safeaccount/bindAlipay1_beta", "{$domain}center/safeuser/accountManagement");
-		$return = $curl->post("{$domain}center/safeaccount/ajaxBindAlipay1", array('pay_account'=>$t['alipay'], 'realname'=>$t['truename'], 'identify'=>$t['idcard'], 'identify_type'=>1), "{$domain}center/safeaccount/bindAlipay1_beta");
-		if(!isSucc($return)){
-			finishTask($taskid, 10, '[ajaxBindAlipay1]['.$return.']');
-			continue;
-		}
-
-		$curl->get("{$domain}center/safeaccount/bindAlipay2");
-		$return = $curl->get("{$domain}center/safephone/sendverifycode?pos=906&mobile=");
-		if(!isSucc($return)){
-			finishTask($taskid, 10, '[sendverifycode2]['.$return.']');
-			continue;
-		}
-
-		$code = getPhoneCode($curl, $t['mobile']);
-		if(!$code){
-			finishTask($taskid, 10, '[sendverifycode][get code fail]');
-			continue;
-		}
-
-		$return = $curl->post("{$domain}center/safeaccount/ajaxBindAlipay2", array('code'=>$code), "{$domain}center/safeaccount/bindAlipay2");
-		if(!isSucc($return)){
-			finishTask($taskid, 10, '[ajaxBindAlipay2]['.$return.']');
-			continue;
-		}
-
-		alert('bind', '[alipay]['.$t['alipay'].'][ok]');
-
-		$data = array();
-		$data['smsset[od]'] = 0;
-		$data['smsset[fl]'] = 0;
-		$data['smsset[fl_mode]'] = 2;
-		$data['smsset[point]'] = 0;
-		$data['smsset[cash]'] = 0;
-		$data['smsset[g_refund]'] = 0;
-		$data['smsset[g_appeal]'] = 0;
-		$data['smsset[g_refuse]'] = 0;
-		$data['mailset[g_refuse]'] = 0;
-
-		$curl->post("{$domain}center/safephone/savenotify", $data, "{$domain}center/safeuser/safecenter");
-
-		finishTask($taskid, 2);
-		alert('task', '[end]['.$t['username'].'][ok]');
-
+	    finishTask($taskid, 0, '[login error]['.$return.']');
 	}else{
-
-	    finishTask($taskid, 10, '[login error]['.$return.']');
+		finishTask($taskid, 18, '[login error]['.$return.']');
 	}
 
 	alert('sleep', '10 second ...');

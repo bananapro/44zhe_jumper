@@ -104,7 +104,7 @@ while(1){
 
 	if(stripos($return, '20000')!==false){
 
-		if($t['step'] = 1){
+		if($t['step'] == 1){
 			//绑定手机
 			$curl->get("{$domain}center/safephone/bindphone1", "{$domain}center/safeuser/safecenter");
 			$return = $curl->post("{$domain}center/safephone/ajaxBindPhone1", array('mobile'=>$t['mobile']), "{$domain}center/safephone/bindphone1");
@@ -135,7 +135,7 @@ while(1){
 			alert('bind', '[mobile]['.$t['mobile'].'][ok]');
 		}
 
-		if($t['step'] = 1 || $t['step'] = 2){
+		if($t['step'] == 1 || $t['step'] == 2){
 			//绑定支付宝
 
 			$curl->get("{$domain}center/safeaccount/accountManagement", "{$domain}center/safeuser/safecenter");

@@ -1,4 +1,5 @@
 <?php
+require_once 'user.php';
 
 class UserRebates extends User {
 

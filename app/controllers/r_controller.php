@@ -33,6 +33,7 @@ class RController extends AppController {
 					$this->render(null, null, 'views/r/amazon.thtml');
 					setcookie("channel_amazon", 1, time() +  24 * 3600, '/'); //进行跳转渠道标志
 					$this->_addStat(1, $origin, $target_url, $source);
+					overLimitDayIncr('JUMP_LIMIT_REBATES');
 					die();
 				}
 			}

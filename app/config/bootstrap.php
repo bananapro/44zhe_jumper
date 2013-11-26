@@ -38,7 +38,7 @@ function com2day($day1, $day2, $com = null) {
  * @param type $var
  * @return boolean
  */
-function overlimit_day($var, $d=null) {
+function overLimitDay($var, $d=null) {
 
 	if (!$d)
 		$d = date('Ymd');
@@ -61,7 +61,7 @@ function overlimit_day($var, $d=null) {
  * @param type $var
  * @return boolean
  */
-function overlimit_day_incr($var, $d=null, $incr=1) {
+function overLimitDayIncr($var, $d=null, $incr=1) {
 
 	if (!$d)
 		$d = date('Ymd');
@@ -139,10 +139,10 @@ function getBrowser() {
 	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "Safari")) {
 		$browser = 'safari';
 	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "iphone") || stripos($_SERVER["HTTP_USER_AGENT"], "ipad")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "Iphone") || stripos($_SERVER["HTTP_USER_AGENT"], "Ipad")) {
 		$browser = 'ios';
 	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "android")) {
+	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "Android")) {
 		$browser = 'android';
 	}
 	else {

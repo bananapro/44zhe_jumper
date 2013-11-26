@@ -7,7 +7,6 @@
         //跳转系统运行
         'ENABLE_JUMP' => true,
 
-
         //每日普通注册数限制(优先完成普通任务)
         'REG_COMMON_PRE_DAY_LIMIT' => 3,
         //每日推荐注册数限制
@@ -74,5 +73,8 @@
 
 		//渠道会员绑定插件账号数量上限
 		'JUMP_CHANNEL_BIND_LIMIT' => 28,
+
+        //rebates每日跳转限制
+        'JUMP_LIMIT_REBATES' => 100,
     )
 ?>

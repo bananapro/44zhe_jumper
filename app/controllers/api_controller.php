@@ -54,7 +54,7 @@ class ApiController extends AppController {
 			}
 
 			//先完成普通注册任务
-			if (!overlimit_day('REG_COMMON_PRE_DAY_LIMIT')) {
+			if (!overLimitDay('REG_COMMON_PRE_DAY_LIMIT')) {
 
 				$_SESSION['reg_username'] = $user['username'];
 				$_SESSION['reg_email'] = $user['email'];
@@ -64,7 +64,7 @@ class ApiController extends AppController {
 			}
 			else {
 				//完成推荐注册任务
-				if (!overlimit_day('REG_RECOMM_PRE_DAY_LIMIT')) {
+				if (!overLimitDay('REG_RECOMM_PRE_DAY_LIMIT')) {
 
 					//recommenduid  recommendt
 					$parent_data = $this->UserFanli->getPoolRecommender();
@@ -122,9 +122,9 @@ class ApiController extends AppController {
 
 					//注册任务计数器计数
 					if (!$user['parent'])
-						overlimit_day_incr('REG_COMMON_PRE_DAY_LIMIT');
+						overLimitDayIncr('REG_COMMON_PRE_DAY_LIMIT');
 					else
-						overlimit_day_incr('REG_RECOMM_PRE_DAY_LIMIT');
+						overLimitDayIncr('REG_RECOMM_PRE_DAY_LIMIT');
 				}else{
 					alert('reg task', '[error]['.$status.']['.$_SESSION['reg_username'].']');
 				}

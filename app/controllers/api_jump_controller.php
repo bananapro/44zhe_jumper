@@ -38,7 +38,7 @@ class ApiJumpController extends AppController {
 			$_SESSION['fl_userid'] = $fdetail;
 			setcookie('fl_userid', $fdetail, time() + 1 * 24 * 3600, '/');
 		}else{
-			alert('fanli_login', '[fail][code][' . $fdetail . ']');
+			alert('fanli_login', '[fail][code][' . $fdetail . '][userid]['.$fdetail.']');
 		}
 
 		if($url){

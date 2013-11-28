@@ -87,7 +87,7 @@ class DefaultController extends AppController {
 	}
 
 	function test($get=false){
-		pr($this->UserBind->getJumper($get));die();
+		pr(taobaoItemDetail($get));die();
 	}
 
 

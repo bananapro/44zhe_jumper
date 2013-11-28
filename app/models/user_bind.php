@@ -92,6 +92,7 @@ class UserBind extends AppModel {
 		if($id = $this->field('id', array('my_user'=>$my_user, 'jumper_type'=>$channel, 'jumper_uid'=>$selected['userid']))){
 			$this->save(array('id'=>$id, 'status'=>1));
 		}else{
+			$this->create(); //防止先unbindUser，导致id已有数据，此处会变为update
 			$this->save(array('my_user'=>$my_user, 'jumper_type'=>$channel, 'jumper_uid'=>$selected['userid']));
 		}
 

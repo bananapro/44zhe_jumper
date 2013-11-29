@@ -399,6 +399,70 @@ class StatController extends AppController {
 		die();
 	}
 
+	function c(){}
+
+	function dataTestC() {
+
+		$date_num = 14;
+		$y_num = 50;
+
+		$job_title = $_GET['job'];
+		if ($_GET['y_num'])
+			$y_num = $_GET['y_num'];
+		if ($_GET['date_num'])
+			$date_num = $_GET['date_num'];
+
+
+		$last_date = date('Y-m-d', strtotime('-' . $date_num . ' day'));
+		$colors = array('0x9933CC', '0x50CC33', '0x736AFF', '0x736AFF', '0xD54C78', '0x3334AD',
+			'0x339966', 'F50505', '0x8BB1A1', 'BAA8BD', '0xC31812', '0x424581',
+			'0x736AFF', '0x6AFF73', '0xADB5C7', '0xC11B01', '0x9933CC',
+			'0xd070ac', '0x799191', '0x7D8E99');
+
+		$datas = $this->StatJump->query("SELECT *, DATE(created) as ct FROM stat_redirect WHERE DATE(created)>'$last_date' AND source='channel_test'");
+
+		clearTableName($datas);
+		$new_datas = array();
+		$max_node = array();
+
+		$filter1 = array();
+		foreach ($datas as $data) {
+			@$new_datas['跳转次数'][$data['ct']] += 1;
+		}
+
+		require_once MYLIBS . 'ofc-library/open-flash-chart.php';
+		$g = new graph();
+		$g->title('每日跳转统计 (实时更新)', '{font-size: 16px; color: #736AFF}');
+
+		$max = array();
+		foreach ($new_datas as $node => $data) {
+			//if(!array_search($node, array_keys($max_node)))continue;
+			$every_date = array();
+			for ($i = $date_num; $i > -1; $i--) {
+
+				$every_date[] = intval(@$data[date('Y-m-d', strtotime("-$i day"))]);
+			}
+			$max[] = max($every_date);
+			//pr($every_date);
+			$g->set_data($every_date);
+			$g->line(2, array_shift($colors), $node, 12);
+		}
+
+		$date_arr = array();
+		for ($i = $date_num; $i > -1; $i--) {
+			$date_arr[] = date('d', strtotime("-$i day"));
+		}
+
+		$g->set_x_labels($date_arr);
+		$g->set_x_label_style(10, '0x000000', 0, 2);
+
+		$g->set_y_max(ceil(max($max) / $y_num) * $y_num);
+		$g->y_label_steps(10);
+		$g->set_y_legend($job_title . ' chart', 12, '#736AFF');
+		echo $g->render();
+		die();
+	}
+
 	//最新跳转记录，for集东
 	function jump($date = null) {
 		if (!$date)

@@ -1,0 +1,6 @@
+<?php
+    require_once  MYLIBS . 'ofc-library/open_flash_chart_object.php';
+?>
+<table>
+<tr><td><?php open_flash_chart_object( 1400, 500, '/stat/dataTestC?job=channel test&y_num=100&date_num=80' ,true, '/');?></td></tr>
+</table>

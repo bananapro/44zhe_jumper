@@ -20,6 +20,7 @@ class RController extends AppController {
 		if(!$source)$source = '1';
 
 		$target_url = $origin;
+
 		//此处以后扩展规则
 		if(trim($origin) == 'http://www.amazon.com'){
 			//$target_url = 'http://www.amazon.com/?_encoding=UTF8&camp=1789&creative=9325&linkCode=ur2&tag=44haitaoad1-20';
@@ -59,6 +60,30 @@ class RController extends AppController {
 		$this->redirect('http://haitao.44zhe.com/?l=go&r='.$target.'&c='.$source);
 
 	}
+
+	function c(){
+
+		if(!$_GET['t'])die();
+		$t = $_GET['t'];
+		unset($_GET['t']);
+		unset($_GET['url']);
+		unset($_GET['debug']);
+		$str = '';
+		foreach($_GET as $k => $v){
+			$str .= "{$k}=".urlencode($v)."&";
+		}
+
+		if(stripos($t, '?')){
+			$url = $t . '&' . trim($str , '&');
+		}else{
+			$url = $t . '?' . trim($str , '&');
+		}
+
+		$this->_addStat(1, $url, $url, 'channel_test');
+		$this->redirect($url);die();
+	}
 }
+
+
 
 ?>

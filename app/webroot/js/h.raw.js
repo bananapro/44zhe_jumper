@@ -211,7 +211,7 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 		}
 
 		if(window.zheHasRequesResult == false)
-			zheGetConvert($('.tb_span a').attr('biz-itemid'), i);
+			zheGetConvert($('.fan_box a').attr('biz-itemid'), i);
 
 	}, 100);
 

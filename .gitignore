@@ -1,8 +1,5 @@
 tmp/
-core.php
-database.php
 app/webroot/tywy3x
-app/tmp/*
 .DS_Store
 !empty
 cake

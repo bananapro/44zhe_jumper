@@ -17,7 +17,7 @@ if (@$_GET['debug']) {
 }
 
 require MYLIBS . 'curl.class.php';
-require MYLIBS . 'tranProxy.class.php';
+require MYLIBS . 'tran_proxy.class.php';
 require MYLIBS . '../basics.php';
 require ROOT . '../app/config/bootstrap.php';
 

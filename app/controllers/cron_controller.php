@@ -454,6 +454,9 @@ ETO;
 		echo "<br />";
 		echo "<br />";
 		echo "<br />";
+		echo "Model/PayAlipayJifenModel.class.php trade";
+		echo "<br />";
+		echo "<br />";
 
 		$ids = join(',', $userids);
 		//echo "DELETE FROM 51fanli_passport.tb_pay_account WHERE userid IN ($ids) AND pay_method=2";

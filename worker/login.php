@@ -35,6 +35,7 @@ if (@$_GET['mission_begin']) {
 					break;
 
 				default:
+					header('Content-Type: text/html; charset=UTF-8');
 					die('无法处理该渠道登陆任务：' . $type);
 			}
 			header('Location: ' . $login_url);die();

@@ -132,7 +132,7 @@ class AppController extends Controller {
 		$stat['p_price'] = $p_price;
 		$stat['p_fanli'] = $p_fanli;
 		$stat['p_seller'] = $p_seller;
-		$stat['ip'] = getip();
+		$stat['ip'] = getIp();
 		$stat['area'] = getAreaByIp();
 		$stat['shop'] = $shop;
 		$stat['jumper_uid'] = $userid;

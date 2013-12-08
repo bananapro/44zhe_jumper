@@ -44,7 +44,7 @@ class JobController extends AppController {
 			die();
 		}
 
-		if ($this->StatJump->find(array('ip' => getip()))) {
+		if ($this->StatJump->find(array('ip' => getIp()))) {
 			echo 'Please change your ip!';
 			die();
 		}

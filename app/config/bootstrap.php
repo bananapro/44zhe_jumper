@@ -191,10 +191,10 @@ function alert($type, $info, $level=1, $uniq=false) {
 	if($uniq){
 		$last = $db->find('', '', 'id desc', 1);
 		clearTableName($last);
-		if($last['ip'] == getip() && $last['client'] == getBrowser() && $last['type'] == $type && $last['info'] == $info)return;
+		if($last['ip'] == getIp() && $last['client'] == getBrowser() && $last['type'] == $type && $last['info'] == $info)return;
 	}
 	$db->create();
-	$db->save(array('type' => $type, 'info' => $info, 'ip' => getip(), 'area' => getAreaByIp(), 'client'=>getBrowser(), 'level'=>$level));
+	$db->save(array('type' => $type, 'info' => $info, 'ip' => getIp(), 'area' => getAreaByIp(), 'client'=>getBrowser(), 'level'=>$level));
 	return true;
 }
 
@@ -295,8 +295,8 @@ function taobaoItemDetail($p_id, $bak_channel = false){
 	clearTableName($cache);
 	if($cache)return json_decode($cache['content'], true);
 
-	require_once MYLIBS . 'taobaoapi' . DS . 'top' . DS . 'TopClient.class.php';
-	require_once MYLIBS . 'taobaoapi' . DS . 'top' . DS . 'request' . DS . 'TbkItemsDetailGetRequest.php';
+	require_once MYLIBS . 'api/taobao/top/TopClient.class.php';
+	require_once MYLIBS . 'api/taobao/top/request/TbkItemsDetailGetRequest.php';
 
 	//实例化TopClient类
 	$client = new TopClient;

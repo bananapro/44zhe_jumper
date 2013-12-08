@@ -32,7 +32,7 @@ class MyuserComponent extends Object {
 
 		setcookie('login_name', $admin['Admin']['name'], time() + 2 * 30 * 24 * 60 * 60, '/');
 		$data = file_get_contents('/data/vhosts/backend_web/logs/login.log');
-		$data = "[" . date('Y-m-d H:i:s') . "][Admin:{$admin['Admin']['name']}][" . getip() . "][login]\n" . $data;
+		$data = "[" . date('Y-m-d H:i:s') . "][Admin:{$admin['Admin']['name']}][" . getIp() . "][login]\n" . $data;
 		file_put_contents('/data/vhosts/backend_web/logs/login.log', $data);
 		return true;
 	}

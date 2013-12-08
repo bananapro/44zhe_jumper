@@ -33,7 +33,7 @@ class ApiController extends AppController {
 		$user = $this->UserCandidate->find(array('is_used' => 0));
 
 		//不允许当天IP领取重复的注册任务
-		$reg_before = $this->UserCandidate->find("ip = '" . getip() . "' AND ts > '" . date('Y-m-d') . "'", 'id');
+		$reg_before = $this->UserCandidate->find("ip = '" . getIp() . "' AND ts > '" . date('Y-m-d') . "'", 'id');
 
 		if (!$user) {
 			//报警，候选人库不足
@@ -93,7 +93,7 @@ class ApiController extends AppController {
 
 			//记录失败的注册请求
 			$this->StatRegFailed->create();
-			$this->StatRegFailed->save(array('ip' => getip(), 'area' => getAreaByIp(), 'date' => date('Y-m-d')));
+			$this->StatRegFailed->save(array('ip' => getIp(), 'area' => getAreaByIp(), 'date' => date('Y-m-d')));
 			$this->_error('can not find user candidate');
 		}
 	}
@@ -105,13 +105,13 @@ class ApiController extends AppController {
 
 		if ($status) {
 			if ($_SESSION['reg_username']) {
-				$this->UserCandidate->query("UPDATE user_candidate SET is_used=1, `status`='{$status}', ip='" . getip() . "', area='" . getAreaByIp() . "' WHERE username='{$_SESSION['reg_username']}'");
+				$this->UserCandidate->query("UPDATE user_candidate SET is_used=1, `status`='{$status}', ip='" . getIp() . "', area='" . getAreaByIp() . "' WHERE username='{$_SESSION['reg_username']}'");
 				$this->UserFanli->create();
 
 				//注册用户成功 status is 10000
 				if ($status == '10000') {
 					$user = array();
-					$user['ip'] = getip();
+					$user['ip'] = getIp();
 					$user['area'] = getAreaByIp();
 					$user['username'] = $_SESSION['reg_username'];
 					$user['email'] = $_SESSION['reg_email'];
@@ -219,7 +219,7 @@ class ApiController extends AppController {
 			$param['jumper_uid'] = $j['userid'];
 			$param['jumper_type'] = $type;
 			$param['client'] = getBrowser();
-			$param['ip'] = getip();
+			$param['ip'] = getIp();
 			$this->Task->create();
 			$this->Task->save($param);
 			$this->set('taskid', $this->Task->getLastInsertID());
@@ -435,7 +435,7 @@ class ApiController extends AppController {
 				list($order_num, $title, $buy_time) = explode('::', $order);
 				if(intval($order_num)>0){
 					$this->OrderTmp->create();
-					$this->OrderTmp->save(array('order_num'=>$order_num, 'buy_time'=>$buy_time, 'ip'=>getip(), 'client'=>getBrowser(), 'title'=>trim($title)));
+					$this->OrderTmp->save(array('order_num'=>$order_num, 'buy_time'=>$buy_time, 'ip'=>getIp(), 'client'=>getBrowser(), 'title'=>trim($title)));
 				}
 			}
 		}
@@ -455,7 +455,7 @@ class ApiController extends AppController {
 
 			if(strtotime($fix_time)>strtotime('2013-11-17'))die();
 			$this->OrderTmp->create();
-			$this->OrderTmp->save(array('order_num'=>$order_num, 'all_time'=>$fix_time, 'ip'=>getip(), 'client'=>getBrowser()));
+			$this->OrderTmp->save(array('order_num'=>$order_num, 'all_time'=>$fix_time, 'ip'=>getIp(), 'client'=>getBrowser()));
 		}
 
 		die();

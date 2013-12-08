@@ -13,7 +13,7 @@ class UserFanli extends User {
 		//TODO 改造根据my_user固定选择返利网用户
         if(!$area){
             $area = getAreaByIp();
-			if ($area == '本机地址' || stripos(getip(), '192.168.')!==false) $area = '上海';
+			if ($area == '本机地址' || stripos(getIp(), '192.168.')!==false) $area = '上海';
         }
         $user = $this->find(array('role'=>1, 'status'=>1), '', 'rand()');
         clearTableName($user);
@@ -33,7 +33,7 @@ class UserFanli extends User {
 		//level 2 - 用过的推手(用户给金额小于30的跳转)
         if(!$area){
             $area = getAreaByIp();
-			if ($area == '本机地址' || stripos(getip(), '192.168.')!==false) $area = '上海';
+			if ($area == '本机地址' || stripos(getIp(), '192.168.')!==false) $area = '上海';
         }
 
 		if($level==1){

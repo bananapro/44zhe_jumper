@@ -8,7 +8,7 @@ class StatApi extends AppModel {
     function add($status=1, $code='', $p_id='', $content='', $key=''){
 
     	$this->create();
-    	$this->save(array('status'=>$status, 'code'=>$code, 'p_id'=>$p_id, 'content'=>$content, 'ip'=>getip(), 'key'=>$key));
+    	$this->save(array('status'=>$status, 'code'=>$code, 'p_id'=>$p_id, 'content'=>$content, 'ip'=>getIp(), 'key'=>$key));
     }
 }
 

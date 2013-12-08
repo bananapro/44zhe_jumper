@@ -43,7 +43,7 @@ class UserBind extends AppModel {
 	function bindUser($my_user, $rand = false){
 
 		if(!$my_user)return;
-		$ip = getip();
+		$ip = getIp();
 		//从C段IP固定渠道
 		$ip_c = getIpByLevel('c');
 		$ip_c = md5($ip_c);

@@ -9,7 +9,7 @@ class RController extends AppController {
 	function _addStat($status=1, $origin, $target_url, $source=1000){
 
 		$detail = array('agent'=>$_SERVER["HTTP_USER_AGENT"], 'language'=>$_SERVER["HTTP_ACCEPT_LANGUAGE"]);
-		$this->StatRedirect->save(array('status'=>1, 'source'=>$source, 'ip'=>getip(), 'area'=>getAreaByIp(), 'client'=>getBrowser(), 'origin'=>$origin, 'target'=>$target_url, 'detail'=>json_encode($detail)));
+		$this->StatRedirect->save(array('status'=>1, 'source'=>$source, 'ip'=>getIp(), 'area'=>getAreaByIp(), 'client'=>getBrowser(), 'origin'=>$origin, 'target'=>$target_url, 'detail'=>json_encode($detail)));
 	}
 
 	function index(){

@@ -134,7 +134,7 @@ class ApiJumpController extends AppController {
 		else {
 
 			//报警 跳转taobao的url遗失
-			alert('jump', '[' . getip() . '][' . getBrowser() . '] p_id miss');
+			alert('jump', '[' . getIp() . '][' . getBrowser() . '] p_id miss');
 			$this->redirect(DEFAULT_ERROR_URL);
 		}
 	}

@@ -63,7 +63,7 @@ class DefaultController extends AppController {
 
 	function info($info=''){
 
-		$ip = getip();
+		$ip = getIp();
 		if($info=='ip'){
                         echo $ip;die();
                 }

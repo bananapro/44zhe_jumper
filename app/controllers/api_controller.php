@@ -203,7 +203,7 @@ class ApiController extends AppController {
 				if ($type != 'fanli' && $type) {
 
 					setcookie("{$type}_try", 1, time() + 3 * 24 * 3600, '/'); //每3天允许1次尝试渠道
-					$b = myisset(@$_COOKIE["{$type}_balance"], 3);
+					$b = myIsset(@$_COOKIE["{$type}_balance"], 3);
 					$b--;
 					if($b<= 0)$b = 0;
 					setcookie("{$type}_balance", $b, time() + 7 * 24 * 3600, '/'); //渠道失败容忍次数，减为0时7天不再走渠道

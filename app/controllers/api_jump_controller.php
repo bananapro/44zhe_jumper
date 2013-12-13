@@ -3,15 +3,19 @@
 class ApiJumpController extends AppController {
 
 	var $name = 'ApiJump';
-	var $uses = array('UserFanli', 'UserMizhe', 'UserCandidate', 'StatJump', 'StatRegFailed', 'StatJump', 'OrderFanli');
+	var $uses = array('UserFanli', 'UserMizhe', 'UserCandidate', 'StatJump', 'StatRegFailed', 'StatJump', 'OrderFanli', 'UserBind');
 	var $layout = 'ajax';
 
 	function demoReg() {
 
 	}
 
-	function demoJump($driver='51fanli') {
-		$this->set('driver', $driver);
+	function demoJump($type='jsfanli') {
+		$user = $this->UserBind->getChannelUserM($type)->find(array('status'=>1), '', 'userid DESC');
+		clearTableName($user);
+		$my_user = $this->UserBind->field('my_user', array('status'=>1, 'jumper_uid'=>$user['userid'], 'jumper_type'=>$type));
+		if(!$my_user)die('can not found my_user');
+		$this->set('my_user', $my_user);
 	}
 
 	function alert($target, $info) {
@@ -36,7 +40,7 @@ class ApiJumpController extends AppController {
 		$url = $_GET['u'];
 		if($flag == 'succ' && intval($fdetail)>10){
 			$_SESSION['fl_userid'] = $fdetail;
-			setcookie('fl_userid', $fdetail, time() + 1 * 24 * 3600, '/');
+			setcookie('fl_userid', $fdetail, time() + 5 * 24 * 3600, '/');
 		}else{
 			alert('fanli_login', '[fail][code][' . $fdetail . ']');
 		}

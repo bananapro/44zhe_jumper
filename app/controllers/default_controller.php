@@ -19,6 +19,14 @@ class DefaultController extends AppController {
 		$message = '';
 		$new2 = array();
 
+		$test = array();
+		foreach(C('config', 'JUMP_CHANNEL') as $channel => $rate){
+			$user = $this->UserBind->getChannelUserM($channel)->find(array('status'=>1), '', 'userid DESC');
+			clearTableName($user);
+			$my_user = $this->UserBind->field('my_user', array('status'=>1, 'jumper_uid'=>$user['userid']));
+			if($my_user)
+			$test[$channel] = $user['email'];
+		}
 
 		$this->UserFanli->doRestore();
 
@@ -48,6 +56,7 @@ class DefaultController extends AppController {
 		$waiting_mizhe_cash = $this->UserMizhe->findSum('cash');
 		$total_waiting = number_format($waiting_51fanli_cash + $waiting_51fanli_fb + $waiting_mizhe_cash, 2);
 
+		$this->set('test', $test);
 		$this->set('message', $message);
 		$this->set('total_fanli', $total_fanli);
 		$this->set('total_yongjin', $total_yongjin);

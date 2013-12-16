@@ -66,6 +66,12 @@ TEST :  <a href="http://go.44zhe.com/js/h.js" target="_blank">js link</a><br />
 </form>
 <br /><br />
 
+上传卷皮网订单<br />
+<form action="/order/postJuanpiOrder" method="post" enctype="multipart/form-data" target="_blank"><input type="file" value="" name="file"/><input type="submit" value="submit" />
+</form>
+<br /><br />
+
+
 上传返利客123订单<br />
 <form action="/order/postFlk123Order" method="post" enctype="multipart/form-data" target="_blank"><input type="file" value="" name="file"/><input type="submit" value="submit" />
 </form>

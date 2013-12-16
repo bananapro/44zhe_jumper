@@ -3,7 +3,7 @@
 class OrderController extends AppController {
 
 	var $name = 'Order';
-	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe', 'UserBaobeisha', 'UserFlk123', 'UserTaofen8', 'UserJsfanli', 'UserFanxian', 'UserGeihui', 'StatJump');
+	var $uses = array('UserFanli', 'OrderFanli', 'UserMizhe', 'UserBaobeisha', 'UserFlk123', 'UserTaofen8', 'UserJsfanli', 'UserFanxian', 'UserGeihui', 'UserJuanpi', 'StatJump');
 	const TYPE_FANLI = 1;
 	const TYPE_MIZHE = 2;
 	const TYPE_GEIHUI = 3;
@@ -12,6 +12,7 @@ class OrderController extends AppController {
 	const TYPE_FANXIAN = 6;
 	const TYPE_FLK123 = 7;
 	const TYPE_TAOFEN8 = 8;
+	const TYPE_JUANPI = 9;
 
 
 	//提交返利网订单数据
@@ -854,10 +855,119 @@ class OrderController extends AppController {
 		die();
 	}
 
+	//提交卷皮网订单列表页面
+	function postJuanpiOrder(){
+		if (isset($_FILES['file'])) {
+			$file = file_get_contents($_FILES["file"]["tmp_name"]);
+			if(!$file){
+				die('please input file');
+			}
+
+			require_once MYLIBS . 'html_dom.class.php';
+
+			$global = array();
+			$global_jumper = array();
+
+			$i = $file;
+
+			if ($i) {
+				$html = new simple_html_dom($i);
+				$name_dom = $html->find('div[class=list] a', 0);
+				$userid = '';
+				if($name_dom){
+					$username = trim(strip_tags($name_dom));
+					$userid = $this->UserJuanpi->field('userid', "email like '{$username}%'");
+				}
+				$userid = 1;
+				if(!$userid){
+					die('Juanpi user match error!');
+				}
+				$doms = $html->find('ul[class=order_show] li');
+				$new = array();
+				array_shift($doms);
+				foreach ($doms as $dom) {
+					$cell = $dom->find('div');
+					$single = array();
+					if(preg_match('/([0-9]{5,})/', $cell[0]->find('p', 0), $m)){
+						$single[] = $m[1];
+					}else{
+						die('Juanpi ordernum match error!');
+					}
+					$single[] = $cell[0]->find('a', 0);
+					if(preg_match('/([0-9]{5,})/', $cell[0]->find('a', 0)->href, $m)){
+						$single[] = $m[1];
+					}else{
+						die('Juanpi user match error!');
+					}
+					$single[] = str_replace('￥', '', $cell[1]->find('span', 0));
+					$single[] = str_replace('￥', '', $cell[1]->find('span', 1));
+					if(preg_match('/([0-9\- \:]{5,})/', $cell[2], $m)){
+						$single[] = $m[1];
+					}else{
+						die('Juanpi user match error!');
+					}
+					$single[] = $cell[3];
+					foreach($single as &$c){
+						$c = trim(strip_tags($c));
+					}
+					if(strpos($single[6], '等待核实')!==false)$single[6] = '已返利';
+					if($single[6] != '已返利')continue;
+
+					$order = array();
+					$order['p_id'] = $single[2];
+					$order['did'] = $single[0];
+					$order['ordernum'] = $order['did'];
+					$order['p_title'] = $single[1];
+					$order['p_price'] = $single[3];
+					$order['p_yongjin'] = intval($single[4]) * 100 / C('config', 'RATE_JUANPI');
+					$order['p_fanli'] = $order['p_yongjin'] * C('config', 'RATE');
+					$order['p_rate'] = C('config', 'RATE');
+					$order['donedate'] = $single[5];
+					$order['donedatetime'] = $single[5];
+
+					//下单日期反推10天
+					$order['buydate'] = date('Y-m-d', strtotime($order['donedate']) - 10 * 24 * 3600);
+					$order['buydatetime'] = date('Y-m-d H:i:s', strtotime($order['donedatetime']) - 10 * 24 * 3600);
+
+					$order['jumper_uid'] = $userid;
+
+					$order['type'] = self::TYPE_JUANPI;
+
+					//如果能正常访问到页面，但解析错误，报警
+					if ($order['p_price'] < 1 || !$order['p_title'] || !$order['p_id']) {
+						alert('rsync jsfanli order', 'userid : ' . $userid . ' content error');
+						continue;
+					}
+
+					//关联jump记录
+					$date_start = date('Y-m-d', strtotime($order['donedatetime']) - 12 * 24 * 3600);
+					$hit = $this->StatJump->find("p_id = {$order['p_id']} AND jumper_type = 'jsfanli' AND created>'{$date_start}'");
+
+					if ($hit) {
+						clearTableName($hit);
+						$global[$order['ordernum']] = $hit['outcode'];
+					}
+
+					$new[] = $order;
+				}
+
+				$return = $this->_saveOrder($new, $global, $global_jumper);
+
+				$fanli = intval($return['fanli']);
+				$order = intval($return['order']);
+				$message = "<b>{$username}</b> orders: <b>{$order}</b> fanli: <b>{$fanli}</b> rate: " . C('config', 'RATE') * 100 . "% hit: " . $return['hit'];
+				echo $message;
+				br();
+			}
+		}
+		die();
+	}
+
 	function _saveOrder($new, $global, $global_jumper){
 
 		$i = 0;
 		$fanli = 0;
+		$hit = 0;
 		foreach ($new as $n) {
 
 			if (isset($global[$n['ordernum']])) {
@@ -872,22 +982,28 @@ class OrderController extends AppController {
 			if (@$n['outcode'] == 'test')
 			continue;
 
+			if(@$n['outcode'])$hit += 1;
+
 			if ($this->OrderFanli->find(array('ordernum' => $n['ordernum'])))
 				continue;
 
 			if ($this->OrderFanli->find(array('did' => $n['did'])))
 				continue;
 
-			if ($n['p_price'] < $n['p_yongjin'])
-				continue;
+			if ($n['p_price']*0.5 < $n['p_yongjin']){
+				echo $n['p_title'] . ' price yongjin error: ' . $n['p_price'] . ':' . $n['p_yongjin'];
+				die();
+			}
+
 
 			$this->OrderFanli->create();
 			$this->OrderFanli->save($n);
 			$fanli += $n['p_fanli'];
+
 			$i++;
 		}
 
-		return array('order'=>$i, 'fanli'=>$fanli);
+		return array('order'=>$i, 'fanli'=>$fanli, 'hit'=>$hit);
 	}
 
 	/**

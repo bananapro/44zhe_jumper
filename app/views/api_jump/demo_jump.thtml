@@ -3,7 +3,7 @@
 <body>
 
 <script src="<?=DOMAIN?>/js/jquery-1.7.2.min.js"></script>
-<script src="<?=DOMAIN?>/api/getJumpUrlJs/taobao/<?=$my_user?>/26403084311?u=http://www.baidu.com&debug=false&oc=test"></script>
+<script src="<?=DOMAIN?>/api/getJumpUrlJs/taobao/<?=$my_user?>/19107489134?u=http://www.baidu.com&debug=false&oc=test"></script>
 
 </body>
 </html>

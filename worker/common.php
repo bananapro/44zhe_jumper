@@ -239,15 +239,17 @@ function proxyGetMission() {
 	if ($e) {
 		//缓冲用户信息
 		$cache_path = 'jumper_info/' . $e['jumper_type'] . '/' . $e['jumper_uid'];
-		$jumper_info = cache($cache_path);
+		$jumper_info = cache($cache_path, null, 86400);
 		if (!$jumper_info) {
 			$jumper_info = getJumperInfo($e['jumper_type'], $e['jumper_uid']);
 			if ($jumper_info) {
-				cache($cache_path, $jumper_info);
+				cache($cache_path, serialize($jumper_info));
 			}
 			else {
 				return false;
 			}
+		}else{
+			$jumper_info = unserialize($jumper_info);
 		}
 
 		$e = array_merge($e, $jumper_info);

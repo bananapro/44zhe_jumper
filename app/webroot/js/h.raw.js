@@ -148,24 +148,9 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 
 }if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshop') > 0) {
 
-	document.getElementsByClassName('fanli-logo')[0].style.display = 'none';
-	var i = setInterval(function() {
-
-		if(window.zheHasRequesResult == false){
-
-			if(window.top.document.getElementById("writeable_iframe_0")){
-
-				var topWin = window.top.document.getElementById("writeable_iframe_0").contentWindow;
-				objs = topWin.document.getElementsByTagName('a');
-				for(i in objs){
-					if(objs[i].href.indexOf('redirect.simba.taobao.com')>0){
-						objs[i].click();
-						window.zheHasRequesResult = true;
-					}
-				}
-			}
-		}
-	}, 100);
+	if(document.getElementById('J_gstn_igot')){
+		document.getElementById('J_gstn_igot').click();
+	}
 
 } else if (zheHost == 'www.baobeisha.com' && zheHref.indexOf('taskid') > 0) {
 

@@ -30,9 +30,10 @@ class OrderController extends AppController {
 			$datas = explode("\r\n", trim($file));
 			$global = array();
 			$global_jumper = array();
-
+			$i_hit = 0;
 
 			if ($datas) {
+
 				foreach ($datas as $data) {
 					$data = str_ireplace('NULL', '', $data);
 					$d = explode("\t", trim($data));
@@ -81,6 +82,7 @@ class OrderController extends AppController {
 							}
 
 							if ($hit) {
+								$i_hit++;
 								clearTableName($hit);
 								$global[$new['ordernum']] = $hit['outcode'];
 								$global_jumper[$new['jumper_uid']][$new['p_seller']] = $hit['outcode'];
@@ -132,6 +134,7 @@ class OrderController extends AppController {
 							$hit = $this->StatJump->find("shop='".$new['shop']."' AND created>'{$date_start}' AND created<'{$date_end}' AND jumper_uid='{$new['jumper_uid']}'");
 
 							if ($hit) {
+								$i_hit++;
 								clearTableName($hit);
 								if(!$hit['outcode'])$hit['outcode'] = $hit['my_user'];
 								$global[$new['ordernum']] = $hit['outcode'];
@@ -175,11 +178,11 @@ class OrderController extends AppController {
 
 
 			$fanli = floatval($fanli);
-			$message .= "orders: {$i} fanli: {$fanli}  rate: " . C('config', 'RATE') * 100 . "%";
+			$message .= "orders: {$i} fanli: {$fanli}  rate: " . C('config', 'RATE') * 100 . "% hit: ".$i_hit;
 
-				//优化推手，利益最大化
-				//15天以前被暂停的推手，如果账户无资产，则恢复身份并清空pause_date
-				//如果有资产，则查询order判断购物金额是否大于30，如果小于30则重新恢复身份
+			//优化推手，利益最大化
+			//15天以前被暂停的推手，如果账户无资产，则恢复身份并清空pause_date
+			//如果有资产，则查询order判断购物金额是否大于30，如果小于30则重新恢复身份
 			$weekdate = date('Y-m-d', time() - 12 * 24 * 3600);
 			$weekdate2 = date('Y-m-d', time() - 26 * 24 * 3600);
 			$this->UserFanli->query("UPDATE user_fanli SET status=1, pause_date='0000-00-00 00:00:00' WHERE role=3 AND status = 2 AND pause_date < '{$weekdate}' AND fl_fb=0");
@@ -193,7 +196,7 @@ class OrderController extends AppController {
 						if ($nu < 30) {
 							$this->UserFanli->save(array('userid' => $user['userid'], 'status' => 1));
 						}
-					};
+					}
 				}
 			}
 			else {
@@ -283,7 +286,7 @@ class OrderController extends AppController {
 
 				$fanli = intval($return['fanli']);
 				$order = intval($return['order']);
-				$message = "<b>{$username}</b> orders: <b>{$order}</b> fanli: <b>{$fanli}</b> rate: " . C('config', 'RATE') * 100 . "%";
+				$message = "<b>{$username}</b> orders: <b>{$order}</b> fanli: <b>{$fanli}</b> rate: " . C('config', 'RATE') * 100 . "% hit: " . $return['hit'];
 				echo $message;
 				br();
 			}
@@ -370,7 +373,7 @@ class OrderController extends AppController {
 
 				$fanli = intval($return['fanli']);
 				$order = intval($return['order']);
-				$message = "<b>{$username}</b> orders: <b>{$order}</b> fanli: <b>{$fanli}</b> rate: " . C('config', 'RATE') * 100 . "%";
+				$message = "<b>{$username}</b> orders: <b>{$order}</b> fanli: <b>{$fanli}</b> rate: " . C('config', 'RATE') * 100 . "% hit: " . $return['hit'];
 				echo $message;
 				br();
 			}
@@ -469,7 +472,7 @@ class OrderController extends AppController {
 
 				$fanli = intval($return['fanli']);
 				$order = intval($return['order']);
-				$message = "<b>{$username}</b> orders: <b>{$order}</b> fanli: <b>{$fanli}</b> rate: " . C('config', 'RATE') * 100 . "%";
+				$message = "<b>{$username}</b> orders: <b>{$order}</b> fanli: <b>{$fanli}</b> rate: " . C('config', 'RATE') * 100 . "% hit: " . $return['hit'];;
 				echo $message;
 				br();
 			}
@@ -563,7 +566,7 @@ class OrderController extends AppController {
 
 					//关联jump记录
 					$date_start = date('Y-m-d', strtotime($order['donedatetime']) - 12 * 24 * 3600);
-					$hit = $this->StatJump->find("p_id = {$order['p_id']} AND jumper_type = 'jsfanli' AND created>'{$date_start}'");
+					$hit = $this->StatJump->find("p_id = {$order['p_id']} AND jumper_type = 'juanpi' AND created>'{$date_start}'");
 
 					if ($hit) {
 						clearTableName($hit);

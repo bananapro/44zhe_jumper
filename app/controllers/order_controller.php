@@ -615,7 +615,7 @@ class OrderController extends AppController {
 			if ($this->OrderFanli->find(array('did' => $n['did'])))
 				continue;
 
-			if ($n['p_price']*0.5 < $n['p_yongjin']){
+			if ($n['p_price']*0.6 < $n['p_yongjin']){
 				echo $n['p_title'] . ' price yongjin error: ' . $n['p_price'] . ':' . $n['p_yongjin'];
 				die();
 			}

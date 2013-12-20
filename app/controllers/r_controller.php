@@ -22,7 +22,7 @@ class RController extends AppController {
 		$target_url = $origin;
 
 		//此处以后扩展规则
-		if(trim($origin) == 'http://www.amazon.com'){
+		if(trim($origin) == 'http://www.amazon.com' || trim($origin) == 'http://www.amazon.com/'){
 			//$target_url = 'http://www.amazon.com/?_encoding=UTF8&camp=1789&creative=9325&linkCode=ur2&tag=44haitaoad1-20';
 			//使用rebates跳转
 			$pass = false;

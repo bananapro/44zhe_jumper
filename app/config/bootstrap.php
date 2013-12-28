@@ -90,67 +90,6 @@ function getOutCode($iUserId, $sTc) {
 	return $sOC;
 }
 
-//识别浏览器
-function getBrowser() {
-
-
-	if (stripos($_SERVER["HTTP_USER_AGENT"], "TheWorld") || stripos($_SERVER["HTTP_USER_AGENT"], "QIHU THEWORLD")) {
-		$browser = 'world';
-	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "Maxthon")) {
-		$browser = 'aoyou';
-	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "TencentTraveler")) {
-		$browser = 'telcent';
-	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "SE 2") AND stripos($_SERVER["HTTP_USER_AGENT"], "MetaSr")) {
-		$browser = 'sogou';
-	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "360SE") AND !stripos($_SERVER["HTTP_USER_AGENT"], "TencentTraveler")) {
-		$browser = 'qihu';
-	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "QIHU 360EE") AND !stripos($_SERVER["HTTP_USER_AGENT"], "TencentTraveler")) {
-		$browser = 'qihu';
-	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "MSIE 11.0")) {
-		$browser = 'ie11';
-	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "MSIE 10.0")) {
-		$browser = 'ie10';
-	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "MSIE 9.0")) {
-		$browser = 'ie9';
-	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "MSIE 8.0")) {
-		$browser = 'ie8';
-	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "MSIE 7.0")) {
-		$browser = 'ie7';
-	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "MSIE 6.0")) {
-		$browser = 'ie6';
-	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "Firefox")) {
-		$browser = 'firefox';
-	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "Chrome")) {
-		$browser = 'chrome';
-	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "Safari")) {
-		$browser = 'safari';
-	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "Iphone") || stripos($_SERVER["HTTP_USER_AGENT"], "Ipad")) {
-		$browser = 'ios';
-	}
-	elseif (stripos($_SERVER["HTTP_USER_AGENT"], "Android")) {
-		$browser = 'android';
-	}
-	else {
-		$browser = $_SERVER["HTTP_USER_AGENT"];
-	}
-	return $browser;
-}
-
 //返利网passport接口
 function ApiFanliPassport($api, $params, $secret = '9f93eab2452f8dba5c7b9dd49dd85888') {
 

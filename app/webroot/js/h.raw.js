@@ -134,8 +134,13 @@ window.zheHasRequesResult = false;
 
 //解决IE9以下无getElementsByClassName
 if (!document.getElementsByClassName) {
-	document.getElementsByClassName = function(cname){
-		return document.querySelectorAll('.' + cname);
+	document.getElementsByClassName = function(cl){
+		var retnode = [];
+		var elem = this.getElementsByTagName('*');
+		for (var i = 0; i < elem.length; i++) {
+			if((' ' + elem[i].className + ' ').indexOf(' ' + cl + ' ') > -1) retnode.push(elem[i]);
+		}
+		return retnode;
 	}
 }
 

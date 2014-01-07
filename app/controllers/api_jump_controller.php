@@ -40,7 +40,7 @@ class ApiJumpController extends AppController {
 		$url = $_GET['u'];
 		if($flag == 'succ' && intval($fdetail)>10){
 			$_SESSION['fl_userid'] = $fdetail;
-			setcookie('fl_userid', $fdetail, time() + 5 * 24 * 3600, '/');
+			setcookie('fl_userid', $fdetail, time() + 20 * 24 * 3600, '/');
 		}else{
 			alert('fanli_login', '[fail][code][' . $fdetail . ']');
 		}

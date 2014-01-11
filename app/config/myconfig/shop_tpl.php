@@ -1,7 +1,7 @@
 <?php
 
 return array(
-		'taobao'	=> array('id' => 0, 'shopid' => 712),
+		'taobao'	=> array('id' => 712, 'shopid' => 712),
 		'yihaodian'	=> array('id' => 0, 'shopid' => 633, 'url_tpl'=>'$3?tracker_u=8363&tracker_type=1&uid=$2',	'trackmethod'=>'uid', 'durl' => 'http://www.yihaodian.com/1/'),
 		'1haodian'	=> array('id' => 0, 'shopid'=> 633, 'url_tpl'=>'$3?tracker_u=8363&tracker_type=1&uid=$2',	'trackmethod'=>'uid', 'durl' => 'http://www.yihaodian.com/1/'),
 		'jd'		=> array('id' => 0, 'shopid'=> 544, 'url_tpl'=>'http://click.union.jd.com/JdClick/?unionId=36857&siteId=$2&to=$3', 'durl' => 'http://www.jd.com'),

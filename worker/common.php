@@ -3,6 +3,7 @@
 define('DS', '/');
 define('ROOT', dirname(__FILE__) . DS);
 define('API', 'http://www.jumper.com/api/');
+define('API_DUOSQ', 'http://api.duo.com/');
 define('CACHE', ROOT . 'tmp' . DS);
 define('COOKIE', CACHE . 'login' . DS); //登陆login保存路径
 
@@ -37,6 +38,24 @@ function requestApi($api) {
 		$data = json_decode($data, true);
 		if ($data['status'] == 1) {
 			return $data['message'];
+		}
+	}
+	return false;
+}
+
+function requestApiDuosq($api){
+
+	if (stripos($api, '?') != false) {
+		$data = file_get_contents(API_DUOSQ . $api . '&debug=false');
+	}
+	else {
+		$data = file_get_contents(API_DUOSQ . $api . '?debug=false');
+	}
+
+	if ($data && $data != 'empty') {
+		$data = unserialize($data);
+		if(is_array($data)){
+			return $data;
 		}
 	}
 	return false;

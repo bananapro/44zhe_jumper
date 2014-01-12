@@ -20,8 +20,8 @@ if(@$_SESSION['duosq_jobs']){
 		$_SESSION['duosq_jobs'] = $jobs;
 	}
 }
-
-$ret = file_get_contents('http://192.168.10.1:9618/User=duosq,Password=duosq,MsgID=1,Phone=18666660880,Msg='.g2u('测试发送', true));
+$test_msg = '测试发送';
+$ret = file_get_contents('http://192.168.10.1:9618/User=duosq,Password=duosq,MsgID=1,Phone=18666660880,Msg='.g2u($test_msg, true));
 
 if($ret === '00'){
 	$page = <<<EOT

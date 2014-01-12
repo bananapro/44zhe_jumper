@@ -44,7 +44,9 @@ EOT;
 				unset($_SESSION[$key]);
 				usleep(200);
 			}else{
+				echo '<html><title>多省钱短信发送任务自动处理</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><body>';
 				echo "[{$ret}]{$job['mobile']}[{$job['content']}][failed]";
+				echo '</body></html>';
 				die();
 			}
 		}

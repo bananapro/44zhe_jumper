@@ -23,7 +23,7 @@ if(@$_SESSION['duosq_jobs']){
 $test_msg = '测试发送';
 $ret = file_get_contents('http://192.168.10.1:9618/User=duosq,Password=duosq,MsgID=1,Phone=18666660880,Msg='.g2u($test_msg, true));
 
-if($ret === '00'){
+if(strval($ret) === '00'){
 	$page = <<<EOT
 <html>
 <title>多省钱短信发送任务自动处理</title>
@@ -40,7 +40,7 @@ EOT;
 		foreach($_SESSION['duosq_jobs'] as $key => $job){
 			$ret = file_get_contents('http://127.0.0.1:9618/User=duosq,Password=duosq,MsgID=1,Phone='.$job['mobile'].',Msg='.urlencode(g2u($job['content'], true)));
 
-			if($ret === '00'){
+			if(strval($ret) === '00'){
 				unset($_SESSION[$key]);
 				usleep(200);
 			}else{

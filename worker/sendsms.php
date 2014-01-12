@@ -42,7 +42,7 @@ EOT;
 			$ret = @file_get_contents('http://192.168.10.1:9618/User=duosq,Password=duosq,MsgID=1,Phone='.$job['mobile'].',Msg='.$content);
 
 			if(strval(trim($ret)) === '00'){
-				unset($_SESSION[$key]);
+				unset($_SESSION['duosq_jobs'][$key]);
 				usleep(200);
 			}else{
 				echo '<html><title>多省钱短信发送任务自动处理</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><body>';

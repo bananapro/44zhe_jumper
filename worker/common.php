@@ -219,6 +219,23 @@ function getLoginFailCookies() {
 	return $hit;
 }
 
+//GBK编码转成UTF8, opposite:true代表反方向
+function g2u(&$str, $opposite = false) {
+
+	if (is_array($str)) {
+		foreach ($str as &$e) {
+			$e = g2u($e, $opposite);
+		}
+	}else{
+		if (!$opposite){
+			$str = mb_convert_encoding($str, 'utf8', 'auto,gbk');
+		}else{
+			$str =  mb_convert_encoding($str, 'gbk', 'utf8');
+		}
+	}
+	return $str;
+}
+
 /**
  * 透明代理获取任务信息
  */

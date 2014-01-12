@@ -23,7 +23,7 @@ if($_SESSION['duosq_jobs']){
 }
 */
 
-$ret = file_get_contents('http://192.168.10.1:9618/User=duosq,Password=duosq,MsgID=1,Phone=18666660880,Msg=发送测试');
+$ret = file_get_contents('http://192.168.10.1:9618/User=duosq,Password=duosq,MsgID=1,Phone=18666660880,Msg='.g2u('测试发送', true));
 echo $ret;die();
 $page = <<<EOT
 <html>

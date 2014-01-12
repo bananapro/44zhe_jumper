@@ -6,8 +6,7 @@ require './common.php';
 //http://api.duo.com/getJob/notifyOrderBackSms
 //http://api.duo.com/getJob/notifyPaymentCompleteSms
 
-/*
-if($_SESSION['duosq_jobs']){
+if(@$_SESSION['duosq_jobs']){
 	$total_jobs = count($_SESSION['duosq_jobs']);
 }else{
 	$jobs_order = requestApiDuosq('getJob/notifyOrderBackSms');
@@ -21,11 +20,11 @@ if($_SESSION['duosq_jobs']){
 		$_SESSION['duosq_jobs'] = $jobs;
 	}
 }
-*/
 
 $ret = file_get_contents('http://192.168.10.1:9618/User=duosq,Password=duosq,MsgID=1,Phone=18666660880,Msg='.g2u('测试发送', true));
-echo $ret;die();
-$page = <<<EOT
+
+if($ret === '00'){
+	$page = <<<EOT
 <html>
 <title>多省钱短信发送任务自动处理</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -37,19 +36,23 @@ $page = <<<EOT
 </body></html>
 EOT;
 
-if($_SESSION['duosq_jobs']){
-	foreach($_SESSION['duosq_jobs'] as $key => $job){
-		$ret = file_get_contents('http://127.0.0.1:9618/User=duosq,Password=duosq,MsgID=1,Phone='.$job['mobile'].',Msg='.urlencode());
+	if($_SESSION['duosq_jobs']){
+		foreach($_SESSION['duosq_jobs'] as $key => $job){
+			$ret = file_get_contents('http://127.0.0.1:9618/User=duosq,Password=duosq,MsgID=1,Phone='.$job['mobile'].',Msg='.urlencode(g2u($job['content'], true)));
 
-		if($ret === '00'){
-			unset($_SESSION[$key]);
-			usleep(200);
-		}else{
-			echo "[{$ret}]{$job['mobile']}[{$job['content']}][failed]";
-			die();
+			if($ret === '00'){
+				unset($_SESSION[$key]);
+				usleep(200);
+			}else{
+				echo "[{$ret}]{$job['mobile']}[{$job['content']}][failed]";
+				die();
+			}
 		}
 	}
+
+	echo $page;
+}else{
+	echo 'can not connect to sms server';
 }
 
-echo $page;
 ?>

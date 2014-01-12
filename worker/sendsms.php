@@ -21,7 +21,7 @@ if(@$_SESSION['duosq_jobs']){
 	}
 }
 $test_msg = '测试发送';
-$ret = file_get_contents('http://192.168.10.1:9618/User=duosq,Password=duosq,MsgID=1,Phone=18666660880,Msg='.g2u($test_msg, true));
+$ret = @file_get_contents('http://192.168.10.1:9618/User=duosq,Password=duosq,MsgID=1,Phone=18666660880,Msg='.g2u($test_msg, true));
 
 if(strval(trim($ret)) === '00'){
 	$page = <<<EOT
@@ -38,7 +38,8 @@ EOT;
 
 	if($_SESSION['duosq_jobs']){
 		foreach($_SESSION['duosq_jobs'] as $key => $job){
-			$ret = file_get_contents('http://127.0.0.1:9618/User=duosq,Password=duosq,MsgID=1,Phone='.$job['mobile'].',Msg='.urlencode(g2u($job['content'], true)));
+			$content = urlencode(g2u($job['content'], true));
+			$ret = @file_get_contents('http://192.168.10.1:9618/User=duosq,Password=duosq,MsgID=1,Phone='.$job['mobile'].',Msg='.$content);
 
 			if(strval(trim($ret)) === '00'){
 				unset($_SESSION[$key]);
@@ -50,6 +51,9 @@ EOT;
 				die();
 			}
 		}
+
+		//向监控手机发送最后一条短信
+		@file_get_contents('http://192.168.10.1:9618/User=duosq,Password=duosq,MsgID=1,Phone=18666660880,Msg='.$content);
 	}
 
 	echo $page;

@@ -5,7 +5,7 @@ require './common.php';
 
 //http://api.duo.com/getJob/notifyOrderBackSms
 //http://api.duo.com/getJob/notifyPaymentCompleteSms
-
+session_start();
 if(@$_SESSION['duosq_jobs']){
 	$total_jobs = count($_SESSION['duosq_jobs']);
 }else{

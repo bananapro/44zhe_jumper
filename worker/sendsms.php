@@ -20,6 +20,12 @@ if(@$_SESSION['duosq_jobs']){
 		$_SESSION['duosq_jobs'] = $jobs;
 	}
 }
+
+if(!$total_jobs){
+	echo 'sms jobs empty';
+	die();
+}
+
 $test_msg = '测试发送';
 $ret = @file_get_contents('http://192.168.10.1:9618/User=duosq,Password=duosq,MsgID=1,Phone=18666660880,Msg='.g2u($test_msg, true));
 

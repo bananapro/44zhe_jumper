@@ -68,7 +68,7 @@ $(function() {
 		fileObjName   : 'file',
 		buttonText    : '点击上传订单',
 		onUploadSuccess : function(file, data, response){
-			$('#output').append(data+'<br />');
+			$('#output').append(data);
 		},
 	});
 });

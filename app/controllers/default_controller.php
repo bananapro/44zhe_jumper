@@ -96,11 +96,6 @@ class DefaultController extends AppController {
 		$this->set('info', $last_info);
 	}
 
-	function test($get=false){
-		pr(taobaoItemDetail($get));die();
-	}
-
-
 	function matchFanxianOrder(){
 
 		$orders = $this->OrderTmp->findAll();

@@ -1,0 +1,21 @@
+<input type="file" name="file_upload" id="file_upload_1" />
+<div id="queue"></div>
+<div id="output"></div>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="/uploadify/jquery.uploadify.min.js"></script>
+<script>
+$(function() {
+	$("#file_upload_1").uploadify({
+		height        : 30,
+		swf           : '/uploadify/uploadify.swf',
+		uploader      : '/uploadify/uploadify.php',
+		width         : 120,
+		buttonText    : '点击上传订单',
+		onUploadSuccess : function(file, data, response){
+
+			$('#output').append(data+'<br />');
+		},
+	});
+});
+</script>

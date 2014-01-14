@@ -1,3 +1,6 @@
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="/uploadify/jquery.uploadify.min.js"></script>
+
 <div style="font-size:14px; font-weight:bold; text-align:left; padding:20px">
 TEST :  <a href="http://go.44zhe.com/js/h.js" target="_blank">js link</a><br />
 <?php foreach($test as $channel=>$user):?>
@@ -47,26 +50,32 @@ TEST :  <a href="http://go.44zhe.com/js/h.js" target="_blank">js link</a><br />
 </form>
 <br /><br />
 
-上传宝贝杀订单<br />
-<form action="/order/postBaobeishaOrder" method="post" enctype="multipart/form-data" target="_blank"><input type="file" value="" name="file"/><input type="submit" value="submit" />
-</form>
-<br /><br />
+上传其他网站订单<br />
+<div style="text-align:left; margin-top:10px">
+<div id="queue"></div>
+<div id="output" style="margin-bottom:10px"></div>
 
-上传金沙返利订单<br />
-<form action="/order/postJsfanliOrder" method="post" enctype="multipart/form-data" target="_blank"><input type="file" value="" name="file"/><input type="submit" value="submit" />
-</form>
-<br /><br />
+<input type="file" name="file_upload" id="file_upload_1" />
+</div>
 
-上传返钱网订单<br />
-<form action="/order/postFanxianOrder" method="post" enctype="multipart/form-data" target="_blank"><input type="file" value="" name="file"/><input type="submit" value="submit" />
-</form>
-<br /><br />
+<script>
+$(function() {
+	$("#file_upload_1").uploadify({
+		height        : 30,
+		swf           : '/uploadify/uploadify.swf',
+		uploader      : '/order/post',
+		width         : 120,
+		fileObjName   : 'file',
+		buttonText    : '点击上传订单',
+		onUploadSuccess : function(file, data, response){
+			$('#output').append(data+'<br />');
+		},
+	});
+});
+</script>
 
-上传卷皮网订单<br />
-<form action="/order/postJuanpiOrder" method="post" enctype="multipart/form-data" target="_blank"><input type="file" value="" name="file"/><input type="submit" value="submit" />
-</form>
-<br /><br />
-
+<br />
+<br />
 当前环境:
 <?php
 	if(MY_ENV == 'DEV'){

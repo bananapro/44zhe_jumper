@@ -14,6 +14,39 @@ class OrderController extends AppController {
 	const TYPE_TAOFEN8 = 8;
 	const TYPE_JUANPI = 9;
 
+	//统一提交此处，再转交
+	function post(){
+
+		if (!empty($_FILES)) {
+			//$tempFile = $_FILES['file']['tmp_name'];
+			echo $_FILES['file']['name'] . ' &nbsp; : &nbsp; ';
+
+			if(strpos($_FILES['file']['name'], '宝贝杀')!==false ||
+				strpos($_FILES['file']['name'], 'baobeisha')!==false
+			){
+				$this->postBaobeishaOrder();
+			}
+
+			if(strpos($_FILES['file']['name'], 'fanxian')!==false ||
+				strpos($_FILES['file']['name'], '返现')!==false
+			){
+				$this->postFanxianOrder();
+			}
+
+			if(strpos($_FILES['file']['name'], '金沙')!==false || strpos($_FILES['file']['name'], 'jsfanli')!==false
+			){
+				$this->postJsfanliOrder();
+			}
+
+			if(strpos($_FILES['file']['name'], '卷皮')!==false || strpos($_FILES['file']['name'], 'juanpi')!==false
+			){
+				$this->postJuanpiOrder();
+			}
+
+			echo 'order do not know';
+			die();
+		}
+	}
 
 	//提交返利网订单数据
 	function postFanliOrder(){
@@ -33,7 +66,6 @@ class OrderController extends AppController {
 			$i_hit = 0;
 
 			if ($datas) {
-
 				foreach ($datas as $data) {
 					$data = str_ireplace('NULL', '', $data);
 					$d = explode("\t", trim($data));

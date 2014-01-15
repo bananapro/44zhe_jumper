@@ -240,7 +240,7 @@ class ApiController extends AppController {
 			}
 		}
 
-		if(getBrowser() == 'Mozilla/4.0')alert('trace', '[Mozilla/4.0][get fanli userid]['.$user['userid'].']');
+		//if(getBrowser() == 'Mozilla/4.0')alert('trace', '[Mozilla/4.0][get fanli userid]['.$user['userid'].']');
 
 		$this->set('fanli_username', $user['username']);
 		$this->set('fanli_password', md5($user['username'].'0a'));

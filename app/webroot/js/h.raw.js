@@ -82,16 +82,20 @@ function zheGetConvert(iid, pid, appkey, unid) {
 		}
 
 		if(window.document.getElementById("writeable_iframe_0")){
-			var topwin = window.document.getElementById("writeable_iframe_0").contentWindow;
-			link = topwin.document.getElementsByTagName("a")[0].attributes.getNamedItem("href").nodeValue;
-			if(link){
+			try{
+				var topwin = window.document.getElementById("writeable_iframe_0").contentWindow;
+				link = topwin.document.getElementsByTagName("a")[0].attributes.getNamedItem("href").nodeValue;
+				if(link){
 
-				clearInterval(i);
-				var referLink = document.createElement('a');
-				referLink.href = link;
-				referLink.target = '_self';
-				document.body.appendChild(referLink);
-				referLink.click();
+					clearInterval(i);
+					var referLink = document.createElement('a');
+					referLink.href = link;
+					referLink.target = '_self';
+					document.body.appendChild(referLink);
+					referLink.click();
+				}
+			}catch(e){
+
 			}
 		}
 

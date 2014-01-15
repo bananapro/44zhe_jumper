@@ -60,7 +60,7 @@ if(getCookie('_nk_') || getCookie('tracknick') || 1){
 	zheLoading();
 
 	<?php $save_userid = $_SESSION['fl_userid']?$_SESSION['fl_userid']:$_COOKIE['fl_userid'];?>
-	<?php if(!$save_userid):?>
+	<?php if(!$save_userid && 0):?>
 
 	$.ajax({
 		dataType: "jsonp",
@@ -71,7 +71,7 @@ if(getCookie('_nk_') || getCookie('tracknick') || 1){
 	});
 
 	<?php else:?>
-		go('succ','<?=$save_userid?>')
+		go('succ', 'direct');
 	<?php endif;?>
 
 }else{

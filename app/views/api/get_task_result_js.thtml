@@ -1,5 +1,9 @@
+<?php if(@$force):?>
 var referLink = document.createElement('a');
-referLink.href = 'http://<?=$link?>';
+referLink.href = '<?=$link?>';
 referLink.target = '_self';
 document.body.appendChild(referLink);
 referLink.click();
+<?php else:?>
+zheGetConvert('<?=$p_id?>', '<?=$m_id?>', '<?=$appkey?>', '<?=$unid?>');
+<?php endif;?>

@@ -21,9 +21,9 @@ function zheInsertLoading() {
 			characterSet = 'gbk';
 		}
 	}else{
-	    if(document.charset.toUpperCase()!="UTF-8"){
-	     	characterSet = 'gbk';
-	    }
+		if(document.charset.toUpperCase()!="UTF-8"){
+			characterSet = 'gbk';
+		}
 	}
 	if(characterSet == 'utf8'){
 		document.getElementById('mask_id_dv').innerHTML = '<div style="position:fixed; top:0; left:0; z-index:100000000000; width:100%; height:100%; background:#FFF;text-align:center"><br /><br /><br /><br /><br /><br /><br /><br /><h2 style="height:30px">正在激活返利，请稍等 ...</h2><img src="' + zheDomain + '/loading.gif"></div>';
@@ -34,48 +34,75 @@ function zheInsertLoading() {
 
 function zheLoadImg(url){
 	var img = new Image();
-    img.src = url;
+	img.src = url;
 }
 
-function zheGetConvert(iid) {
+function zheGetConvert(iid, pid, appkey, unid) {
 
-	if(!window.alimamatk_show)return;
-	if(!iid)return;
-	if(!KSLITE)return;
+	var div = document.createElement('div');
+	//div.style.display = 'none';
+	div.id = 'my_enjoy';
+	document.body.appendChild(div);
+	document.getElementById('my_enjoy').innerHTML= '<a id="my_enjoy" data-type="0" data-itemid="'+iid+'" data-rd="1" data-style="2" data-tmpl="290x380">跳转中</a>';
 
-	window.iid = iid;
-	KSLITE.provide(["tkapi-main"],
-	function(c) {
+	window.unid = unid;
+	(function(win,doc){
 
-		if(!c("tkapi-config").r.cache.et)return;
-		var f = [];
+		var s = doc.createElement("script"), h = doc.getElementsByTagName("head")[0];
+		if (!win.alimamatk_show) {
+			s.charset = "gbk";
+			s.async = true;
+			s.src = "http://a.alimama.cn/tkapi.js";
+			h.insertBefore(s, h.firstChild);
+		};
+		var o = {
+			pid: pid,
+			appkey: appkey,
+			unid: unid,
+			rd:1
+		};
+		win.alimamatk_onload = win.alimamatk_onload || [];
 
-		function g(i, h) {
-			if ( !! h) {
-			f.push(i + (i ? "=": "") + h)
+		if(win.alimamatk_show){
+			KSLITE.provide(["tkapi-main"],
+			function(c) {
+					c("tkapi-config").r.cache.unid = window.unid;
+			})
+			win.alimamatk_onload.push(o);
+		}
+
+	})(window,document)
+
+	var i = setInterval(function() {
+
+		zheCount = zheCount + 1;
+		if (zheCount == 100) { //10秒容忍度
+			loadForceJump(iid);
+			clearInterval(i);
+		}
+
+		if(window.document.getElementById("writeable_iframe_0")){
+			var topwin = window.document.getElementById("writeable_iframe_0").contentWindow;
+			link = topwin.document.getElementsByTagName("a")[0].attributes.getNamedItem("href").nodeValue;
+			if(link){
+
+				clearInterval(i);
+				var referLink = document.createElement('a');
+				referLink.href = link;
+				referLink.target = '_self';
+				document.body.appendChild(referLink);
+				referLink.click();
 			}
 		}
-		call_back_fun = 'jsonp_callback_' + Math.random().toString().replace(".", "");
-		g('cb', call_back_fun);
-		g('ak', c("tkapi-config").r.cache.ak);
-		g('pid', c("tkapi-config").r.cache.pid);
-		g('unid', '0');
-		g('wt', '0');
-		g('tl', '290x380');
-		g('rd', '1');
-		//g('ct', encodeURIComponent('itemid='+c("tkapi-util").getAttrs($('.goto a')[0]).biz.itemid));
-		g('ct', encodeURIComponent('itemid='+window.iid));
-		//g('st', '2');
-		g('rf', encodeURIComponent(c("tkapi-config").r.cache.ref));
-		g('et', c("tkapi-config").r.cache.et);
-		g('pgid', c("tkapi-config").r.cache.pgid);
-		//g('v', '2.0'); 用display模式用2.0
-		g('v', '1.1');
-		//window[call_back_fun] = function(y, x) {
-		//    jsonp_callback(y, x)
-		//};
-		zheGetConvertCB(c("tkapi-config").c.alimama + 'q?' + f.join('&'));
-	})
+
+	}, 100);
+
+	return false;
+}
+
+function loadForceJump(iid){
+	zheLoadit(zheDomain + '/api/alert/jump/can_not_load_tbkapi?=about:blank');
+	window.location.href = 'http://item.taobao.com/item.html?id=' + iid;
 }
 
 function zhePutOrderTmp(o, n){
@@ -84,13 +111,9 @@ function zhePutOrderTmp(o, n){
 	if(d2 < d1) zheLoadit(zheDomain + '/api/saveOrderTmpFix/' + o + '/' + n + '?');
 }
 
-function zheGetConvertCB(slink) {
+function zheGetConvertCB() {
 	window.zheHasRequesResult = true;
-	zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=' + encodeURIComponent(slink) + '&debug=false');
-}
-
-function loadForceJump() {
-	zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '?link_origin=give_up&force=1&debug=false');
+	zheLoadit(zheDomain + '/api/getTaskResultJs/' + zheArgs['taskid'] + '&debug=false');
 }
 
 function zhePasteUrl(url){
@@ -123,7 +146,6 @@ var zheHost = location.host;
 var zheHref = location.href;
 var zheArgs = zhePasteUrl('');
 
-
 if (navigator.userAgent.indexOf("MSIE") > 0)
 	is_ie = true;
 else
@@ -144,7 +166,6 @@ if (!document.getElementsByClassName) {
 	}
 }
 
-
 if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 
 	zheInsertLoading();
@@ -160,67 +181,22 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 } else if (zheHost == 'www.baobeisha.com' && zheHref.indexOf('taskid') > 0) {
 
 	zheInsertLoading();
-	var i = setInterval(function() {
-
-		zheCount = zheCount + 1;
-		if (zheCount == 50) { //5秒容忍度
-			loadForceJump();
-			clearInterval(i);
-		}
-
-		if(window.zheHasRequesResult == false)
-			zheGetConvert($('.pointer').attr('biz-itemid'), i);
-
-	}, 100);
+	zheGetConvertCB();
 
 } else if (zheHost == 'www.jsfanli.com' && zheHref.indexOf('taskid') > 0) {
 
 	zheInsertLoading();
-	var i = setInterval(function() {
-
-		zheCount = zheCount + 1;
-		if (zheCount == 50) { //5秒容忍度
-			loadForceJump();
-			clearInterval(i);
-		}
-
-		if(window.zheHasRequesResult == false)
-			zheGetConvert($('.pointer').attr('biz-itemid'), i);
-
-	}, 100);
+	zheGetConvertCB();
 
 }else if (zheHost == 'fanli.juanpi.com' && zheHref.indexOf('taskid') > 0) {
 
 	zheInsertLoading();
-	var i = setInterval(function() {
-
-		zheCount = zheCount + 1;
-		if (zheCount == 100) { //10秒容忍度
-			loadForceJump();
-			clearInterval(i);
-		}
-
-		if(window.zheHasRequesResult == false)
-			zheGetConvert($('.fan_box a').attr('biz-itemid'), i);
-
-	}, 100);
+	zheGetConvertCB();
 
 } else if ( zheHost == 'www.fanxian.com' && zheHref.indexOf('taskid') > 0) {
 
 	zheInsertLoading();
-
-	var i = setInterval(function() {
-
-		zheCount = zheCount + 1;
-		if (zheCount == 100) { //10秒容忍度
-			loadForceJump();
-			clearInterval(i);
-		}
-
-		if(window.zheHasRequesResult == false)
-			zheGetConvert(zheArgs['gid'], i);
-
-	}, 100);
+	zheGetConvertCB();
 
 } else if (zheHost == 're.taobao.com' && zheHref.indexOf('unid') > 0) {
 

@@ -188,16 +188,16 @@ class ApiController extends AppController {
 				$type = $j['type'];
 				//尝试走过渠道但没有成功过
 				if (@$_COOKIE["{$type}_try"] && !@$_COOKIE["{$type}_succ"]){
-					alert("jump", '[today fail]['.$type.']', 1, true);
-					$type = false;
+					//alert("jump", '[today fail]['.$type.']', 1, true);
+					//$type = false;
 				}
 
 				//当认为走渠道没问题时，但容忍度降到0，也不再走mizhe
 				if (isset($_COOKIE["{$type}_balance"]) && $_COOKIE["{$type}_balance"] == 0){
 
-					setcookie("{$type}_succ", 0, time() - 360 * 24 * 3600, '/'); //清除通道成功标识
-					alert("jump", '[balance zero]['.$type.']['. $param['oc'] .']');
-					$type = false;
+					//setcookie("{$type}_succ", 0, time() - 360 * 24 * 3600, '/'); //清除通道成功标识
+					//alert("jump", '[balance zero]['.$type.']['. $param['oc'] .']');
+					//$type = false;
 				}
 
 				if ($type != 'fanli' && $type) {
@@ -259,50 +259,34 @@ class ApiController extends AppController {
 
 		$link = false;
 		$converted = true;
-		$link_origin = $_GET['link_origin'];
 
 		if($taskid){
 			$t_info = $this->Task->find(array('id'=>$taskid));
 			clearTableName($t_info);
 			//但客户端插件悬停过久(例如获取不到淘点金链接)，返回强制跳转链接
-			if(@$_GET['force'] && $t_info){
-
-				$this->Task->save(array('id'=>$taskid, 'status'=>3, 'link_origin' =>$link_origin));
-				$link = str_replace('http://', '', DOMAIN . '/apiJump/jumpForce/' . "{$t_info['shop']}/{$t_info['my_user']}/{$t_info['p_id']}?oc={$t_info['oc']}&target={$t_info['target']}");
-				$this->set('link', $link);
-
-			}else if($t_info){
+			if($t_info){
 
 				$type = $t_info['jumper_type'];
 				require_once MYLIBS . 'jumper' . DS . "jtask_{$type}.class.php";
 
 				$obj_name = 'Jtask'.ucfirst($type);
 				$task = new $obj_name($t_info);
-				$link = $task->getLink($link_origin);
-				if(!$link){//转换失败强制转换
-					$converted = false;
-					$this->Task->save(array('id'=>$taskid, 'status'=>3, 'link_origin' =>$link_origin));
-					$link = DOMAIN . '/apiJump/jumpForce/' . "{$t_info['shop']}/{$t_info['my_user']}/{$t_info['p_id']}?oc={$t_info['oc']}&target={$t_info['target']}";
+				$unid = $task->getUnid();
+				if(!$unid){//转换失败强制转换
+					$this->set('force', true);
+					$this->set('link', 'http://item.taobao.com/item.html?id='.$t_info['p_id']);
 				}else{
-					$this->Task->save(array('id'=>$taskid, 'link_finish'=>$link));
+					$this->set('m_id', $task->m_id);
+					$this->set('appkey', $task->appkey);
+					$this->set('unid', $unid);
+					$this->set('p_id', $t_info['p_id']);
 				}
-				$link = str_replace('http://', '', $link);
-
-				$this->set('link', $link);
-
-				$item_info = taobaoItemDetail($t_info['p_id']);
-
-				if($item_info)
-					$this->Task->save(array('id'=>$taskid, 'p_seller'=>$item_info['p_seller']));
-
-				if($converted)
-					$this->_addStatJump($t_info['shop'], $t_info['jumper_type'], $t_info['my_user'], $t_info['oc'], $t_info['jumper_uid'], $t_info['p_id'], $item_info['p_title'], $t_info['p_price'], $t_info['p_fanli'], $item_info['p_seller']);
 
 				//往客户端植入渠道跳转成功标记位
 				if(@$_COOKIE[$type.'_succ']){
 					setcookie($type.'_succ', 1, time() + 360 * 24 * 3600, '/'); //如果2次都跳渠道成功则变成永久
 				}else{
-					setcookie($type.'_succ', 1, time() + 1 * 24 * 3600, '/'); //1次成功只有效1天 - 防止有用户碰巧1次成功而已
+					setcookie($type.'_succ', 1, time() + 30 * 24 * 3600, '/'); //1次成功只有效30天 - 防止有用户碰巧1次成功而已
 				}
 
 				//补偿错误容忍度
@@ -312,7 +296,8 @@ class ApiController extends AppController {
 				setcookie($type.'_balance', $b, time() + 7 * 24 * 3600, '/'); //渠道错误容忍次数，减为0时7天不再走渠道
 
 			}else{
-				$this->set('link', str_replace('http://', '', DEFAULT_ERROR_URL));
+				$this->set('force', true);
+				$this->set('link', DEFAULT_ERROR_URL);
 			}
 		}
 	}

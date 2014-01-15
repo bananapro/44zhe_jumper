@@ -38,12 +38,6 @@ class ApiJumpController extends AppController {
 		$flag = $_GET['flag'];
 		$fdetail = $_GET['fdetail'];
 		$url = $_GET['u'];
-		if($flag == 'succ' && intval($fdetail)>10){
-			$_SESSION['fl_userid'] = $fdetail;
-			setcookie('fl_userid', $fdetail, time() + 20 * 24 * 3600, '/');
-		}else{
-			alert('fanli_login', '[fail][code][' . $fdetail . ']');
-		}
 
 		if($url){
 			$this->redirect($url);
@@ -64,7 +58,6 @@ class ApiJumpController extends AppController {
 	 */
 	function jumpForce($shop, $my_user, $p_id='') {
 
-
 		$data = taobaoItemDetail($p_id);
 
 		if (!$data) {
@@ -72,7 +65,9 @@ class ApiJumpController extends AppController {
 			$this->redirect(DEFAULT_ERROR_URL);
 		}
 
-		$this->jump($shop, $my_user, $p_id, $data['p_title'], $data['p_price'], $data['p_seller']);
+		//$this->jump($shop, $my_user, $p_id, $data['p_title'], $data['p_price'], $data['p_seller']);
+
+		$this->redirect('http://item.taobao.com/item.htm?id=' . $p_id);
 	}
 
 

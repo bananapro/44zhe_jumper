@@ -304,6 +304,8 @@ class ApiController extends AppController {
 			}
 
 			if($converted){
+				$item_info = taobaoItemDetail($t_info['p_id']);
+
 				$this->_addStatJump($t_info['shop'], $t_info['jumper_type'], $t_info['my_user'], $t_info['oc'], $t_info['jumper_uid'], $t_info['p_id'], $item_info['p_title'], $t_info['p_price'], $t_info['p_fanli'], $item_info['p_seller']);
 			}
 		}

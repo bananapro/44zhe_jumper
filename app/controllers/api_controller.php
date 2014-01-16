@@ -275,11 +275,13 @@ class ApiController extends AppController {
 				if(!$unid){//转换失败强制转换
 					$this->set('force', true);
 					$this->set('link', 'http://item.taobao.com/item.html?id='.$t_info['p_id']);
+					$converted = false;
 				}else{
 					$this->set('m_id', $task->m_id);
 					$this->set('appkey', $task->appkey);
 					$this->set('unid', $unid);
 					$this->set('p_id', $t_info['p_id']);
+
 				}
 
 				//往客户端植入渠道跳转成功标记位
@@ -298,6 +300,11 @@ class ApiController extends AppController {
 			}else{
 				$this->set('force', true);
 				$this->set('link', DEFAULT_ERROR_URL);
+				$converted = false;
+			}
+
+			if($converted){
+				$this->_addStatJump($t_info['shop'], $t_info['jumper_type'], $t_info['my_user'], $t_info['oc'], $t_info['jumper_uid'], $t_info['p_id'], $item_info['p_title'], $t_info['p_price'], $t_info['p_fanli'], $item_info['p_seller']);
 			}
 		}
 	}

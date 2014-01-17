@@ -127,7 +127,7 @@ if (@$mission['mission_type'] == 'login') {
 		//step 1: 请求登陆页面
 		if ($path == '/login' && $_SERVER['REQUEST_METHOD'] == 'GET') {
 			$page = getCacheStatic($uri);
-			$page .= "<script>$('#account').val('{$mission['email']}');$('#password').val('{$mission['password']}');</script>"; //挂入用户名密码
+			$page .= "<script>$('input[name=account]').val('{$mission['email']}');$('input[name=password]').val('{$mission['password']}');</script>"; //挂入用户名密码
 			header('Content-Length: ' . strlen($page)); //修正页面大小
 		}
 

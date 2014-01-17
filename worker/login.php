@@ -30,7 +30,7 @@ if (@$_GET['mission_begin']) {
 					break;
 
 				case 'juanpi':
-					$login_url = 'http://www.juanpi.com/login?ref=%2Fuser&carry_mission=login:'.$type.':'.$uid;
+					$login_url = 'http://user.juanpi.com/login?carry_mission=login:'.$type.':'.$uid;
 					file_put_contents('/tmp/current_mission', 'login:'.$type.':'.$uid);
 					break;
 

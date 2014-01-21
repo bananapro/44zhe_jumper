@@ -40,10 +40,10 @@ function zheLoadImg(url){
 function zheGetConvert(iid, pid, appkey, unid) {
 
 	var div = document.createElement('div');
-	//div.style.display = 'none';
+	div.style.display = 'none';
 	div.id = 'my_enjoy';
 	document.body.appendChild(div);
-	document.getElementById('my_enjoy').innerHTML= '<a id="my_enjoy" data-type="0" data-itemid="'+iid+'" data-rd="1" data-style="2" data-tmpl="290x380">跳转中</a>';
+	document.getElementById('my_enjoy').innerHTML= '<a data-type="0" biz-itemid="'+iid+'" data-rd="1" data-style="2" data-tmpl="192x40" data-tmplid="625"></a>';
 
 	window.unid = unid;
 	(function(win,doc){
@@ -67,6 +67,7 @@ function zheGetConvert(iid, pid, appkey, unid) {
 			KSLITE.provide(["tkapi-main"],
 			function(c) {
 					c("tkapi-config").r.cache.unid = window.unid;
+					c("tkapi-config").r.cache.rd = 1;
 			})
 			win.alimamatk_onload.push(o);
 		}
@@ -85,8 +86,10 @@ function zheGetConvert(iid, pid, appkey, unid) {
 			try{
 				var topwin = window.document.getElementById("writeable_iframe_0").contentWindow;
 				link = topwin.document.getElementsByTagName("a")[0].attributes.getNamedItem("href").nodeValue;
+				alert(link);
 				if(link){
 
+					link = link.replace(/unid%3D.+%26/g,"unid%3D"+window.unid+"%26");
 					clearInterval(i);
 					var referLink = document.createElement('a');
 					referLink.href = link;

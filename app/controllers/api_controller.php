@@ -233,11 +233,13 @@ class ApiController extends AppController {
 			clearTableName($user);
 
 		}else{
+			/*
 			//选取fanli pool准备备选通道
 			$user = $this->UserFanli->getPoolBig($my_user);
 			if (!$user) {
 				alert('User Error', 'can not found a user for jump');
 			}
+			*/
 		}
 
 		//if(getBrowser() == 'Mozilla/4.0')alert('trace', '[Mozilla/4.0][get fanli userid]['.$user['userid'].']');

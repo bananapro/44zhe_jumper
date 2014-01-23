@@ -9,12 +9,7 @@ session_start();
 if(@$_SESSION['duosq_jobs']){
 	$total_jobs = count($_SESSION['duosq_jobs']);
 }else{
-	$jobs_order = requestApiDuosq('getJob/notifyOrderBackSms');
-	$jobs_pay = requestApiDuosq('getJob/notifyPaymentCompleteSms');
-	if(!$jobs_order)$jobs_order = array();
-	if(!$jobs_pay)$jobs_pay = array();
-
-	$jobs = array_merge($jobs_order, $jobs_pay);
+	$jobs = requestApiDuosq('getJob/notifySms');
 	$total_jobs = intval(count($jobs));
 	if($total_jobs){
 		$_SESSION['duosq_jobs'] = $jobs;

@@ -29,7 +29,7 @@ if (isset($_GET['debug'])) {
 		define('DEBUG', 0);
 
 }else {
-	define('DEBUG', 0);
+	define('DEBUG', 2);
 }
 
 define('MY_ENV', 'DEV');

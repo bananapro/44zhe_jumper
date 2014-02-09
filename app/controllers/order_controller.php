@@ -529,7 +529,7 @@ class OrderController extends AppController {
 
 			if ($i) {
 				$html = new simple_html_dom($i);
-				$name_dom = $html->find('div[class=list] a', 0);
+				$name_dom = $html->find('span[class=green]', 0);
 				$userid = '';
 				if($name_dom){
 					$username = trim(strip_tags($name_dom));
@@ -539,37 +539,38 @@ class OrderController extends AppController {
 				if(!$userid){
 					die('Juanpi user match error!');
 				}
-				$doms = $html->find('ul[class=order_show] li');
+				$doms = $html->find('ul[class=secondul]');
 				$new = array();
-				array_shift($doms);
 				foreach ($doms as $dom) {
-					$cell = $dom->find('div');
+					$cell = $dom->find('li');
 					$single = array();
-					if(preg_match('/([0-9]{5,})/', $cell[0]->find('p', 0), $m)){
+					if(preg_match('/([0-9]{5,})/', $cell[1]->find('span', 0), $m)){
 						$single[] = $m[1];
 					}else{
 						die('Juanpi ordernum match error!');
 					}
-					$single[] = $cell[0]->find('a', 0);
-					if(preg_match('/([0-9]{5,})/', $cell[0]->find('a', 0)->href, $m)){
+					$single[] = $cell[1]->find('a', 0)->text();
+					if(preg_match('/([0-9]{5,})/', $cell[1]->find('a', 0)->href, $m)){
 						$single[] = $m[1];
 					}else{
-						die('Juanpi user match error!');
+						die('Juanpi pid match error!');
 					}
-					$single[] = str_replace('￥', '', $cell[1]->find('span', 0));
-					$single[] = str_replace('￥', '', $cell[1]->find('span', 1));
-					if(preg_match('/([0-9\- \:]{5,})/', $cell[2], $m)){
-						$single[] = $m[1];
+
+					$single[] = str_replace('￥', '', $cell[2]->find('span', 0));
+					$single[] = str_replace('￥', '', $cell[2]->find('span', 1));
+
+					if(preg_match('/([0-9\- \:]{5,})/', $cell[3]->find('span',0), $m)){
+						$single[] = trim($m[1]);
 					}else{
-						die('Juanpi user match error!');
+						die('Juanpi done date match error!');
 					}
-					$single[] = $cell[3];
+
+					$single[] = $cell[4];
 					foreach($single as &$c){
 						$c = trim(strip_tags($c));
 					}
-					if(strpos($single[6], '等待核实')!==false)$single[6] = '已返利';
+					//if(strpos($single[6], '已锁定')!==false)$single[6] = '已返利';
 					if($single[6] != '已返利')continue;
-
 					$order = array();
 					$order['p_id'] = $single[2];
 					$order['did'] = $single[0];

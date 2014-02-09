@@ -562,14 +562,14 @@ class OrderController extends AppController {
 					if(preg_match('/([0-9\- \:]{5,})/', $cell[3]->find('span',0), $m)){
 						$single[] = trim($m[1]);
 					}else{
-						die('Juanpi done date match error!');
+						$single[] = date("Y-m-d H:i:s", time()+86400*14);
 					}
 
 					$single[] = $cell[4];
 					foreach($single as &$c){
 						$c = trim(strip_tags($c));
 					}
-					//if(strpos($single[6], '已锁定')!==false)$single[6] = '已返利';
+					if($single[6] == '等待审核')$single[6] = '已返利';
 					if($single[6] != '已返利')continue;
 					$order = array();
 					$order['p_id'] = $single[2];

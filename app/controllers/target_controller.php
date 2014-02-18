@@ -13,10 +13,10 @@ class TargetController extends AppController {
 	 */
 	function getTask(){
 
-		$t_info = $this->Target->find("status=0", '', 'id asc');
+		$t_info = $this->Target->find(array('status'=>array(0,1,2)), '', 'id asc');
 		clearTableName($t_info);
 		if($t_info){
-			$this->Target->save(array('id'=>$t_info['id'], 'status'=>1));
+			//$this->Target->save(array('id'=>$t_info['id'], 'status'=>1));
 			$this->_success($t_info, true);
 		}else{
 			$this->_success(0, true);

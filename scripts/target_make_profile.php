@@ -104,67 +104,75 @@ while(1){
 
 	if(stripos($return, '20000')!==false){
 
-		if($t['step'] == 1){
+		if($t['status'] ==0){
+			finishTask($taskid, 1);
+			$t['status'] = 1;
+		}
+
+		if($t['status'] == 1){
 			//绑定手机
 			$curl->get("{$domain}center/safephone/bindphone1", "{$domain}center/safeuser/safecenter");
 			$return = $curl->post("{$domain}center/safephone/ajaxBindPhone1", array('mobile'=>$t['mobile']), "{$domain}center/safephone/bindphone1");
 			if(!isSucc($return)){
-				finishTask($taskid,  10, '[ajaxBindPhone1]['.$return.']');
+				finishTask($taskid,  11, '[ajaxBindPhone1]['.$return.']');
 				continue;
 			}
 
 			$r = $curl->get("{$domain}center/safephone/bindPhone2");
 			$return = $curl->get("{$domain}center/safephone/sendverifycode?pos=601&mobile={$t['mobile']}");
 			if(!isSucc($return)){
-				finishTask($taskid, 10, '[sendverifycode1]['.$return.']');
+				finishTask($taskid, 11, '[sendverifycode1]['.$return.']');
 				continue;
 			}
 
 			$code = getPhoneCode($curl, $t['mobile']);
 			if(!$code){
-				finishTask($taskid, 10, '[sendverifycode1][get code fail]');
+				finishTask($taskid, 11, '[sendverifycode1][get code fail]');
 				continue;
 			}
 
 			$return = $curl->post("{$domain}center/safephone/ajaxBindPhone2", array('mobile'=>$t['mobile'], 'code'=>$code), "{$domain}center/safephone/bindphone2");
 			if(!isSucc($return)){
-				finishTask($taskid, 10, '[ajaxBindPhone2]['.$return.']');
+				finishTask($taskid, 11, '[ajaxBindPhone2]['.$return.']');
 				continue;
 			}
-
+			finishTask($taskid, 2);
+			$t['status'] = 2;
 			alert('bind', '[mobile]['.$t['mobile'].'][ok]');
 		}
 
-		if($t['step'] == 1 || $t['step'] == 2){
+
+
+		if($t['status'] == 2){
 			//绑定支付宝
 
 			$curl->get("{$domain}center/safeaccount/accountManagement", "{$domain}center/safeuser/safecenter");
 			$curl->get("{$domain}center/safeaccount/bindAlipay1_beta", "{$domain}center/safeuser/accountManagement");
 			$return = $curl->post("{$domain}center/safeaccount/ajaxBindAlipay1", array('pay_account'=>$t['alipay'], 'realname'=>$t['truename'], 'identify'=>$t['idcard'], 'identify_type'=>1), "{$domain}center/safeaccount/bindAlipay1_beta");
 			if(!isSucc($return)){
-				finishTask($taskid, 11, '[ajaxBindAlipay1]['.$return.']');
+				finishTask($taskid, 12, '[ajaxBindAlipay1]['.$return.']');
 				continue;
 			}
 
 			$curl->get("{$domain}center/safeaccount/bindAlipay2");
 			$return = $curl->get("{$domain}center/safephone/sendverifycode?pos=906&mobile=");
 			if(!isSucc($return)){
-				finishTask($taskid, 11, '[sendverifycode2]['.$return.']');
+				finishTask($taskid, 12, '[sendverifycode2]['.$return.']');
 				continue;
 			}
 
 			$code = getPhoneCode($curl, $t['mobile']);
 			if(!$code){
-				finishTask($taskid, 11, '[sendverifycode2][get code fail]');
+				finishTask($taskid, 12, '[sendverifycode2][get code fail]');
 				continue;
 			}
 
 			$return = $curl->post("{$domain}center/safeaccount/ajaxBindAlipay2", array('code'=>$code), "{$domain}center/safeaccount/bindAlipay2");
 			if(!isSucc($return)){
-				finishTask($taskid, 11, '[ajaxBindAlipay2]['.$return.']');
+				finishTask($taskid, 12, '[ajaxBindAlipay2]['.$return.']');
 				continue;
 			}
-
+			finishTask($taskid, 3);
 			alert('bind', '[alipay]['.$t['alipay'].'][ok]');
 
 			$data = array();
@@ -180,7 +188,6 @@ while(1){
 
 			$curl->post("{$domain}center/safephone/savenotify", $data, "{$domain}center/safeuser/safecenter");
 
-			finishTask($taskid, 2);
 			alert('task', '[end]['.$t['username'].'][ok]');
 		}
 
@@ -192,7 +199,7 @@ while(1){
 
 	    finishTask($taskid, 0, '[login error]['.$return.']');
 	}else{
-		finishTask($taskid, 18, '[login error]['.$return.']');
+		finishTask($taskid, 0, '[login error]['.$return.']');
 	}
 
 	alert('sleep', '10 second ...');

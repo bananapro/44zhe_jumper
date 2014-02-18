@@ -74,7 +74,7 @@
 		'JUMP_CHANNEL_ENABLE' => array('baobeisha', 'jsfanli', 'fanxian', 'juanpi'),
 
 		//渠道会员绑定插件账号数量上限
-		'JUMP_CHANNEL_BIND_LIMIT' => 26,
+		'JUMP_CHANNEL_BIND_LIMIT' => 30,
 
 		//rebates每日跳转限制
 		'JUMP_LIMIT_REBATES' => 100,

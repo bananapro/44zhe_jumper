@@ -1,0 +1,29 @@
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><pre>Array
+(
+    [message] => Array
+        (
+            [id] => 3
+            [status] => 0
+            [error_msg] => 
+            [username] => bill9119
+            [password] => 1813192890a
+            [mobile] => 15889601048
+            [alipay] => zhongxinw@126.com
+            [truename] => 蛮子平
+            [idcard] => 341700196309207363
+            [created] => 0000-00-00 00:00:00
+            [ts] => 2014-02-18 22:01:37
+        )
+
+    [status] => 1
+)
+</pre><table id="cakeSqlLog" cellspacing="0" border = "0">
+<caption>2 queries took 0 ms</caption>
+<thead>
+<tr><th>Nr</th><th>Query</th><th>Error</th><th>Affected</th><th>Num. rows</th><th>Took (ms)</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>SHOW TABLES FROM jumper</td><td></td><td style = "text-align: right">23</td><td style = "text-align: right">23</td><td style = "text-align: right">0</td></tr>
+<tr><td>2</td><td>SELECT  `Target`.`id`, `Target`.`status`, `Target`.`error_msg`, `Target`.`username`, `Target`.`password`, `Target`.`mobile`, `Target`.`alipay`, `Target`.`truename`, `Target`.`idcard`, `Target`.`created`, `Target`.`ts` FROM `target` AS `Target`   WHERE  (`status` IN ('0', '1', '2') )  ORDER BY `id`  asc  LIMIT 1</td><td></td><td style = "text-align: right">1</td><td style = "text-align: right">1</td><td style = "text-align: right">0</td></tr>
+</table>

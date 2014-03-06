@@ -163,7 +163,7 @@ function getProxy($test_url = 'http://www.baidu.com', $seed = 5, $try = 3, $p = 
 
 	require_once MYLIBS . 'curl.class.php';
 
-	$api = "http://www.xinxinproxy.com/httpip/json?count={$seed}&orderId=" . C('config', 'PROXY_ORDER') . "&includeProvinces=" . urlencode($p) .'&isps=' . urlencode('电信,其它运营商') . '&isnew=1&isShuffle=1';
+	$api = "http://www.xinxinproxy.com/httpip/json?count={$seed}&orderId=" . C('config', 'PROXY_ORDER') . "&includeProvinces=" . urlencode($p) .'&isps=' . urlencode('电信') . '&isnew=1&isShuffle=1';
 
 	$data = file_get_contents($api);
 	$data = json_decode($data, true);

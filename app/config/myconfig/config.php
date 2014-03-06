@@ -54,7 +54,7 @@
 		'RATE_JUANPI' => 70,
 
 		//代理提取订单号
-		'PROXY_ORDER' => '452684341951457',
+		'PROXY_ORDER' => '541347865921457',
 
 		//默认登陆米折的账户，用于读取跳转链接
 		'MIZHE_DEFAULT_LOGIN_USERID' => 5249518,
@@ -74,7 +74,7 @@
 		'JUMP_CHANNEL_ENABLE' => array('baobeisha', 'jsfanli', 'fanxian', 'juanpi'),
 
 		//渠道会员绑定插件账号数量上限
-		'JUMP_CHANNEL_BIND_LIMIT' => 30,
+		'JUMP_CHANNEL_BIND_LIMIT' => 35,
 
 		//rebates每日跳转限制
 		'JUMP_LIMIT_REBATES' => 100,

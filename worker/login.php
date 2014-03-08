@@ -54,7 +54,7 @@ else {
 $page = <<<EOT
 <html><title>登陆任务处理</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><body>
 <div style="text-align:center;width:100%"><br /><br /><br /><br /><br /><br /><br />
-<h2><span id="title"><b>$msg</b>，刷新计时：<span id="count">10</span>s</span></h2></div></body></html>
+<h2><span id="title"><b>$msg</b>，刷新计时：<span id="count">3600</span>s</span></h2></div></body></html>
 <script>
  var q = setInterval(function(){
 if(parseInt(document.getElementById('count').innerHTML) == 0){

@@ -70,12 +70,12 @@ class DefaultController extends AppController {
 		$this->set('total_earn', $total_earn);
 	}
 
-	function info($info=''){
+	function client($info=''){
 
 		$ip = getIp();
 		if($info=='ip'){
-                        echo $ip;die();
-                }
+			echo $ip;die();
+		}
 		$area = getAreaByIp();
 		$agent = $_SERVER['HTTP_USER_AGENT'];
 

@@ -51,7 +51,7 @@ function go(flag, fdetail){
 	    zheLocation.href = '<?=DOMAIN?>/apiJump/r?flag='+flag+'&fdetail='+fdetail+'&u=' + encodeURIComponent(go_href);
 
 	<?php else:?>
-	    zheLocation.href = '<?=DOMAIN?>/api/alert/fanli_login/[fail][js_no_pass][<?=$p['p_id']?>]';
+	    zheLocation.href = '<?=DOMAIN?>/api/alert/tbk_api/[fail][<?=$p['p_id']?>]';
 	<?php endif;?>
 }
 

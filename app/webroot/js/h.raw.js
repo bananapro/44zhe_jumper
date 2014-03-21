@@ -211,4 +211,10 @@ if (zheHost == 'fun.51fanli.com' && zheHref.indexOf('goshopapi') > 0) {
 	obj[0].target="_self";
 	obj[0].click();
 
+} else if (zheHost == 'ai.taobao.com' && zheHref.indexOf('unid') > 0) {
+
+	obj = document.getElementsByClassName('go-to-buy');
+	obj[0].target="_self";
+	obj[0].click();
+
 }

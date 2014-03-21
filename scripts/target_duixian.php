@@ -98,6 +98,7 @@ while(1){
 	@$try[$t['username']]++;
 	if($try[$t['username']]>3){
 		finishTask($taskid, 17, '提现尝试超过3次，暂时跳过');
+		unset($try[$t['username']]);
 		continue;
 	}
 

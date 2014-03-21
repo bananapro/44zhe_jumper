@@ -216,7 +216,6 @@ function getProxy($test_url = 'http://www.baidu.com', $seed = 5, $try = 3, $p = 
 
 }
 
-
 //更好的随机算法
 function hitRate($total, $curr, $rate){
 	if(!$total || !$rate){

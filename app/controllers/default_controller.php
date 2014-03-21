@@ -127,6 +127,33 @@ class DefaultController extends AppController {
 		}
 		die();
 	}
+
+	function info($type){
+
+		$this->layout = 'ajax';
+		$ip = getIp();
+		if($type=='ip'){
+			echo $ip;die();
+		}
+		$area = getAreaByIp();
+		$agent = $_SERVER['HTTP_USER_AGENT'];
+
+		$last_info = cache('proxy_info', null, 86400*365);
+		$new_info = array('ip'=>$ip, 'area'=>$area, 'agent'=>$agent);
+		if($last_info){
+			$last_info = unserialize($last_info);
+			array_unshift($last_info, $new_info);
+		}else{
+			$last_info[] = $new_info;
+		}
+
+		if(count($last_info) > 8){
+			array_pop($last_info);
+		}
+
+		cache('proxy_info', serialize($last_info));
+		$this->set('info', $last_info);
+	}
 }
 
 ?>

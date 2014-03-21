@@ -54,7 +54,7 @@
 		'RATE_JUANPI' => 70,
 
 		//代理提取订单号
-		'PROXY_ORDER' => '541347865921457',
+		'PROXY_ORDER' => '578828242461457',
 
 		//默认登陆米折的账户，用于读取跳转链接
 		'MIZHE_DEFAULT_LOGIN_USERID' => 5249518,

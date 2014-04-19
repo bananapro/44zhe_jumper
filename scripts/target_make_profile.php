@@ -6,6 +6,7 @@ require MYLIBS . 'curl.class.php';
 set_time_limit(0);
 
 $curl = new CURL();
+$curl->timeout = 30;
 $curl->cookie_path = '/tmp/cookie_mfp';
 $log_dir = './logs/';
 @mkdir($log_dir);

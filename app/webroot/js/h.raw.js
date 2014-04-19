@@ -86,7 +86,6 @@ function zheGetConvert(iid, pid, appkey, unid) {
 			try{
 				var topwin = window.document.getElementById("writeable_iframe_0").contentWindow;
 				link = topwin.document.getElementsByTagName("a")[0].attributes.getNamedItem("href").nodeValue;
-				alert(link);
 				if(link){
 
 					link = link.replace(/unid%3D.+%26/g,"unid%3D"+window.unid+"%26");

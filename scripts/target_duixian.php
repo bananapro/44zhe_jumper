@@ -145,7 +145,7 @@ while(1){
 
 			$point = $m[1];
 
-			$return = $curl->get("{$domain}center/safephone/sendverifycode?pos=1301");
+			$return = $curl->get("{$domain}center/safephone/sendverifycode?pos=1301&vertype=voice");
 			if(!isSucc($return)){
 				finishTask($taskid, 3, '[sendverifycode_duixian]['.$return.']');
 				continue;
@@ -180,12 +180,19 @@ while(1){
 	//20002
 	}elseif(stripos($return, '20002')!==false || stripos($return, '2002')!==false){
 		finishTask($taskid, 19, '[password error]['.$return.']');
+		continue;
 
 	}elseif(stripos($return, 'connect')!==false || stripos($return, 'operation')!==false || stripos($return, 'empty')!==false){
 
 	    finishTask($taskid, 3, '[login error]['.$return.']');
+	    sleep(10);
+		continue;
+
 	}else{
 		finishTask($taskid, 3, '[login error]['.$return.']');
+
+		sleep(10);
+		continue;
 	}
 
 	alert('sleep', '90 second ...');

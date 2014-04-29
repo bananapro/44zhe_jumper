@@ -453,7 +453,7 @@ class OrderController extends AppController {
 
 					$p_id_a_href = $cell[0]->children(0)->getAttribute('href');
 					$order_id_a_href = $cell[5]->find('a',0)->getAttribute('href');
-					preg_match('/([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9:]+)/', $single[2], $m);
+					preg_match('/([0-9]{4}-[0-9]{2}-[0-9]{2})/', $single[2], $m);
 
 					$order = array();
 
@@ -504,7 +504,8 @@ class OrderController extends AppController {
 
 				$fanli = intval($return['fanli']);
 				$order = intval($return['order']);
-				$message = "<b>{$username}</b> orders: <b>{$order}</b> fanli: <b>{$fanli}</b> rate: " . C('config', 'RATE') * 100 . "% hit: " . $return['hit'];;
+				$all = count($new);
+				$message = "<b>{$username}</b> all:{$all} orders: <b>{$order}</b> fanli: <b>{$fanli}</b> rate: " . C('config', 'RATE') * 100 . "% hit: " . $return['hit'];;
 				echo $message;
 				br();
 			}
@@ -613,7 +614,8 @@ class OrderController extends AppController {
 
 				$fanli = intval($return['fanli']);
 				$order = intval($return['order']);
-				$message = "<b>{$username}</b> orders: <b>{$order}</b> fanli: <b>{$fanli}</b> rate: " . C('config', 'RATE') * 100 . "% hit: " . $return['hit'];
+				$all = count($new);
+				$message = "<b>{$username}</b> all:{$all} orders: <b>{$order}</b> fanli: <b>{$fanli}</b> rate: " . C('config', 'RATE') * 100 . "% hit: " . $return['hit'];
 				echo $message;
 				br();
 			}

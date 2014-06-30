@@ -88,12 +88,13 @@ function zheGetConvert(iid, pid, appkey, unid) {
 				link = topwin.document.getElementsByTagName("a")[0].attributes.getNamedItem("href").nodeValue;
 				if(link){
 
-					link = link.replace(/unid%3D.+%26/g,"unid%3D"+window.unid+"%26");
-					clearInterval(i);
+					link = link.replace(/unid%3D.+?%26/g,"unid%3D"+window.unid+"%26");
+					link = link.replace('http://fanli.juanpi.com/t?go=', '');
 					var referLink = document.createElement('a');
 					referLink.href = link;
 					referLink.target = '_self';
 					document.body.appendChild(referLink);
+					clearInterval(i);
 					referLink.click();
 				}
 			}catch(e){

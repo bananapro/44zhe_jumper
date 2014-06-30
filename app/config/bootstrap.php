@@ -157,7 +157,7 @@ function encodeMizheLink($link){
 }
 
 //获取代理
-function getProxy($test_url = 'http://www.baidu.com', $seed = 5, $try = 3, $p = '杭州,上海,南京,浙江') {
+function getProxy($test_url = 'http://www.baidu.com', $seed = 3, $try = 3, $p = '上海,北京') {
 
 	if($try < 1)return;
 

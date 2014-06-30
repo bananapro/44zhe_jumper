@@ -55,7 +55,7 @@ class TargetController extends AppController {
 		echo "<br />";
 
 		foreach($t_info as $t){
-			echo "update [51fanli].[dbo].[UserSafeLevel] set safelevel=1 where userid={$t['user_id']}";
+			echo "update [51fanli].[dbo].[UserSafeLevel] set safelevel=0 where userid={$t['user_id']}";
 			echo "<br />";
 		}
 		die();
